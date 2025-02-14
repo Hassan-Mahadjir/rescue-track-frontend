@@ -1,0 +1,9 @@
+{
+  "TabTitles": {
+    "home": "Home Page",
+    "about": "About page title"
+  },
+  "HomePage": {
+    "title": "Hello world!"
+  }
+}
