@@ -3,6 +3,10 @@
     "home": "Home Page",
     "about": "About page title"
   },
+  "Auth": {
+    "login": "",
+    "signup": ""
+  },
   "HomePage": {
     "title": "Hello world!"
   }
