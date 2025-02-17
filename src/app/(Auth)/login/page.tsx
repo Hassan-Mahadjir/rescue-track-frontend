@@ -38,31 +38,14 @@ const Login = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+    <div className="grid min-h-svh lg:grid-cols-2">
       {/* Sign up section */}
-      <div className="flex flex-col items-center mt-[100px]">
-        <h1 className="font-bold text-3xl">Sign Up</h1>
-        <p className="text-sm text-center my-[25px]">
-          Create an account to start managing your operation and teams
-          <br /> with RescueTrucker
-        </p>
-        <button className="flex items-center justify-center gap-x-4 border-2 border-[var(--main)] rounded-lg w-3/5 px-[5px] py-[5px] hover:text-white hover:bg-main transition-colors duration-150">
-          <Image
-            src="/auth/microsoft.png"
-            width={20}
-            height={20}
-            alt="Microsoft logo"
-          />
-          Sign up with Microsoft
-        </button>
-
-        {/* Divider */}
-        <div className="relative flex py-5 items-center w-full">
-          <div className="flex-grow border-t border-gray-400"></div>
-          <span className="flex-shrink mx-4 text-gray-400">
-            or continue with
-          </span>
-          <div className="flex-grow border-t border-gray-400"></div>
+      <div className="flex flex-col gap-3 items-center justify-center p-6 md:p-10 items-center">
+        <div className="text-center max-w-xs">
+          <h1 className="font-bold text-3xl mb-2">{t("welcome")}</h1>
+          <p className="text-sm text-muted-foreground xs:text-sx">
+            {t("loginDetails")}
+          </p>
         </div>
 
         {/* Form */}
@@ -85,21 +68,69 @@ const Login = () => {
               type="password"
               icon={<TbLockPassword />}
             />
-            <Button type="submit" className="bg-main mt-4 hover:bg-brown">
-              Submit
+            <Button type="submit" className="bg-main mt-4 hover:bg-second-main">
+              {t("login")}
             </Button>
           </form>
         </Form>
+
+        {/* Divider */}
+        <div className="relative flex py-2 items-center w-3/5">
+          <div className="flex-grow border-t border-gray-400"></div>
+          <span className="flex-shrink mx-4 text-gray-400">
+            {t("continueWith")}
+          </span>
+          <div className="flex-grow border-t border-gray-400"></div>
+        </div>
+
+        {/* other account Signin */}
+        <button className="flex items-center justify-center gap-x-2 border-2 border-[var(--main)] rounded-lg w-3/5 px-3 py-2 hover:text-white hover:bg-second-main transition-colors duration-150">
+          <Image
+            src="/auth/microsoft.png"
+            width={24}
+            height={24}
+            alt="Microsoft logo"
+            className="h-5 w-5"
+          />
+          <span className="text-sm font-medium xs:inline">
+            {t("loginWithMicrosoft")}
+          </span>
+        </button>
+
+        <button className="flex items-center justify-center gap-x-2 border-2 border-[var(--main)] rounded-lg w-3/5 px-3 py-2 hover:text-white hover:bg-second-main transition-colors duration-150">
+          <Image
+            src="/auth/GoogleGlogo.svg.webp"
+            width={24}
+            height={24}
+            alt="Google logo"
+            className="h-5 w-5"
+          />
+          <span className="text-sm font-medium xs:inline">
+            {t("loginWithGoogle")}
+          </span>
+        </button>
+        <p className="text-sm font-semibold">
+          {t("noAccount")}
+          <a href="#" className="underline underline-offset-4">
+            {t("register")}
+          </a>
+        </p>
+        <a
+          href="#"
+          className="text-end inline-block text-sm underline-offset-4 hover:underline"
+        >
+          {t("forgetPassword")}
+        </a>
       </div>
 
       {/* Image section */}
-      <div className="hidden md:block relative w-full h-full">
+      <div className="relative hidden bg-muted lg:block">
         <Image
           src="/auth/login-plant.jpg"
           alt="Login photo"
           layout="fill"
           objectFit="cover" // Adjusts how the image fits within the container
-          className="w-full h-full"
+          className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
     </div>

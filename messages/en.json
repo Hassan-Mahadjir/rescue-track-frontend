@@ -4,8 +4,15 @@
     "about": "About page title"
   },
   "Auth": {
-    "login": "",
-    "signup": ""
+    "welcome": "Welcome Back!",
+    "loginDetails": "Enter you details below to login to the system",
+    "login": "Login",
+    "continueWith": "or continue with",
+    "loginWithMicrosoft": "Login with Microsoft",
+    "loginWithGoogle": "Login with Google",
+    "forgetPassword": "Forgot your password?",
+    "register": "Register",
+    "noAccount": "Don't have account?"
   },
   "HomePage": {
     "title": "Hello world!"

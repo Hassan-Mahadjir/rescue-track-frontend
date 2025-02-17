@@ -4,8 +4,15 @@
     "about": "تعرف علينا"
   },
   "Auth": {
-    "login": "",
-    "signup": ""
+    "welcome": "!مرحبًا بعودتك",
+    "loginDetails": "أدخل بياناتك أدناه لتسجيل الدخول إلى النظام",
+    "login": "تسجيل الدخول",
+    "continueWith": "أو تابع باستخدام",
+    "loginWithMicrosoft": "تسجيل الدخول عبر مايكروسوفت",
+    "loginWithGoogle": "تسجيل الدخول عبر جوجل",
+    "forgetPassword": "نسيت كلمة المرور؟",
+    "register": "تسجيل",
+    "noAccount": "لا تملك حسابًا؟"
   },
   "HomePage": {
     "title": "أهلاَ عالم"
