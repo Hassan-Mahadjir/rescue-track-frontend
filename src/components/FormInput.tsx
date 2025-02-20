@@ -1,6 +1,4 @@
-// components/FormInput.tsx
-
-import React from "react";
+import React, { useState } from "react";
 import {
   FormControl,
   FormItem,
@@ -9,6 +7,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
+import { Eye, EyeOff } from "lucide-react"; // Import eye icons
 
 interface FormInputProps<T extends FieldValues> {
   form: UseFormReturn<T>;
@@ -35,6 +34,10 @@ const FormInput = <T extends FieldValues>({
   } = form;
   const error = errors[name];
 
+  // State for password visibility toggle
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const isPasswordField = type === "password";
+
   return (
     <FormItem className="relative">
       {label && <FormLabel>{label}</FormLabel>}
@@ -46,11 +49,20 @@ const FormInput = <T extends FieldValues>({
             </div>
           )}
           <Input
-            type={type}
+            type={isPasswordField && isPasswordVisible ? "text" : type}
             placeholder={placeholder}
             {...register(name)}
             className={`${icon ? "pl-10" : ""} ${className}`} // Apply className here
           />
+          {isPasswordField && (
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              onClick={() => setIsPasswordVisible((prev) => !prev)}
+            >
+              {isPasswordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          )}
         </div>
       </FormControl>
       {error && <FormMessage>{String(error.message)}</FormMessage>}

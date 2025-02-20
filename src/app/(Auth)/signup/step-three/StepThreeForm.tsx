@@ -10,18 +10,25 @@ import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
-const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
-});
+const formSchema = z
+  .object({
+    password: z.string().min(6),
+    confirm: z.string().min(6),
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "Passwords do not match",
+    path: ["confirm"],
+  });
 
 type FormSchema = z.infer<typeof formSchema>;
 
-export default function StepOneForm() {
+const StepThreeForm = () => {
   const t = useTranslations("Auth");
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      password: "",
+      confirm: "",
     },
   });
 
@@ -30,8 +37,8 @@ export default function StepOneForm() {
   };
 
   return (
-    <div className="flex flex-1 flex-col items-center bg-white mt-14 w-3/4 h-[500px] justify-self-center rounded-3xl">
-      <div className="mt-16 text-center mb-8">
+    <div>
+      <div className="text-center mt-2">
         <h1 className=" text-2xl font-semibold mb-1">Create an account</h1>
         <p className="text-xs">
           Already have an ccount?{" "}
@@ -40,61 +47,24 @@ export default function StepOneForm() {
           </a>
         </p>
       </div>
-      {/* Navigation */}
-      <div className="">
-        <div className="flex justify-center items-center mb-3">
-          {/* First step */}
-          <div className="flex flex-col items-center justify-center">
-            <div className=" w-5 h-5 rounded-full text-white bg-dark-gray text-center">
-              <span>1</span>
-            </div>
-          </div>
-          <div className="flex-grow border-t border-gray-400 w-48 mx-3"></div>
-          {/* second step  */}
-          <div className="flex flex-col items-center justify-center">
-            <div className=" w-5 h-5 rounded-full text-white bg-dark-gray text-center">
-              <span>2</span>
-            </div>
-          </div>
-          <div className="flex-grow border-t border-gray-400 w-48 mx-3"></div>
-          {/* Third step  */}
-          <div className="flex flex-col items-center justify-center">
-            <div className=" w-5 h-5 rounded-full text-white bg-dark-gray text-center">
-              <span>3</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="max-w-3xl max-auto">
-        <div className="flex justify-center items-center mb-3">
-          {/* First step */}
-          <div className="flex flex-col items-center justify-center">
-            <p>Enter your email</p>
-          </div>
-          <div className="flex-grow w-24 mx-3"></div>
-          {/* second step  */}
-          <div className="flex flex-col items-center justify-center">
-            <p>Provide basic info</p>
-          </div>
-          <div className="flex-grow w-24 mx-3"></div>
-          {/* Third step  */}
-          <div className="flex flex-col items-center justify-center">
-            <p>Create password</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-col gap-4 w-4/6">
+      {/* Form Input */}
+      <div className="flex-col gap-4 w-3/4 justify-self-center">
         <Form {...form}>
-          <form>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormInput
               form={form}
-              name="email"
-              label="What's your email?"
-              type="email"
-              placeholder="Enter your email address"
-              className=""
+              name="password"
+              label="Password"
+              type="password"
+              placeholder="Enter your password"
+            />
+            <FormInput
+              form={form}
+              name="confirm"
+              label="Confirm Password"
+              type="password"
+              placeholder="Confirm your password"
             />
             <Button
               type="submit"
@@ -124,7 +94,7 @@ export default function StepOneForm() {
               alt="Microsoft logo"
               className="h-5 w-5"
             />
-            <span className="text-sm font-medium">
+            <span className="text-sm whitespace-nowrap font-medium ">
               {t("loginWithMicrosoft")}
             </span>
           </button>
@@ -137,10 +107,14 @@ export default function StepOneForm() {
               alt="Google logo"
               className="h-5 w-5"
             />
-            <span className="text-sm font-medium">{t("loginWithGoogle")}</span>
+            <span className="text-sm whitespace-nowrap font-medium">
+              {t("loginWithGoogle")}
+            </span>
           </button>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default StepThreeForm;
