@@ -9,6 +9,9 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useNewUserFormContext } from "@/hooks/userFormContext";
+import { useRouter } from "next/navigation";
+import { setItem } from "@/utils/storage";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -17,34 +20,28 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 const StepOneForm = () => {
+  const formContext = useNewUserFormContext();
+  const router = useRouter();
+
   const t = useTranslations("Auth");
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email: formContext.propertyForm?.email || "",
     },
   });
 
   const onSubmit = async (values: FormSchema) => {
-    console.log(values);
+    formContext.updatePropertyForm(values);
+    router.push("/signup/step-two");
   };
 
   return (
     <div>
-      <div className="text-center mt-2">
-        <h1 className=" text-2xl font-semibold mb-1">Create an account</h1>
-        <p className="text-xs">
-          Already have an ccount?{" "}
-          <a href="#" className="underline underline-offset-4">
-            login
-          </a>
-        </p>
-      </div>
-
       {/* Form Input */}
       <div className="flex-col gap-4 w-3/4 justify-self-center">
         <Form {...form}>
-          <form>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormInput
               form={form}
               name="email"
@@ -73,7 +70,7 @@ const StepOneForm = () => {
 
         {/* other accounts */}
         <div className="flex flex-col items-center justify-center gap-4 w-full md:flex-row">
-          <button className="flex items-center justify-center gap-x-2 w-full xs:w-1/2 px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150">
+          <button className="flex items-center justify-center gap-x-2 w-full px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150">
             <Image
               src="/auth/microsoft.png"
               width={24}
@@ -86,7 +83,7 @@ const StepOneForm = () => {
             </span>
           </button>
 
-          <button className="flex items-center justify-center gap-x-2 w-full xs:w-1/2 px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150">
+          <button className="flex items-center justify-center gap-x-2 w-full px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150">
             <Image
               src="/auth/GoogleGlogo.svg.webp"
               width={24}

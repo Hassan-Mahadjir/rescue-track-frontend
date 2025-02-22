@@ -9,6 +9,8 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useNewUserFormContext } from "@/hooks/userFormContext";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -23,31 +25,30 @@ const formSchema = z
 type FormSchema = z.infer<typeof formSchema>;
 
 const StepThreeForm = () => {
+  const formContext = useNewUserFormContext();
+  const router = useRouter();
+
   const t = useTranslations("Auth");
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      password: "",
-      confirm: "",
+      password: formContext.propertyForm?.password,
+      confirm: formContext.propertyForm?.confirm,
     },
   });
 
   const onSubmit = async (values: FormSchema) => {
-    console.log(values);
+    await formContext.updatePropertyForm({
+      password: values.password,
+      confirm: values.confirm,
+    });
+
+    router.push("/dashboard");
+    console.log(formContext.propertyForm);
   };
 
   return (
     <div>
-      <div className="text-center mt-2">
-        <h1 className=" text-2xl font-semibold mb-1">Create an account</h1>
-        <p className="text-xs">
-          Already have an ccount?{" "}
-          <a href="#" className="underline underline-offset-4">
-            login
-          </a>
-        </p>
-      </div>
-
       {/* Form Input */}
       <div className="flex-col gap-4 w-3/4 justify-self-center">
         <Form {...form}>
@@ -70,7 +71,7 @@ const StepThreeForm = () => {
               type="submit"
               className="bg-dark-gray mt-4 hover:bg-second-main w-full rounded-2xl"
             >
-              Next
+              Sign Up
             </Button>
           </form>
         </Form>

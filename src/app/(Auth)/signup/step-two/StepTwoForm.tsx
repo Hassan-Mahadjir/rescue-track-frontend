@@ -33,6 +33,8 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { useNewUserFormContext } from "@/hooks/userFormContext";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   phone: z
@@ -53,30 +55,25 @@ type FormSchema = z.infer<typeof formSchema>;
 const StepTwoForm = () => {
   const [open, setOpen] = React.useState(false);
 
+  const formContext = useNewUserFormContext();
+  const router = useRouter();
+
   const t = useTranslations("Auth");
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      phone: "",
+      phone: formContext.propertyForm?.phone,
+      role: formContext.propertyForm?.role,
     },
   });
 
   const onSubmit = async (values: FormSchema) => {
-    console.log(values);
+    formContext.updatePropertyForm(values);
+    router.push("/signup/step-three");
   };
 
   return (
     <div>
-      <div className="text-center mt-2">
-        <h1 className=" text-2xl font-semibold mb-1">Create an account</h1>
-        <p className="text-xs">
-          Already have an ccount?{" "}
-          <a href="#" className="underline underline-offset-4">
-            login
-          </a>
-        </p>
-      </div>
-
       {/* Form Input */}
       <div className="flex-col w-3/4 justify-self-center">
         <Form {...form}>
