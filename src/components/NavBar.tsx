@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoNotificationsOutline } from "react-icons/io5";
+import { IoIosMenu } from "react-icons/io";
+
 const navItems = [
   {
     name: "Dashboard",
@@ -53,14 +55,14 @@ function NavBar() {
     <nav className="justify-items-end">
       <div className="flex items-center h-16 px-4 space-x-3">
         {/* Nav links */}
-        <div className="hidden px-2 py-3 rounded-3xl bg-second-main text-white md:block sm:block ">
-          <div className="flex items-center space-x-3 font-medium">
+        <div className="  rounded-3xl bg-second-main text-white">
+          <div className="flex items-center font-medium px-0 py-0 xmd:py-3">
             {navItems.map((item, index) => (
-              <div key={item.route}>
+              <div key={item.route} className="flex hidden xmd:block">
                 <Link href={item.link} onClick={() => setCurrentItem(index)}>
                   <span
                     className={clsx(
-                      "px-3 py-2 rounded-3xl whitespace-nowrap hover:bg-main hover:text-white transition-colors duration-500",
+                      "px-3 py-2 mx-1 rounded-3xl whitespace-nowrap hover:bg-main hover:text-white transition-colors duration-500",
                       {
                         "bg-main": item.route === currentPath,
                         "bg-second-main": item.route !== currentPath,
@@ -72,6 +74,9 @@ function NavBar() {
                 </Link>
               </div>
             ))}
+            <div className="block px-3 py-3 rounded-full xmd:hidden justify-items-center hover:bg-main hover:text-white  transition-colors duration-500">
+              <IoIosMenu className="w-6 h-6" />
+            </div>
           </div>
         </div>
 
@@ -79,14 +84,14 @@ function NavBar() {
         <div className="p-1 rounded-3xl bg-second-main text-white hover:bg-main hover:text-white  transition-colors duration-500">
           <Link href="/settings">
             <div className="flex items-center font-medium px-2 py-2 rounded-3xl">
-              <IoSettingsOutline className="w-5 h-5" />
-              <span className=" px-2 hidden sm:block md:block">settings</span>
+              <IoSettingsOutline className="w-6 h-6" />
+              <span className=" px-2 hidden xd:block">settings</span>
             </div>
           </Link>
         </div>
 
         {/* notifiaction area */}
-        <div className="p-1 rounded-3xl bg-second-main hover:bg-main hover:text-white  transition-colors duration-500">
+        <div className="p-1 rounded-3xl bg-second-main hover:bg-main hover:text-white transition-colors duration-500">
           <Link href="/notification">
             <div className="flex items-center font-medium px-2 py-2 rounded-3xl">
               <IoNotificationsOutline className="w-6 h-6" color="white" />

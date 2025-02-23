@@ -60,6 +60,9 @@ export default {
           "5": "hsl(var(--chart-5))",
         },
       },
+      screens: {
+        xmd: "900px",
+      },
 
       borderRadius: {
         lg: "var(--radius)",
