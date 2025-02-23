@@ -7,7 +7,9 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoNotificationsOutline } from "react-icons/io5";
+import { IoCloseOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 const navItems = [
   {
@@ -74,9 +76,36 @@ function NavBar() {
                 </Link>
               </div>
             ))}
-            <div className="block px-3 py-3 rounded-full xmd:hidden justify-items-center hover:bg-main hover:text-white  transition-colors duration-500">
-              <IoIosMenu className="w-6 h-6" />
-            </div>
+            {/* Display nav elemet when screen is small */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="block px-3 py-3 rounded-full xmd:hidden justify-items-center hover:bg-main hover:text-white  transition-colors duration-500">
+                  <IoIosMenu className="w-6 h-6" />
+                </div>
+              </PopoverTrigger>
+              <PopoverContent>
+                {navItems.map((item, index) => (
+                  <div key={item.route} className="flex-col">
+                    <Link
+                      href={item.link}
+                      onClick={() => setCurrentItem(index)}
+                    >
+                      <span
+                        className={clsx(
+                          "px-3 py-2 whitespace-nowrap hover:text-main hover:font-bold transition-colors duration-500",
+                          {
+                            "text-main font-bold": item.route === currentPath,
+                            "bg-white": item.route !== currentPath,
+                          }
+                        )}
+                      >
+                        {item.name}
+                      </span>
+                    </Link>
+                  </div>
+                ))}
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
