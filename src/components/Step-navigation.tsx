@@ -6,24 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const steps = [
-  {
-    title: "Enter your email",
-    link: "/signup/step-one",
-    route: "step-one",
-  },
-  {
-    title: "Provide basic info",
-    link: "/signup/step-two",
-    route: "step-two",
-  },
-  {
-    title: "Create password",
-    link: "/signup/step-three",
-    route: "step-three",
-  },
-];
-
 const StepNavigation = () => {
   const t = useTranslations("Auth");
 
