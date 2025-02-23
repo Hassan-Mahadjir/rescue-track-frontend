@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -24,6 +25,26 @@ const steps = [
 ];
 
 const StepNavigation = () => {
+  const t = useTranslations("Auth");
+
+  const steps = [
+    {
+      title: t("nav-email"),
+      link: "/signup/step-one",
+      route: "step-one",
+    },
+    {
+      title: t("nav-basic"),
+      link: "/signup/step-two",
+      route: "step-two",
+    },
+    {
+      title: t("nav-password"),
+      link: "/signup/step-three",
+      route: "step-three",
+    },
+  ];
+
   const pathname = usePathname();
   const currentPath = pathname.split("/").pop();
   const [currentStep, setCurrentStep] = useState(0);

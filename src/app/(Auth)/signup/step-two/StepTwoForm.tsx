@@ -83,7 +83,7 @@ const StepTwoForm = () => {
               name="phone"
               render={({ field }) => (
                 <FormItem className="flex flex-col items-start">
-                  <FormLabel>What is your phone number?</FormLabel>
+                  <FormLabel>{t("yourPhone")}</FormLabel>
                   <FormControl className="w-full">
                     <PhoneInput
                       placeholder="Enter a phone number"
@@ -102,7 +102,7 @@ const StepTwoForm = () => {
               name="role"
               render={({ field }) => (
                 <FormItem className="flex flex-col my-4">
-                  <FormLabel>What is your role?</FormLabel>
+                  <FormLabel>{t("yourRole")}</FormLabel>
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -163,7 +163,7 @@ const StepTwoForm = () => {
               type="submit"
               className="bg-dark-gray mt-4 hover:bg-second-main w-full rounded-2xl"
             >
-              Next
+              {t("continue")}
             </Button>
           </form>
         </Form>

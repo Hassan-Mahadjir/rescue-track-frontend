@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
-const Navbar = () => {
+const TranslationBar = () => {
   const [locale, setLocale] = React.useState<string>("");
   const router = useRouter();
 
@@ -53,4 +53,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default TranslationBar;

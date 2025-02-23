@@ -56,14 +56,14 @@ const StepThreeForm = () => {
             <FormInput
               form={form}
               name="password"
-              label="Password"
+              label={t("password")}
               type="password"
               placeholder="Enter your password"
             />
             <FormInput
               form={form}
               name="confirm"
-              label="Confirm Password"
+              label={t("confirmPassword")}
               type="password"
               placeholder="Confirm your password"
             />
@@ -71,7 +71,7 @@ const StepThreeForm = () => {
               type="submit"
               className="bg-dark-gray mt-4 hover:bg-second-main w-full rounded-2xl"
             >
-              Sign Up
+              {t("signup")}
             </Button>
           </form>
         </Form>

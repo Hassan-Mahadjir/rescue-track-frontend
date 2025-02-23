@@ -45,7 +45,7 @@ const StepOneForm = () => {
             <FormInput
               form={form}
               name="email"
-              label="What's your email?"
+              label={t("yourEmail")}
               type="email"
               placeholder="Enter your email address"
               className=""
@@ -54,7 +54,7 @@ const StepOneForm = () => {
               type="submit"
               className="bg-dark-gray mt-4 hover:bg-second-main w-full rounded-2xl"
             >
-              Next
+              {t("continue")}
             </Button>
           </form>
         </Form>

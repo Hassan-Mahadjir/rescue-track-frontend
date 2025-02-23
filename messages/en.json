@@ -12,7 +12,19 @@
     "loginWithGoogle": "Login with Google",
     "forgetPassword": "Forgot your password?",
     "register": "Register",
-    "noAccount": "Don't have account?"
+    "noAccount": "Don't have account?",
+    "yourEmail": "What's your email?",
+    "continue": "continue",
+    "yourPhone": "What's your phone number?",
+    "yourRole": "What's your role?",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "signup": "Sign up",
+    "nav-email": "Enter your email",
+    "nav-basic": "Provide basic information",
+    "nav-password": "Create password",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?"
   },
   "HomePage": {
     "title": "Hello world!"

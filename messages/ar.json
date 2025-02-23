@@ -12,7 +12,19 @@
     "loginWithGoogle": "تسجيل الدخول عبر جوجل",
     "forgetPassword": "نسيت كلمة المرور؟",
     "register": "تسجيل",
-    "noAccount": "لا تملك حسابًا؟"
+    "noAccount": "ليس لديك حساب؟",
+    "yourEmail": "ما هو بريدك الإلكتروني؟",
+    "continue": "متابعة",
+    "yourPhone": "ما هو رقم هاتفك؟",
+    "yourRole": "ما هو دورك؟",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "signup": "إنشاء حساب",
+    "nav-email": "أدخل بريدك الإلكتروني",
+    "nav-basic": "قدم معلومات أساسية",
+    "nav-password": "أنشئ كلمة مرور",
+    "createAccount": "إنشاء حساب",
+    "alreadyHaveAccount": "هل لديك حساب بالفعل؟"
   },
   "HomePage": {
     "title": "أهلاَ عالم"

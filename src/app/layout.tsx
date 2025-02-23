@@ -2,7 +2,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
-import Navbar from "@/components/Navbar";
 import QueryProvider from "@/providers/QueryProvider";
 
 const geistSans = Geist({
@@ -22,9 +21,10 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const messages = await getMessages();
+  const isRTL = locale === "ar";
 
   return (
-    <html lang={locale}>
+    <html lang={locale} dir={isRTL ? "rtl" : "ltr"}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
