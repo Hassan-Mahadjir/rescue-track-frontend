@@ -61,7 +61,7 @@ export default {
         },
       },
       screens: {
-        xmd: "900px",
+        xmd: "930px",
       },
 
       borderRadius: {
