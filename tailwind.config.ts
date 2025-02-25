@@ -62,6 +62,7 @@ export default {
       },
       screens: {
         xmd: "930px",
+        ipadAir: "820px",
       },
 
       borderRadius: {
