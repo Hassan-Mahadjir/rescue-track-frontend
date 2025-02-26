@@ -1,5 +1,6 @@
 import React from "react";
 import Barchart from "./Bar-Chart";
+import { Piechart } from "./Pie-Chart";
 
 const StatisticsChart = () => {
   return (
@@ -7,7 +8,9 @@ const StatisticsChart = () => {
       <div className="">
         <Barchart />
       </div>
-      <div className="border"></div>
+      <div className="">
+        <Piechart />
+      </div>
 
       <div className="col-span-2 border"></div>
     </div>
