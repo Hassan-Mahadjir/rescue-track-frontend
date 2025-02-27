@@ -117,7 +117,7 @@ export function Piechart() {
   const months = React.useMemo(() => Data.map((item) => item.reason), []);
 
   return (
-    <Card data-chart={id} className="flex flex-col">
+    <Card className="w-full h-full flex flex-col">
       <ChartStyle id={id} config={chartConfig} />
       <CardHeader>
         <div className="grid gap-1 grid-cols-1 xmd:grid-cols-2">

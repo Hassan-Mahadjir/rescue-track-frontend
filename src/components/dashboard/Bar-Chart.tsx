@@ -121,7 +121,7 @@ const Barchart = () => {
   );
 
   return (
-    <Card>
+    <Card className="w-full h-full flex flex-col">
       <CardHeader>
         <div className="grid grid-cols-1 gap-2 xmd:grid-cols-2">
           <CardTitle>
