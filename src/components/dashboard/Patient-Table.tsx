@@ -1,6 +1,7 @@
 import React from "react";
 import { columns, patient } from "./columns";
 import { DataTable } from "./Data-Table";
+import Link from "next/link";
 
 async function getData(): Promise<patient[]> {
   return [
@@ -38,6 +39,13 @@ const PatientTable = async () => {
 
   return (
     <div className="container mx-auto py-3">
+      <div className="flex justify-between">
+        <p className="text-lg whitespace-nowrap">Patient Management</p>
+        <Link href="#" className="hover:">
+          See all
+        </Link>
+      </div>
+
       <DataTable columns={columns} data={data} />
     </div>
   );
