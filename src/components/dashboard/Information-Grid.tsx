@@ -1,5 +1,4 @@
 import React from "react";
-import { ScrollArea } from "../ui/scroll-area";
 import DoctorList from "./Doctor-List";
 import StatisticsChart from "./Statistics-Chart";
 

@@ -37,12 +37,60 @@ const DoctorList = () => {
       specialization: "Neurology",
       status: "Absent",
     },
+    {
+      id: 5,
+      profile:
+        "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      name: "Hassan Mahadjir",
+      specialization: "Heart Specialist",
+      status: "Available",
+    },
+    {
+      id: 6,
+      profile:
+        "https://images.unsplash.com/photo-1664575602554-2087b04935a5?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      name: "Nour Barakat",
+      specialization: "Clinical Genetics",
+      status: "Available",
+    },
+    {
+      id: 7,
+      profile:
+        "https://images.unsplash.com/photo-1602233158242-3ba0ac4d2167?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      name: "Irem Meydanli",
+      specialization: "Neurology",
+      status: "Absent",
+    },
+    {
+      id: 8,
+      profile:
+        "https://images.unsplash.com/photo-1602233158242-3ba0ac4d2167?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      name: "Irem Meydanli",
+      specialization: "Neurology",
+      status: "Absent",
+    },
+    {
+      id: 9,
+      profile:
+        "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      name: "Hassan Mahadjir",
+      specialization: "Heart Specialist",
+      status: "Available",
+    },
+    {
+      id: 10,
+      profile:
+        "https://images.unsplash.com/photo-1664575602554-2087b04935a5?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      name: "Nour Barakat",
+      specialization: "Clinical Genetics",
+      status: "Available",
+    },
   ];
 
   return (
-    <div className="border rounded-xl px-2 pt-2 pb-4">
+    <div className="border rounded-xl px-2 pt-2 pb-4 flex flex-col">
       <p className="text-xs mb-2 whitespace-nowrap xmd:text-lg">Doctor List</p>
-      <ScrollArea className="h-3/4">
+      <ScrollArea className="h-[40rem] overflow-y-auto">
         {doctorData.map((doctor) => (
           <div key={doctor.id}>
             <div className="flex items-center justify-between mx-1">
@@ -71,7 +119,9 @@ const DoctorList = () => {
         ))}
       </ScrollArea>
 
-      <Button className="w-full">See all</Button>
+      <div className="mt-auto pt-2">
+        <Button className="w-full">See all</Button>
+      </div>
     </div>
   );
 };

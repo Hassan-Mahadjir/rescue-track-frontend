@@ -71,6 +71,11 @@ export function DataTable<TData, TValue>({
       rowSelection,
       globalFilter,
     },
+    initialState: {
+      pagination: {
+        pageSize: 3,
+      },
+    },
   });
 
   return (
