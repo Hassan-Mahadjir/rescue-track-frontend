@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.475.0",
     "next": "15.1.7",
     "next-intl": "^3.26.3",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/axios": "^0.9.36",
+    "@types/date-fns": "^2.5.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

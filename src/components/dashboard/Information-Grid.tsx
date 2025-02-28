@@ -1,6 +1,7 @@
 import React from "react";
 import DoctorList from "./Doctor-List";
 import StatisticsChart from "./Statistics-Chart";
+import ShiftSchedule from "./Shift-Schedule";
 
 const InformationGrid = () => {
   return (
@@ -10,7 +11,9 @@ const InformationGrid = () => {
       <div className="col-span-1 border rounded-lg px-2 pt-2 pb-4 xmd:col-span-2">
         <StatisticsChart />
       </div>
-      <div className="border rounded-lg px-2 pt-2 pb-4">03</div>
+      <div className="border rounded-lg px-2 pt-2 pb-4">
+        <ShiftSchedule />
+      </div>
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import React from "react";
-import { ScrollArea } from "../ui/scroll-area";
 import { Button } from "../ui/button";
 import Image from "next/image";
 
@@ -90,34 +89,32 @@ const DoctorList = () => {
   return (
     <div className="border rounded-xl px-2 pt-2 pb-4 flex flex-col">
       <p className="text-xs mb-2 whitespace-nowrap xmd:text-lg">Doctor List</p>
-      <ScrollArea className="h-[40rem] overflow-y-auto">
-        {doctorData.map((doctor) => (
-          <div key={doctor.id}>
-            <div className="flex items-center justify-between mx-1">
-              <div className="flex items-center gap-3">
-                {/* Profile image */}
-                <Image
-                  src={doctor.profile}
-                  alt="profile"
-                  className="w-12 h-12 rounded-full object-cover border border-gray-300 shadow-md hidden xmd:block"
-                  width={50}
-                  height={50}
-                />
-                {/* Name and Specialization */}
-                <div className="text-xs xmd:text-sm">
-                  <p className="font-medium">{doctor.name}</p>
-                  <p className="hidden xmd:block">{doctor.specialization}</p>
-                </div>
+      {doctorData.map((doctor) => (
+        <div key={doctor.id}>
+          <div className="flex items-center justify-between mx-1">
+            <div className="flex items-center gap-3">
+              {/* Profile image */}
+              <Image
+                src={doctor.profile}
+                alt="profile"
+                className="w-12 h-12 rounded-full object-cover border border-gray-300 shadow-md hidden xmd:block"
+                width={50}
+                height={50}
+              />
+              {/* Name and Specialization */}
+              <div className="text-xs xmd:text-sm">
+                <p className="font-medium">{doctor.name}</p>
+                <p className="hidden xmd:block">{doctor.specialization}</p>
               </div>
-              {/* Status */}
-              <p className="text-xs xmd:text-sm hidden sm:block">
-                {doctor.status}
-              </p>
             </div>
-            <hr className="border-dashed border-gray-400 my-3 " />
+            {/* Status */}
+            <p className="text-xs xmd:text-sm hidden sm:block">
+              {doctor.status}
+            </p>
           </div>
-        ))}
-      </ScrollArea>
+          <hr className="border-dashed border-gray-400 my-3 " />
+        </div>
+      ))}
 
       <div className="mt-auto pt-2">
         <Button className="w-full">See all</Button>
