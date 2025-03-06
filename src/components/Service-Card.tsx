@@ -16,7 +16,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   buttons,
 }) => {
   return (
-    <div className="flex flex-col border bg-main items-center rounded-xl px-4 py-10 space-y-4 w-64">
+    <div className="flex flex-col bg-gradient-to-t from-main to-second-green items-center rounded-xl px-4 py-10 space-y-4 w-64">
       <p className="text-center font-semibold text-white">{title}</p>
 
       {icon ? (

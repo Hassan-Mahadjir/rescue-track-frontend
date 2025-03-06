@@ -57,7 +57,7 @@ function NavBar() {
     <nav className="justify-items-end">
       <div className="flex items-center h-16 px-4 space-x-3">
         {/* Nav links */}
-        <div className="  rounded-3xl bg-second-main text-white">
+        <div className="  rounded-3xl bg-main xmd:bg-light-gray">
           <div className="flex items-center font-medium px-0 py-0 xmd:py-3">
             {navItems.map((item, index) => (
               <div key={item.route} className="flex hidden xmd:block">
@@ -66,8 +66,8 @@ function NavBar() {
                     className={clsx(
                       "px-3 py-2 mx-1 rounded-3xl whitespace-nowrap hover:bg-main hover:text-white transition-colors duration-500",
                       {
-                        "bg-main": item.route === currentPath,
-                        "bg-second-main": item.route !== currentPath,
+                        "bg-main text-white": item.route === currentPath,
+                        "bg-light-gray": item.route !== currentPath,
                       }
                     )}
                   >
@@ -79,8 +79,8 @@ function NavBar() {
             {/* Display nav elemet when screen is small */}
             <Popover>
               <PopoverTrigger asChild>
-                <div className="block px-3 py-3 rounded-full xmd:hidden justify-items-center hover:bg-main hover:text-white  transition-colors duration-500">
-                  <IoIosMenu className="w-6 h-6" />
+                <div className="block px-3 py-3 rounded-full xmd:hidden justify-items-center hover:bg-second-main hover:text-white  transition-colors duration-500">
+                  <IoIosMenu className="w-6 h-6" color="white" />
                 </div>
               </PopoverTrigger>
               <PopoverContent>
@@ -110,7 +110,7 @@ function NavBar() {
         </div>
 
         {/* settings area */}
-        <div className="p-1 rounded-3xl bg-second-main text-white hover:bg-main hover:text-white  transition-colors duration-500">
+        <div className="p-1 rounded-3xl bg-main text-white hover:bg-second-main hover:text-white  transition-colors duration-500">
           <Link href="/settings">
             <div className="flex items-center font-medium px-2 py-2 rounded-3xl">
               <IoSettingsOutline className="w-6 h-6" />
@@ -120,7 +120,7 @@ function NavBar() {
         </div>
 
         {/* notifiaction area */}
-        <div className="p-1 rounded-3xl bg-second-main hover:bg-main hover:text-white transition-colors duration-500">
+        <div className="p-1 rounded-3xl bg-main hover:bg-second-main hover:text-white transition-colors duration-500">
           <Link href="/notification">
             <div className="flex items-center font-medium px-2 py-2 rounded-3xl">
               <IoNotificationsOutline className="w-6 h-6" color="white" />
