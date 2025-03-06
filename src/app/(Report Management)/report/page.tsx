@@ -1,12 +1,6 @@
-"use client"; // Ensure this runs only on the client side
+"use client";
 
 import { useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, EffectCoverflow } from "swiper/modules";
-
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/effect-coverflow";
 import ServiceCard from "@/components/Service-Card";
 
 const slides = [
@@ -48,39 +42,47 @@ export default function SwiperComponent() {
         Start creating or reviewing reports.
       </p>
 
-      {/* slider */}
-      <div className="flex flex-col items-center w-full">
-        <Swiper
-          effect="coverflow"
-          grabCursor={false}
-          centeredSlides={true}
-          slidesPerView={2}
-          loop={true} // Enable infinite scrolling
-          coverflowEffect={{
-            rotate: 50,
-            stretch: 0,
-            depth: 50,
-            modifier: 1,
-            slideShadows: false,
-          }}
-          pagination={{ clickable: true }}
-          modules={[EffectCoverflow, Pagination]}
-          onSlideChange={(swiper) =>
-            setCurrentPage((swiper.realIndex % slides.length) + 1)
-          }
-          className="w-full max-w-lg mt-5"
-        >
-          {slides.map((slide, index) => (
-            <SwiperSlide key={index} className="flex justify-center">
-              <ServiceCard {...slide} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+      {/* Slider */}
+      <div className="relative flex items-center mt-5 gap-5 perspective-1000">
+        {slides.map((slide, index) => {
+          const isActive = index === currentPage;
 
-        {/* Page Indicator */}
-        <div className="mt-4 text-lg font-semibold">
-          Page {currentPage} of {slides.length}
-        </div>
+          return (
+            <div
+              key={slide.title}
+              className="transition-transform duration-500 cursor-pointer"
+              onClick={() => setCurrentPage(index)} // Set clicked slide as current
+              style={{
+                transform: isActive
+                  ? "scale(1) translateZ(50px)" // Active slide pops forward
+                  : "scale(0.9) translateZ(-20px)", // Others appear slightly behind
+                opacity: isActive ? 1 : 0.8, // Dim non-active slides slightly
+              }}
+            >
+              <ServiceCard {...slide} />
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Navigation */}
+      <div className="mt-4 flex gap-4">
+        <button
+          className="px-4 py-2 bg-white text-black rounded"
+          onClick={() =>
+            setCurrentPage((prev) => (prev > 0 ? prev - 1 : slides.length - 1))
+          }
+        >
+          Prev
+        </button>
+        <button
+          className="px-4 py-2 bg-white text-black rounded"
+          onClick={() =>
+            setCurrentPage((prev) => (prev < slides.length - 1 ? prev + 1 : 0))
+          }
+        >
+          Next
+        </button>
       </div>
     </div>
   );
