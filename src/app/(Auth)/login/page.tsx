@@ -12,6 +12,7 @@ import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/FormInput";
+import { useLogin } from "@/services/api/auth";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -24,6 +25,7 @@ type FormSchema = z.infer<typeof formSchema>;
 
 const Login = () => {
   const t = useTranslations("Auth");
+  const { mutateLogin, isPending } = useLogin();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -35,6 +37,7 @@ const Login = () => {
 
   const onSubmit = async (values: FormSchema) => {
     console.log(values);
+    mutateLogin(values);
   };
 
   return (

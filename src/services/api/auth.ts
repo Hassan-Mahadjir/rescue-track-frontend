@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { LoginFormValues } from "@/types/login.type";
 import authService from "../auth-service";
 import { getItem, setItem } from "@/utils/storage";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import { useRouter } from "next/navigation";
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -11,7 +11,7 @@ export enum Role {
 }
 
 export const useLogin = () => {
-  const router = useRouter(); // Initialize router for navigation
+  const router = useRouter();
 
   const {
     mutate: mutateLogin,
@@ -24,7 +24,7 @@ export const useLogin = () => {
       // console.log(`success from auth.ts ${data.data.data.accessToken}`);
       setItem("token", data.data.data.accessToken);
       if (await getItem("token")) {
-        router.push("/screens/dashboard");
+        router.push("/dashboard");
         console.log("token is set", await getItem("token"));
       }
     },

@@ -4,6 +4,10 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import QueryProvider from "@/providers/QueryProvider";
 import NavBar from "@/components/NavBar";
+import { shouldHideNavBar } from "@/functions/hideNaveBar";
+import NavBarWrapper from "@/components/NavBarWrapper";
+import useCheckToken from "@/hooks/check-token";
+import TokenChecker from "@/components/Token-Checker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +34,8 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
-          <NavBar />
+          <TokenChecker />
+          <NavBarWrapper />
           <QueryProvider>{children}</QueryProvider>
         </NextIntlClientProvider>
       </body>

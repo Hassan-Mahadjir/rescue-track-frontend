@@ -66,8 +66,8 @@ function NavBar() {
                     className={clsx(
                       "px-3 py-2 mx-1 rounded-3xl whitespace-nowrap hover:bg-main hover:text-white transition-colors duration-500",
                       {
-                        "bg-main text-white": item.route === currentPath,
-                        "bg-light-gray": item.route !== currentPath,
+                        "bg-main text-white": pathName.startsWith(item.link),
+                        "bg-light-gray": !pathName.startsWith(item.link),
                       }
                     )}
                   >
