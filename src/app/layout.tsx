@@ -34,7 +34,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
-          <TokenChecker />
+          {/* <TokenChecker /> */}
           <NavBarWrapper />
           <QueryProvider>{children}</QueryProvider>
         </NextIntlClientProvider>
