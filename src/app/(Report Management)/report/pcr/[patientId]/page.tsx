@@ -1,5 +1,6 @@
-import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
 import React from "react";
+import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const PatientDetails = async ({
   params,
@@ -32,7 +33,24 @@ const PatientDetails = async ({
       </div>
 
       {/* Incident details */}
-      <div></div>
+      <div className="bg-gray-100 shadow-lg rounded-lg mt-4 px-4 py-1">
+        <Tabs defaultValue="incident">
+          <TabsList className="mb-4 flex space-x-4 justify-start">
+            <TabsTrigger value="incident">Incident Information</TabsTrigger>
+            <TabsTrigger value="crew">Crew Information</TabsTrigger>
+            <TabsTrigger value="medication">Medication</TabsTrigger>
+          </TabsList>
+
+          {/* Incident Form */}
+          <TabsContent value="incident">Incident information</TabsContent>
+
+          {/* Placeholder for other tabs */}
+          <TabsContent value="crew">Crew Information goes here.</TabsContent>
+          <TabsContent value="medication">
+            Medication details go here.
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };

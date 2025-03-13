@@ -98,7 +98,6 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
                   accurate and up-to-date.
                 </DialogDescription>
               </DialogHeader>
-
               <PersonalInfoDialog />
             </DialogContent>
           </Dialog>
