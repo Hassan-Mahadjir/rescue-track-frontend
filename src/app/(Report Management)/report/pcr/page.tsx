@@ -1,3 +1,4 @@
+import PcrReportList from "@/components/report/PcrReportList";
 import ReportSummaryCard from "@/components/report/ReportSummaryCard";
 import { Siren, Users, FileText } from "lucide-react";
 import React from "react";
@@ -26,7 +27,9 @@ const PcrPage = () => {
           />
         </div>
       </div>
-      <div>table</div>
+      <div>
+        <PcrReportList />
+      </div>
     </div>
   );
 };
