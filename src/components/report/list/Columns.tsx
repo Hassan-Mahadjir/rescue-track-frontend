@@ -1,23 +1,31 @@
 "use client";
 
+import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-
-export type Person = {
-  id: number;
-  fullName: string;
-  gender: string;
-  country: string;
-  idNumber: string;
-  incidentDate: string;
-  status: "Open" | "Closed" | "Progress";
-};
+import { Ellipsis } from "lucide-react";
 
 export const columns: ColumnDef<Person>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
-    enableSorting: true,
-    enableColumnFilter: true,
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
   },
   {
     accessorKey: "fullName",
@@ -50,7 +58,7 @@ export const columns: ColumnDef<Person>[] = [
       const date = new Date(row.getValue("incidentDate"));
       const formattedDate = date.toLocaleDateString("en-US", {
         year: "numeric",
-        month: "long",
+        month: "short",
         day: "numeric",
       });
       return <div>{formattedDate}</div>;
@@ -65,7 +73,7 @@ export const columns: ColumnDef<Person>[] = [
       const status = row.getValue("status");
       return (
         <div
-          className={`px-2 py-1 rounded text-center ${
+          className={`px-2 py-1 rounded-xl text-center ${
             status === "Open"
               ? "bg-green-100 text-green-800"
               : status === "Closed"
@@ -89,9 +97,9 @@ export const columns: ColumnDef<Person>[] = [
           onClick={() => {
             console.log("Action clicked for:", row.original);
           }}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-2 py-1 rounded hover:text-gray-400"
         >
-          Edit
+          <Ellipsis />
         </button>
       );
     },

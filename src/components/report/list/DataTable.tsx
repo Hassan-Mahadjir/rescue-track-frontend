@@ -7,8 +7,9 @@ import {
   getSortedRowModel,
   getFilteredRowModel,
   useReactTable,
+  SortingState,
+  ColumnFiltersState,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -17,6 +18,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { CardHeader } from "@/components/ui/card";
+import {
+  EllipsisVertical,
+  Plus,
+  Search,
+  SlidersHorizontal,
+  Upload,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { TooltipButton } from "../TooltipButton";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { exportSelectedRows } from "@/utils/exportUtils";
+import FilterDialog from "../FilterDialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -27,26 +50,99 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+      columnFilters,
+    },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
-    <div className="rounded-md border">
+    <div>
+      <CardHeader className="flex flex-row justify-between items-center">
+        <TooltipProvider>
+          <div className="relative w-fit flex items-center space-x-2">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Input
+              placeholder="Search by patient names or ID..."
+              value={table.getState().globalFilter ?? ""}
+              onChange={(event) => {
+                const value = event.target.value;
+                table.setGlobalFilter(value);
+              }}
+              className="pl-10 w-96 bg-white border"
+            />
+            <Dialog>
+              <DialogTrigger asChild>
+                <TooltipButton
+                  tooltipText="Filter Data"
+                  className="bg-white text-black hover:text-white hover:bg-main"
+                >
+                  <SlidersHorizontal />
+                </TooltipButton>
+              </DialogTrigger>
+              {/* <FilterDialog /> */}
+            </Dialog>
+          </div>
+          <div className="flex flex-row space-x-2">
+            <TooltipButton
+              tooltipText="Add New Report"
+              className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
+            >
+              <Plus />
+            </TooltipButton>
+
+            <TooltipButton
+              tooltipText="Select Columns"
+              className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
+            >
+              <EllipsisVertical />
+            </TooltipButton>
+
+            <TooltipButton
+              tooltipText="Export Data"
+              className="btn rounded-full bg-white font-semibold text-black hover:text-white hover:bg-main"
+              onClick={() => {
+                const selectedRows = table.getSelectedRowModel().rows; // This is Row<Person>[]
+                exportSelectedRows(selectedRows, "patient_data.xlsx", "xlsx"); // Pass Row<Person>[] directly
+              }}
+            >
+              <Upload />
+              Export
+            </TooltipButton>
+          </div>
+        </TooltipProvider>
+      </CardHeader>
+
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
+                <TableHead className="font-semibold text-black" key={header.id}>
+                  <div
+                    onClick={header.column.getToggleSortingHandler()}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {{
+                      asc: " 🔼",
+                      desc: " 🔽",
+                    }[header.column.getIsSorted() as string] ?? null}
+                  </div>
                 </TableHead>
               ))}
             </TableRow>
