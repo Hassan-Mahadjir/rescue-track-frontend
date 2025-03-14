@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { EllipsisVertical } from "lucide-react";
 import { Table } from "@tanstack/react-table";
+import { TooltipButton } from "../TooltipButton";
 
 interface ColumnVisibilityDropdownProps<TData> {
   table: Table<TData>;
@@ -21,9 +22,12 @@ export function ColumnVisibilityDropdown<TData>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="ml-2">
-          <EllipsisVertical className="h-4 w-4" />
-        </Button>
+        <TooltipButton
+          tooltipText="Select Columns"
+          className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
+        >
+          <EllipsisVertical />
+        </TooltipButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {table
