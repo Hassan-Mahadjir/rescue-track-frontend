@@ -3,6 +3,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
+import Link from "next/link";
 
 export const columns: ColumnDef<Person>[] = [
   {
@@ -32,6 +33,12 @@ export const columns: ColumnDef<Person>[] = [
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
+    cell: ({ row }) => {
+      const id = row.original.id;
+      const fullName = row.getValue("fullName");
+
+      return <Link href={`/report/pcr/${id}`}>{fullName as string}</Link>;
+    },
   },
   {
     accessorKey: "gender",
@@ -97,15 +104,17 @@ export const columns: ColumnDef<Person>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      const id = row.original.id;
       return (
-        <button
+        <Link
+          href={`report/pcr/${id}`}
           onClick={() => {
             console.log("Action clicked for:", row.original);
           }}
           className="px-2 py-1 rounded hover:text-gray-400"
         >
           <Ellipsis />
-        </button>
+        </Link>
       );
     },
   },

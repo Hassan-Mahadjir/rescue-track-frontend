@@ -9,6 +9,7 @@ import {
   useReactTable,
   SortingState,
   ColumnFiltersState,
+  getPaginationRowModel, // Add this
 } from "@tanstack/react-table";
 import {
   Table,
@@ -25,20 +26,12 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
-  EllipsisVertical,
   Plus,
   Search,
   SlidersHorizontal,
   Upload,
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { TooltipButton } from "../TooltipButton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { exportSelectedRows } from "@/utils/exportUtils";
@@ -56,6 +49,10 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, // Default page index
+    pageSize: 10, // Default page size
+  });
 
   const table = useReactTable({
     data,
@@ -63,12 +60,15 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnFilters,
+      pagination,
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination, // Add pagination change handler
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(), // Enable pagination
   });
 
   return (
@@ -112,8 +112,8 @@ export function DataTable<TData, TValue>({
               tooltipText="Export Data"
               className="btn rounded-full bg-white font-semibold text-black hover:text-white hover:bg-main"
               onClick={() => {
-                const selectedRows = table.getSelectedRowModel().rows; // This is Row<Person>[]
-                exportSelectedRows(selectedRows, "patient_data.xlsx", "xlsx"); // Pass Row<Person>[] directly
+                const selectedRows = table.getSelectedRowModel().rows;
+                exportSelectedRows(selectedRows, "patient_data.xlsx", "xlsx");
               }}
             >
               <Upload />
@@ -181,6 +181,46 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center space-x-2">
+          <p className="text-sm font-medium">Rows per page</p>
+          <select
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => {
+              table.setPageSize(Number(e.target.value));
+            }}
+            className="border rounded-md p-1"
+          >
+            {[10, 20, 30, 40, 50].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                {pageSize}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center space-x-2">
+          <button
+            className="px-4 py-2 border rounded-md text-sm font-medium"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </button>
+          <button
+            className="px-4 py-2 border rounded-md text-sm font-medium"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </button>
+        </div>
+        <div className="flex items-center space-x-2">
+          <p className="text-sm font-medium">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

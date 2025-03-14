@@ -116,7 +116,7 @@ const data: Person[] = [
 
 const PcrReportList = () => {
   return (
-    <div className="rounded-lg border-0 bg-gradient-to-r from-gray-100 to-white p-6">
+    <div className="rounded-lg border-0 bg-gradient-to-r from-gray-100 to-white p-6 mb-4">
       <DataTable columns={columns} data={data} />
     </div>
   );
