@@ -17,6 +17,9 @@ interface FormInputProps<T extends FieldValues> {
   type?: string;
   icon?: React.ReactNode;
   className?: string; // Accept className prop
+  value?: string;
+  onChange?: (value: string) => void;
+
 }
 
 const FormInput = <T extends FieldValues>({
@@ -26,7 +29,10 @@ const FormInput = <T extends FieldValues>({
   placeholder,
   type = "text",
   icon,
+  value,
   className = "",
+  onChange,
+
 }: FormInputProps<T>) => {
   const {
     register,
@@ -49,6 +55,8 @@ const FormInput = <T extends FieldValues>({
             </div>
           )}
           <Input
+          
+            value={value}
             type={isPasswordField && isPasswordVisible ? "text" : type}
             placeholder={placeholder}
             {...register(name)}
