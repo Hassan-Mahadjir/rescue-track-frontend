@@ -7,7 +7,6 @@ import NavBar from "@/components/NavBar";
 import { shouldHideNavBar } from "@/functions/hideNaveBar";
 import NavBarWrapper from "@/components/NavBarWrapper";
 import useCheckToken from "@/hooks/check-token";
-import TokenChecker from "@/components/Token-Checker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
