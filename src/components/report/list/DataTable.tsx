@@ -22,6 +22,9 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { CardHeader } from "@/components/ui/card";
 import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
   EllipsisVertical,
   Plus,
   Search,
@@ -40,6 +43,7 @@ import { TooltipButton } from "../TooltipButton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { exportSelectedRows } from "@/utils/exportUtils";
 import FilterDialog from "../FilterDialog";
+import { ColumnVisibilityDropdown } from "./ColumnVisibilityDropdown";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -91,7 +95,7 @@ export function DataTable<TData, TValue>({
                   <SlidersHorizontal />
                 </TooltipButton>
               </DialogTrigger>
-              {/* <FilterDialog /> */}
+              <FilterDialog />
             </Dialog>
           </div>
           <div className="flex flex-row space-x-2">
@@ -102,12 +106,7 @@ export function DataTable<TData, TValue>({
               <Plus />
             </TooltipButton>
 
-            <TooltipButton
-              tooltipText="Select Columns"
-              className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
-            >
-              <EllipsisVertical />
-            </TooltipButton>
+            <ColumnVisibilityDropdown table={table} />
 
             <TooltipButton
               tooltipText="Export Data"
@@ -129,19 +128,33 @@ export function DataTable<TData, TValue>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead className="font-semibold text-black" key={header.id}>
+                <TableHead className="text-black" key={header.id}>
                   <div
                     onClick={header.column.getToggleSortingHandler()}
                     style={{ cursor: "pointer" }}
+                    className="flex items-center hover:text-gray-600"
                   >
+                    {/* Header Name */}
                     {flexRender(
                       header.column.columnDef.header,
                       header.getContext()
                     )}
-                    {{
-                      asc: " 🔼",
-                      desc: " 🔽",
-                    }[header.column.getIsSorted() as string] ?? null}
+
+                    {/* Add Space */}
+                    <span className="w-2"></span>
+
+                    {/* Sorting Icon */}
+                    {header.column.getCanSort() && (
+                      <span className="flex items-center text-gray-400">
+                        {header.column.getIsSorted() === "asc" ? (
+                          <ArrowUp className="h-4 w-4" />
+                        ) : header.column.getIsSorted() === "desc" ? (
+                          <ArrowDown className="h-4 w-4" />
+                        ) : (
+                          <ArrowUpDown className="h-4 w-4" />
+                        )}
+                      </span>
+                    )}
                   </div>
                 </TableHead>
               ))}

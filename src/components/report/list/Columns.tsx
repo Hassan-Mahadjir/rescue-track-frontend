@@ -25,31 +25,34 @@ export const columns: ColumnDef<Person>[] = [
       />
     ),
     enableSorting: false,
-    enableHiding: false,
   },
   {
     accessorKey: "fullName",
     header: "Full Name",
     enableSorting: true,
     enableColumnFilter: true,
+    enableHiding: true,
   },
   {
     accessorKey: "gender",
     header: "Gender",
     enableSorting: true,
     enableColumnFilter: true,
+    enableHiding: true,
   },
   {
     accessorKey: "country",
     header: "Country",
     enableSorting: true,
     enableColumnFilter: true,
+    enableHiding: true,
   },
   {
     accessorKey: "idNumber",
     header: "ID Number",
     enableSorting: true,
     enableColumnFilter: true,
+    enableHiding: true,
   },
   {
     accessorKey: "incidentDate",
@@ -65,6 +68,7 @@ export const columns: ColumnDef<Person>[] = [
     },
     enableSorting: true,
     enableColumnFilter: true,
+    enableHiding: true,
   },
   {
     accessorKey: "status",
@@ -87,6 +91,7 @@ export const columns: ColumnDef<Person>[] = [
     },
     enableSorting: true,
     enableColumnFilter: true,
+    enableHiding: true,
   },
   {
     id: "actions",
