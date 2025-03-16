@@ -77,7 +77,7 @@ export function DataTable<TData, TValue>({
       <CardHeader className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         <TooltipProvider>
           {/* Search and Filter Section */}
-          <div className="w-full flex flex-col md:flex-row items-center space-y-5 md:space-y-0 md:space-x-2">
+          <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
             {/* Search Bar and Filter Button */}
             <div className="w-full md:w-auto flex items-center space-x-2">
               <div className="relative w-full md:w-96">
@@ -106,8 +106,11 @@ export function DataTable<TData, TValue>({
               </Dialog>
             </div>
 
+            {/* Spacer to create space between sections */}
+            <div className="flex-grow"></div>
+
             {/* Action Buttons (Add, Export, etc.) */}
-            <div className="w-full md:w-auto flex justify-center items-center space-x-2">
+            <div className="w-full md:w-auto flex justify-end items-center space-x-2">
               <TooltipButton
                 tooltipText="Add New Report"
                 className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
