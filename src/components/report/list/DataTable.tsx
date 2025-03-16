@@ -1,15 +1,15 @@
 "use client";
 
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
   useReactTable,
-  SortingState,
-  ColumnFiltersState,
-  getPaginationRowModel, // Add this
+  type SortingState,
+  type ColumnFiltersState,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -37,6 +37,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { exportSelectedRows } from "@/utils/exportUtils";
 import FilterDialog from "../FilterDialog";
 import { ColumnVisibilityDropdown } from "./ColumnVisibilityDropdown";
+import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -50,8 +51,8 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState({
-    pageIndex: 0, // Default page index
-    pageSize: 10, // Default page size
+    pageIndex: 0,
+    pageSize: 10,
   });
 
   const table = useReactTable({
@@ -64,124 +65,152 @@ export function DataTable<TData, TValue>({
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination, // Add pagination change handler
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(), // Enable pagination
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
     <div>
-      <CardHeader className="flex flex-row justify-between items-center">
+      <CardHeader className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         <TooltipProvider>
-          <div className="relative w-fit flex items-center space-x-2">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              placeholder="Search by patient names or ID..."
-              value={table.getState().globalFilter ?? ""}
-              onChange={(event) => {
-                const value = event.target.value;
-                table.setGlobalFilter(value);
-              }}
-              className="pl-10 w-96 bg-white border"
-            />
-            <Dialog>
-              <DialogTrigger asChild>
-                <TooltipButton
-                  tooltipText="Filter Data"
-                  className="bg-white text-black hover:text-white hover:bg-main"
-                >
-                  <SlidersHorizontal />
-                </TooltipButton>
-              </DialogTrigger>
-              <FilterDialog />
-            </Dialog>
-          </div>
-          <div className="flex flex-row space-x-2">
-            <TooltipButton
-              tooltipText="Add New Report"
-              className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
-            >
-              <Plus />
-            </TooltipButton>
+          {/* Search and Filter Section */}
+          <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+            {/* Search Bar and Filter Button */}
+            <div className="w-full md:w-auto flex items-center space-x-2">
+              <div className="relative w-full md:w-96">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Input
+                  placeholder="Search by patient names or ID..."
+                  value={table.getState().globalFilter ?? ""}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    table.setGlobalFilter(value);
+                  }}
+                  className="pl-10 w-full bg-white border"
+                />
+              </div>
 
-            <ColumnVisibilityDropdown table={table} />
+              <Dialog>
+                <DialogTrigger asChild>
+                  <TooltipButton
+                    tooltipText="Filter Data"
+                    className="bg-white text-black hover:text-white hover:bg-main"
+                  >
+                    <SlidersHorizontal />
+                  </TooltipButton>
+                </DialogTrigger>
+                <FilterDialog />
+              </Dialog>
+            </div>
 
-            <TooltipButton
-              tooltipText="Export Data"
-              className="btn rounded-full bg-white font-semibold text-black hover:text-white hover:bg-main"
-              onClick={() => {
-                const selectedRows = table.getSelectedRowModel().rows;
-                exportSelectedRows(selectedRows, "patient_data.xlsx", "xlsx");
-              }}
-            >
-              <Upload />
-              Export
-            </TooltipButton>
+            {/* Spacer to create space between sections */}
+            <div className="flex-grow"></div>
+
+            {/* Action Buttons (Add, Export, etc.) */}
+            <div className="w-full md:w-auto flex justify-end items-center space-x-2">
+              <TooltipButton
+                tooltipText="Add New Report"
+                className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
+              >
+                <Plus />
+              </TooltipButton>
+              <ColumnVisibilityDropdown table={table} />
+              <TooltipButton
+                tooltipText="Export Data"
+                className="btn rounded-full bg-white font-semibold text-black hover:text-white hover:bg-main"
+                onClick={() => {
+                  const selectedRows = table.getSelectedRowModel().rows;
+                  exportSelectedRows(selectedRows, "patient_data.xlsx", "xlsx");
+                }}
+              >
+                <Upload />
+                Export
+              </TooltipButton>
+            </div>
           </div>
         </TooltipProvider>
       </CardHeader>
 
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead className="text-black" key={header.id}>
-                  <div
-                    onClick={header.column.getToggleSortingHandler()}
-                    style={{ cursor: "pointer" }}
-                    className="flex items-center hover:text-gray-600"
-                  >
-                    {/* Header Name */}
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+      {/* Table Section */}
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  // Special handling for Status column
+                  const isStatusColumn = header.id.includes("status");
 
-                    {/* Add Space */}
-                    <span className="w-2"></span>
-
-                    {/* Sorting Icon */}
-                    {header.column.getCanSort() && (
-                      <span className="flex items-center text-gray-400">
-                        {header.column.getIsSorted() === "asc" ? (
-                          <ArrowUp className="h-4 w-4" />
-                        ) : header.column.getIsSorted() === "desc" ? (
-                          <ArrowDown className="h-4 w-4" />
-                        ) : (
-                          <ArrowUpDown className="h-4 w-4" />
+                  return (
+                    <TableHead
+                      className={`text-black ${
+                        isStatusColumn ? "text-center" : ""
+                      }`}
+                      key={header.id}
+                    >
+                      <div
+                        onClick={header.column.getToggleSortingHandler()}
+                        style={{ cursor: "pointer" }}
+                        className={`${
+                          isStatusColumn ? "justify-center" : ""
+                        } flex items-center hover:text-gray-600`}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      </span>
-                    )}
-                  </div>
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                        <span className="w-2"></span>
+                        {header.column.getCanSort() && !isStatusColumn && (
+                          <span className="flex items-center text-gray-400">
+                            {header.column.getIsSorted() === "asc" ? (
+                              <ArrowUp className="h-4 w-4" />
+                            ) : header.column.getIsSorted() === "desc" ? (
+                              <ArrowDown className="h-4 w-4" />
+                            ) : (
+                              <ArrowUpDown className="h-4 w-4" />
+                            )}
+                          </span>
+                        )}
+                      </div>
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <div className="flex items-center justify-between mt-4">
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Pagination Section */}
+      <div className="flex flex-col md:flex-row items-center justify-between mt-4 space-y-4 md:space-y-0">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <select
@@ -199,26 +228,28 @@ export function DataTable<TData, TValue>({
           </select>
         </div>
         <div className="flex items-center space-x-2">
-          <button
-            className="px-4 py-2 border rounded-md text-sm font-medium"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </button>
-          <button
-            className="px-4 py-2 border rounded-md text-sm font-medium"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </button>
-        </div>
-        <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </p>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
         </div>
       </div>
     </div>
