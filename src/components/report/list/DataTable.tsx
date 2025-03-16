@@ -1,14 +1,14 @@
 "use client";
 
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
   useReactTable,
-  SortingState,
-  ColumnFiltersState,
+  type SortingState,
+  type ColumnFiltersState,
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import {
@@ -140,32 +140,44 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead className="text-black" key={header.id}>
-                    <div
-                      onClick={header.column.getToggleSortingHandler()}
-                      style={{ cursor: "pointer" }}
-                      className="flex items-center hover:text-gray-600"
+                {headerGroup.headers.map((header) => {
+                  // Special handling for Status column
+                  const isStatusColumn = header.id.includes("status");
+
+                  return (
+                    <TableHead
+                      className={`text-black ${
+                        isStatusColumn ? "text-center" : ""
+                      }`}
+                      key={header.id}
                     >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      <span className="w-2"></span>
-                      {header.column.getCanSort() && (
-                        <span className="flex items-center text-gray-400">
-                          {header.column.getIsSorted() === "asc" ? (
-                            <ArrowUp className="h-4 w-4" />
-                          ) : header.column.getIsSorted() === "desc" ? (
-                            <ArrowDown className="h-4 w-4" />
-                          ) : (
-                            <ArrowUpDown className="h-4 w-4" />
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  </TableHead>
-                ))}
+                      <div
+                        onClick={header.column.getToggleSortingHandler()}
+                        style={{ cursor: "pointer" }}
+                        className={`${
+                          isStatusColumn ? "justify-center" : ""
+                        } flex items-center hover:text-gray-600`}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        <span className="w-2"></span>
+                        {header.column.getCanSort() && !isStatusColumn && (
+                          <span className="flex items-center text-gray-400">
+                            {header.column.getIsSorted() === "asc" ? (
+                              <ArrowUp className="h-4 w-4" />
+                            ) : header.column.getIsSorted() === "desc" ? (
+                              <ArrowDown className="h-4 w-4" />
+                            ) : (
+                              <ArrowUpDown className="h-4 w-4" />
+                            )}
+                          </span>
+                        )}
+                      </div>
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>

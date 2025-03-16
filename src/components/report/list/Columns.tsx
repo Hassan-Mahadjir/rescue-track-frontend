@@ -2,7 +2,7 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Ellipsis } from "lucide-react";
 import Link from "next/link";
 
 export const columns: ColumnDef<Person>[] = [
@@ -79,18 +79,32 @@ export const columns: ColumnDef<Person>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => (
+      <div className="flex justify-center items-center w-full">
+        Status
+        <span className="ml-1 flex items-center text-gray-400">
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp className="h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown className="h-4 w-4" />
+          ) : (
+            <ArrowUpDown className="h-4 w-4" />
+          )}
+        </span>
+      </div>
+    ),
     cell: ({ row }) => {
       const status = row.getValue("status");
       return (
         <div
-          className={`px-2 py-1 rounded-xl text-center ${
+          className={`rounded-lg text-sm ${
             status === "Open"
               ? "bg-green-100 text-green-800"
               : status === "Closed"
               ? "bg-red-100 text-red-800"
               : "bg-yellow-100 text-yellow-800"
           }`}
+          style={{ minWidth: "80px", textAlign: "center" }} // Ensures alignment
         >
           {status as string}
         </div>
