@@ -10,6 +10,7 @@ import {
   type SortingState,
   type ColumnFiltersState,
   getPaginationRowModel,
+  VisibilityState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -26,18 +27,17 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
-  Plus,
+  ChevronDown,
   Search,
-  SlidersHorizontal,
-  Upload,
 } from "lucide-react";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { TooltipButton } from "../TooltipButton";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { exportSelectedRows } from "@/utils/exportUtils";
-import FilterDialog from "../FilterDialog";
-import { ColumnVisibilityDropdown } from "./ColumnVisibilityDropdown";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -46,21 +46,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface DataTableProps<TData, TValue> {
+interface InventoryDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function InventoryDataTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+}: InventoryDataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -69,74 +71,60 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       pagination,
+      columnVisibility,
+      rowSelection,
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
   });
 
   return (
     <div>
-      <CardHeader className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+      <CardHeader>
         <TooltipProvider>
-          {/* Search and Filter Section */}
-          <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-            {/* Search Bar and Filter Button */}
-            <div className="w-full md:w-auto flex items-center space-x-2">
-              <div className="relative w-full md:w-96">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input
-                  placeholder="Search by patient names or ID..."
-                  value={table.getState().globalFilter ?? ""}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    table.setGlobalFilter(value);
-                  }}
-                  className="pl-10 w-full bg-white border"
-                />
-              </div>
-
-              <Dialog>
-                <DialogTrigger asChild>
-                  <TooltipButton
-                    tooltipText="Filter Data"
-                    className="bg-white text-black hover:text-white hover:bg-main"
-                  >
-                    <SlidersHorizontal />
-                  </TooltipButton>
-                </DialogTrigger>
-                <FilterDialog />
-              </Dialog>
-            </div>
-
-            {/* Spacer to create space between sections */}
-            <div className="flex-grow"></div>
-
-            {/* Action Buttons (Add, Export, etc.) */}
-            <div className="w-full md:w-auto flex justify-end items-center space-x-2">
-              <TooltipButton
-                tooltipText="Add New Report"
-                className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
-              >
-                <Plus />
-              </TooltipButton>
-              <ColumnVisibilityDropdown table={table} />
-              <TooltipButton
-                tooltipText="Export Data"
-                className="btn rounded-full bg-white font-semibold text-black hover:text-white hover:bg-main"
-                onClick={() => {
-                  const selectedRows = table.getSelectedRowModel().rows;
-                  exportSelectedRows(selectedRows, "patient_data.xlsx", "xlsx");
-                }}
-              >
-                <Upload />
-                Export
-              </TooltipButton>
-            </div>
+          <div className="flex items-center py-4">
+            <Input
+              placeholder="Search by patient names or ID..."
+              value={table.getState().globalFilter ?? ""}
+              onChange={(event) => {
+                const value = event.target.value;
+                table.setGlobalFilter(value);
+              }}
+              className="max-w-sm bg-white border"
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="ml-auto">
+                  Columns <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </TooltipProvider>
       </CardHeader>
@@ -148,33 +136,29 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  // Special handling for Status column
-                  const isStatusColumn = header.id.includes("status");
+                  const isSortable = header.column.getCanSort();
+                  const isSorted = header.column.getIsSorted();
 
                   return (
                     <TableHead
-                      className={`text-black ${
-                        isStatusColumn ? "text-center" : ""
-                      }`}
                       key={header.id}
+                      className="text-black"
+                      onClick={
+                        isSortable
+                          ? header.column.getToggleSortingHandler()
+                          : undefined
+                      }
                     >
-                      <div
-                        onClick={header.column.getToggleSortingHandler()}
-                        style={{ cursor: "pointer" }}
-                        className={`${
-                          isStatusColumn ? "justify-center" : ""
-                        } flex items-center hover:text-gray-600`}
-                      >
+                      <div className="cursor-pointer flex items-center hover:text-gray-600">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        <span className="w-2"></span>
-                        {header.column.getCanSort() && !isStatusColumn && (
-                          <span className="flex items-center text-gray-400">
-                            {header.column.getIsSorted() === "asc" ? (
+                        {isSortable && (
+                          <span className="ml-2">
+                            {isSorted === "asc" ? (
                               <ArrowUp className="h-4 w-4" />
-                            ) : header.column.getIsSorted() === "desc" ? (
+                            ) : isSorted === "desc" ? (
                               <ArrowDown className="h-4 w-4" />
                             ) : (
                               <ArrowUpDown className="h-4 w-4" />

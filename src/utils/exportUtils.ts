@@ -30,3 +30,16 @@ export const exportSelectedRows = <T>(
   // Generate file and trigger download
   XLSX.writeFile(workbook, fileName, { bookType: fileType });
 };
+
+//To make the stock field dynamic based on the quantity
+export const calculateStockLevel = (quantity: number): string => {
+  if (quantity === 0) {
+    return "Empty";
+  } else if (quantity <= 10) {
+    return "Re-order";
+  } else if (quantity <= 50) {
+    return "Mid";
+  } else {
+    return "Full";
+  }
+};
