@@ -1,0 +1,90 @@
+import { InventoryDataTable } from "@/components/inventory/list/InventoryDataTable";
+import { InventoryMedicationColumns } from "@/components/inventory/list/medicationCulomns";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React from "react";
+
+const inventoryMedication: InventoryMedication[] = [
+  {
+    itemName: "Paracetamol 500mg",
+    batchNumber: "B12345",
+    category: "Pain Relief",
+    quantity: 100,
+    expirationDate: "2024-12-31",
+  },
+  {
+    itemName: "Amoxicillin 250mg",
+    batchNumber: "A67890",
+    category: "Antibiotics",
+    quantity: 50,
+    expirationDate: "2025-06-30",
+  },
+  {
+    itemName: "Ibuprofen 400mg",
+    batchNumber: "I54321",
+    category: "Pain Relief",
+    quantity: 75,
+    expirationDate: "2024-09-15",
+  },
+];
+
+const vaccines: InventoryMedication[] = [
+  {
+    itemName: "Pfizer-BioNTech COVID-19 Vaccine",
+    batchNumber: "PZ12345",
+    category: "COVID-19",
+    quantity: 200,
+    expirationDate: "2024-05-31",
+  },
+  {
+    itemName: "Moderna COVID-19 Vaccine",
+    batchNumber: "MD67890",
+    category: "COVID-19",
+    quantity: 150,
+    expirationDate: "2024-07-15",
+  },
+  {
+    itemName: "Influenza Vaccine (Flu Shot)",
+    batchNumber: "FL54321",
+    category: "Influenza",
+    quantity: 300,
+    expirationDate: "2024-11-30",
+  },
+  {
+    itemName: "Hepatitis B Vaccine",
+    batchNumber: "HB98765",
+    category: "Hepatitis",
+    quantity: 100,
+    expirationDate: "2025-03-01",
+  },
+];
+
+const page = () => {
+  return (
+    <div className="w-full p-4">
+      <Tabs defaultValue="medication" className="w-full">
+        <TabsList>
+          <TabsTrigger value="medication">Medication</TabsTrigger>
+          <TabsTrigger value="vaccine">Vaccine</TabsTrigger>
+          <TabsTrigger value="syringe">syringe</TabsTrigger>
+          <TabsTrigger value="lab">Lab Reagents</TabsTrigger>
+        </TabsList>
+        <TabsContent value="medication">
+          <InventoryDataTable
+            columns={InventoryMedicationColumns}
+            data={inventoryMedication}
+          />
+        </TabsContent>
+        <TabsContent value="vaccine">
+          <InventoryDataTable
+            columns={InventoryMedicationColumns}
+            data={vaccines}
+          />
+        </TabsContent>
+        <TabsContent value="syringe">Insert some data</TabsContent>
+        <TabsContent value="lab">No data found</TabsContent>
+      </Tabs>
+    </div>
+  );
+};
+
+export default page;

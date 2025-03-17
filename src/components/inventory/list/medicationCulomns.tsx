@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { calculateStockLevel } from "@/utils/exportUtils";
 
-export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
+export const InventoryMedicationColumns: ColumnDef<InventoryMedication>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -48,9 +48,9 @@ export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "barcode",
-    header: "Barcode",
-    cell: ({ row }) => <div>{row.getValue("barcode")}</div>,
+    accessorKey: "batchNumber",
+    header: "Batch Number",
+    cell: ({ row }) => <div>{row.getValue("batchNumber")}</div>,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -120,9 +120,11 @@ export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(inventory.barcode)}
+              onClick={() =>
+                navigator.clipboard.writeText(inventory.batchNumber)
+              }
             >
-              Copy Barcode ID
+              Copy Batch Number ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View details</DropdownMenuItem>

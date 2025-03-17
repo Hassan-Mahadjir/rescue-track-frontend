@@ -2,7 +2,7 @@ import React from "react";
 import { InventoryDataTable } from "./list/InventoryDataTable";
 import { InventoryColumns } from "./list/InventoryColumns";
 
-export const inventoryData: Inventory[] = [
+export const inventoryData: InventoryManagement[] = [
   {
     itemName: "Paracetamol 500mg",
     barcode: "100000000001",
