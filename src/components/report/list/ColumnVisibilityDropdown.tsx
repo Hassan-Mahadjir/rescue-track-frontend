@@ -4,11 +4,11 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { EllipsisVertical } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { Table } from "@tanstack/react-table";
 import { TooltipButton } from "../TooltipButton";
 
@@ -22,51 +22,23 @@ export function ColumnVisibilityDropdown<TData>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <TooltipButton
-          tooltipText="Select Columns"
-          className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
-        >
-          <EllipsisVertical />
+        <TooltipButton tooltipText="Add New Report">
+          <SlidersHorizontal className="h-4 w-4" />
         </TooltipButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {table
-          .getAllLeafColumns()
-          .filter((column) => column.id !== "select" && column.id !== "actions")
+          .getAllColumns()
+          .filter((column) => column.getCanHide())
           .map((column) => (
-            <DropdownMenuItem
+            <DropdownMenuCheckboxItem
               key={column.id}
-              onSelect={(e) => e.preventDefault()}
+              className="capitalize"
+              checked={column.getIsVisible()}
+              onCheckedChange={(value) => column.toggleVisibility(!!value)}
             >
-              <div className="flex items-center space-x-2">
-                {/* Custom Checkbox */}
-                <label className="relative flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={column.getIsVisible()}
-                    onChange={(e) => column.toggleVisibility(e.target.checked)}
-                    className="appearance-none w-4 h-4 border border-gray-300 rounded-sm checked:bg-main checked:border-transparent focus:outline-none"
-                  />
-                  {/* Checkmark */}
-                  {column.getIsVisible() && (
-                    <svg
-                      className="absolute w-3 h-3 text-white pointer-events-none"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
-                </label>
-                <label htmlFor={column.id}>
-                  {column.columnDef.header as string}
-                </label>
-              </div>
-            </DropdownMenuItem>
+              {column.id}
+            </DropdownMenuCheckboxItem>
           ))}
       </DropdownMenuContent>
     </DropdownMenu>

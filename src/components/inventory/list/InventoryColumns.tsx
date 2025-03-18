@@ -122,7 +122,7 @@ export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(inventory.barcode)}
             >
-              Copy Barcode ID
+              Copy Barcode
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View details</DropdownMenuItem>

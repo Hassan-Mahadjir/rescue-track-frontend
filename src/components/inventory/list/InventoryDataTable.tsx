@@ -28,7 +28,10 @@ import {
   ArrowUp,
   ArrowUpDown,
   ChevronDown,
+  Plus,
   Search,
+  SlidersHorizontal,
+  Upload,
 } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -45,6 +48,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ColumnVisibilityDropdown } from "@/components/report/list/ColumnVisibilityDropdown";
+import { TooltipButton } from "@/components/report/TooltipButton";
+import { exportSelectedRows } from "@/utils/exportUtils";
 
 interface InventoryDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -89,42 +95,46 @@ export function InventoryDataTable<TData, TValue>({
     <div>
       <CardHeader>
         <TooltipProvider>
-          <div className="flex items-center py-4">
-            <Input
-              placeholder="Search by patient names or ID..."
-              value={table.getState().globalFilter ?? ""}
-              onChange={(event) => {
-                const value = event.target.value;
-                table.setGlobalFilter(value);
-              }}
-              className="max-w-sm bg-white border"
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="ml-auto">
-                  Columns <ChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => {
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex flex-col items-center space-y-4 md:flex-row justify-between pt-4">
+            <div className="flex flex-row items-center gap-4 w-full md:w-auto">
+              {/* Search Input */}
+              <div className="relative w-full md:w-96">
+                <Input
+                  placeholder="Search by item name..."
+                  value={table.getState().globalFilter ?? ""}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    table.setGlobalFilter(value);
+                  }}
+                  className="w-full bg-white border pl-10" // Ensures full width on all screens
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
+              </div>
+
+              {/* Dropdown Button */}
+              <ColumnVisibilityDropdown table={table} />
+            </div>
+
+            {/* Additional Content */}
+            <div className="space-x-4">
+              <TooltipButton
+                tooltipText="Add New Report"
+                className="rounded-full hover:bg-main hover:text-white"
+              >
+                <Plus />
+              </TooltipButton>
+              <TooltipButton
+                tooltipText="Export Data"
+                className="rounded-full hover:bg-main hover:text-white font-semibold"
+                onClick={() => {
+                  const selectedRows = table.getSelectedRowModel().rows;
+                  exportSelectedRows(selectedRows, "inventory.xlsx", "xlsx");
+                }}
+              >
+                <Upload />
+                Export
+              </TooltipButton>
+            </div>
           </div>
         </TooltipProvider>
       </CardHeader>
@@ -203,25 +213,43 @@ export function InventoryDataTable<TData, TValue>({
       {/* Pagination Section */}
       <div className="flex flex-col md:flex-row items-center justify-between mt-4 space-y-4 md:space-y-0">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Rows per page</p>
-          <Select
-            value={table.getState().pagination.pageSize.toString()}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value));
-            }}
-          >
-            <SelectTrigger className="w-[100px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
-            </SelectTrigger>
-            <SelectContent>
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={pageSize.toString()}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center space-x-2">
+            <p className="text-sm font-medium">Rows per page</p>
+            <Select
+              value={table.getState().pagination.pageSize.toString()}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value));
+              }}
+            >
+              <SelectTrigger className="w-[100px]">
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={pageSize.toString()}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <TooltipProvider>
+            <TooltipButton
+              tooltipText="Export Data"
+              className="rounded-full hover:bg-main hover:text-white font-semibold hidden md:inline-flex"
+              onClick={() => {
+                const selectedRows = table.getSelectedRowModel().rows;
+                exportSelectedRows(selectedRows, "inventory.xlsx", "xlsx");
+              }}
+            >
+              <Upload />
+              Export
+            </TooltipButton>
+          </TooltipProvider>
         </div>
+
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
