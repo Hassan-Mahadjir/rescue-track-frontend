@@ -6,10 +6,9 @@ import {
 import { Button, ButtonProps } from "@/components/ui/button";
 import { ReactNode } from "react";
 
-// Define the props for the TooltipButton component
 interface TooltipButtonProps extends ButtonProps {
-  tooltipText: string; // The text to display in the tooltip
-  children: ReactNode; // The content inside the button (e.g., icons, text)
+  tooltipText: string;
+  children: ReactNode;
 }
 
 export const TooltipButton = ({
@@ -20,7 +19,13 @@ export const TooltipButton = ({
   return (
     <Tooltip delayDuration={0}>
       <TooltipTrigger asChild>
-        <Button {...props}>{children}</Button>
+        <Button
+          className="hover:bg-main hover:text-white"
+          variant="outline"
+          {...props}
+        >
+          {children}
+        </Button>
       </TooltipTrigger>
       <TooltipContent className="bg-white text-black">
         <p>{tooltipText}</p>

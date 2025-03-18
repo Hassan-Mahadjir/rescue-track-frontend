@@ -1,8 +1,8 @@
 import React from "react";
-import { CardContent, CardHeader } from "../ui/card";
 import { DataTable } from "./list/DataTable";
 import { columns } from "./list/Columns";
 
+// Hydration failed because the server rendered HTML do to the date type
 const data: Person[] = [
   {
     id: 1,
