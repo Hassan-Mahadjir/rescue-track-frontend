@@ -66,12 +66,8 @@ export const columns: ColumnDef<Person>[] = [
     header: "Incident Date",
     cell: ({ row }) => {
       const date = new Date(row.getValue("incidentDate"));
-      const formattedDate = date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
-      return <div>{formattedDate}</div>;
+      const incidentDate = date.toLocaleDateString();
+      return <div>{incidentDate}</div>;
     },
     enableSorting: true,
     enableColumnFilter: true,

@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { calculateStockLevel } from "@/utils/inventoryUtils";
+import format from "date-fns/format";
 
 export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
   {
@@ -72,7 +73,7 @@ export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
     header: "Expiration Date",
     cell: ({ row }) => {
       const date = new Date(row.getValue("expirationDate"));
-      const formattedDate = date.toLocaleDateString();
+      const formattedDate = format(date, "dd MMM yyyy");
       return <div>{formattedDate}</div>;
     },
   },
