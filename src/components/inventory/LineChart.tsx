@@ -1,3 +1,4 @@
+import { calculateStockSummary } from "@/utils/inventoryUtils";
 import {
   Bar,
   BarChart,
@@ -9,9 +10,31 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const data = [
-  { name: "Total Materials", Full: 400, Mid: 300, Low: 200, Reorder: 100 },
+const inventoryMedication: InventoryMedication[] = [
+  {
+    itemName: "Paracetamol 500mg",
+    batchNumber: "B12345",
+    category: "Pain Relief",
+    quantity: 100,
+    expirationDate: "2025-12-31",
+  },
+  {
+    itemName: "Amoxicillin 250mg",
+    batchNumber: "A67890",
+    category: "Antibiotics",
+    quantity: 50,
+    expirationDate: "2025-06-30",
+  },
+  {
+    itemName: "Ibuprofen 400mg",
+    batchNumber: "I54321",
+    category: "Pain Relief",
+    quantity: 75,
+    expirationDate: "2025-09-15",
+  },
 ];
+
+const data = calculateStockSummary(inventoryMedication);
 
 const LineChart = () => {
   return (

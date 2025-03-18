@@ -9,7 +9,7 @@ const inventoryMedication: InventoryMedication[] = [
     batchNumber: "B12345",
     category: "Pain Relief",
     quantity: 100,
-    expirationDate: "2024-12-31",
+    expirationDate: "2025-12-31",
   },
   {
     itemName: "Amoxicillin 250mg",
@@ -23,7 +23,7 @@ const inventoryMedication: InventoryMedication[] = [
     batchNumber: "I54321",
     category: "Pain Relief",
     quantity: 75,
-    expirationDate: "2024-09-15",
+    expirationDate: "2025-09-15",
   },
 ];
 
@@ -33,21 +33,21 @@ const vaccines: InventoryMedication[] = [
     batchNumber: "PZ12345",
     category: "COVID-19",
     quantity: 200,
-    expirationDate: "2024-05-31",
+    expirationDate: "2025-05-31",
   },
   {
     itemName: "Moderna COVID-19 Vaccine",
     batchNumber: "MD67890",
     category: "COVID-19",
     quantity: 150,
-    expirationDate: "2024-07-15",
+    expirationDate: "2025-07-15",
   },
   {
     itemName: "Influenza Vaccine (Flu Shot)",
     batchNumber: "FL54321",
     category: "Influenza",
     quantity: 300,
-    expirationDate: "2024-11-30",
+    expirationDate: "2025-11-30",
   },
   {
     itemName: "Hepatitis B Vaccine",

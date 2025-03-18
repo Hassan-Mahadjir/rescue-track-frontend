@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { calculateStockLevel } from "@/utils/exportUtils";
+import { calculateStockLevel } from "@/utils/inventoryUtils";
 
 export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
   {
