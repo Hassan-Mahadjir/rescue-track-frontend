@@ -1,0 +1,110 @@
+"use client";
+
+import React from "react";
+import Image from "next/image";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import PersonalInfoDialog from "./PersonalInfoDialog";
+
+// Define the type for patient data
+interface PatientInfo {
+  fullName: string;
+  age: number;
+  phone: string;
+  email: string;
+  profileImage?: string;
+  identifyNumber: string;
+  dateOfBirth: string;
+  nationality: string;
+  address: string;
+  sex: string;
+  height: number;
+  weight: number;
+  bloodType: string;
+}
+
+interface PatientPersonalInfoProps {
+  patient: PatientInfo;
+}
+
+const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
+  patient,
+}) => {
+  return (
+    <div className="bg-gray-100 shadow-md rounded-lg p-4 flex flex-col md:flex-row justify-center md:items-start gap-6">
+      {/* Patient Info Section */}
+      <div className="flex flex-col md:items-start gap-4 md:pr-4 w-full md:w-auto">
+        <h2 className="text-lg font-bold text-gray-800">PATIENT INFORMATION</h2>
+        <div className="flex flex-row">
+          <Image
+            src={patient.profileImage || "/report/sample.jpg"}
+            width={80}
+            height={80}
+            alt="Profile Picture"
+            className="w-20 h-20 rounded-md object-cover"
+          />
+          <div className="flex flex-col ml-4">
+            <h2 className="text-lg text-gray-800">{patient.fullName}</h2>
+            <p className="text-gray-600 text-sm">
+              <strong>Age:</strong> {patient.age}
+            </p>
+            <p className="text-gray-600 text-sm">
+              <strong>Phone:</strong> {patient.phone}
+            </p>
+            <p className="text-gray-600 text-sm">
+              <strong>Email:</strong> {patient.email}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Patient Details Section */}
+      <div className="grid grid-cols-4 grid-rows-3 gap-4 px-4 text-gray-700 w-full xmd:flex-1 md:border-l">
+        {[
+          { label: "Identify Number", value: patient.identifyNumber },
+          { label: "Date of Birth", value: patient.dateOfBirth },
+          { label: "Nationality", value: patient.nationality },
+          { label: "Address", value: patient.address },
+          { label: "Sex", value: patient.sex },
+          { label: "Height", value: `${patient.height} CM` },
+          { label: "Weight", value: `${patient.weight} KG` },
+          { label: "Blood Type", value: patient.bloodType },
+        ].map((item, index) => (
+          <div key={index} className={index >= 4 ? "row-start-2" : ""}>
+            <p className="text-xs text-gray-500">{item.label}</p>
+            <p className="font-semibold text-xs sm:text-base">{item.value}</p>
+          </div>
+        ))}
+
+        {/* Update Button */}
+        <div className="row-start-2 col-start-2 xmd:col-start-4 row-start-3">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="bg-main font-semibold">Update Info</Button>
+            </DialogTrigger>
+
+            <DialogContent className="sm:max-w-[700px]">
+              <DialogHeader>
+                <DialogTitle>Modify Patient Information</DialogTitle>
+                <DialogDescription>
+                  Update and manage patient details, Ensure that all records are
+                  accurate and up-to-date.
+                </DialogDescription>
+              </DialogHeader>
+              <PersonalInfoDialog />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PatientPersonalInfo;
