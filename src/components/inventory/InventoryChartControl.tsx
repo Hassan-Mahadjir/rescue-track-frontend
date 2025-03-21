@@ -1,6 +1,6 @@
 import React from "react";
-import { EquipmentStatusChart } from "./DonutChart";
-import InventoryChart from "./LineChart";
+import DonutChart from "./DonutChart";
+import LineChart from "./LineChart";
 
 const data = {
   id: "1",
@@ -39,13 +39,13 @@ const InventoryChartControl = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-4">
       <div>
-        <InventoryChart data={data} colors={colors} title="Total Materials" />
+        <LineChart data={data} colors={colors} title="Total Materials" />
       </div>
       <div>
-        <InventoryChart data={data1} colors={colors} title="Total Inventory" />
+        <LineChart data={data1} colors={colors} title="Total Inventory" />
       </div>
       <div>
-        <EquipmentStatusChart data={equipmentData} />
+        <DonutChart data={equipmentData} />
       </div>
     </div>
   );

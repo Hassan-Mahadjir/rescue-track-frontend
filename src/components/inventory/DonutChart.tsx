@@ -1,7 +1,6 @@
 "use client";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
-// Define the data structure for equipment status
 interface EquipmentStatus {
   active: number;
   idle: number;
@@ -13,21 +12,35 @@ interface EquipmentStatusChartProps {
   data: EquipmentStatus;
   title?: string;
   isLive?: boolean;
+  colors?: {
+    active?: string;
+    idle?: string;
+    underRepair?: string;
+  };
 }
 
-export function EquipmentStatusChart({
+const DonutChart = ({
   data,
   title = "Active Equipment",
   isLive = true,
-}: EquipmentStatusChartProps) {
-  // Calculate percentages
-  const activePercentage = Math.round((data.active / data.total) * 100);
+  colors = {
+    active: "#4ade80",
+    idle: "#facc15",
+    underRepair: "#f97316",
+  },
+}: EquipmentStatusChartProps) => {
+  // Handle division by zero
+  const activePercentage =
+    data.total > 0 ? Math.round((data.active / data.total) * 100) : 0;
 
-  // Prepare data for the donut chart
   const chartData = [
-    { name: "Active", value: data.active, color: "#4ade80" },
-    { name: "Idle", value: data.idle, color: "#facc15" },
-    { name: "Under Repair", value: data.underRepair, color: "#f97316" },
+    { name: "Active", value: data.active, color: colors.active },
+    { name: "Idle", value: data.idle, color: colors.idle },
+    {
+      name: "Under Repair",
+      value: data.underRepair,
+      color: colors.underRepair,
+    },
   ];
 
   return (
@@ -51,6 +64,7 @@ export function EquipmentStatusChart({
                 dataKey="value"
                 startAngle={90}
                 endAngle={-270}
+                aria-label="Equipment status chart"
               >
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -92,4 +106,6 @@ export function EquipmentStatusChart({
       </div>
     </div>
   );
-}
+};
+
+export default DonutChart;

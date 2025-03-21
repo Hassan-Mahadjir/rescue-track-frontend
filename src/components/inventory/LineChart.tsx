@@ -26,7 +26,7 @@ interface Colors {
   toProduce: string;
 }
 
-const InventoryChart = ({
+const LineChart = ({
   data,
   colors,
   title,
@@ -96,4 +96,4 @@ const InventoryChart = ({
   );
 };
 
-export default InventoryChart;
+export default LineChart;
