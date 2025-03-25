@@ -45,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -118,12 +119,14 @@ export function DataTable<TData, TValue>({
 
             {/* Action Buttons (Add, Export, etc.) */}
             <div className="w-full md:w-auto flex justify-end items-center space-x-2">
-              <TooltipButton
-                tooltipText="Add New Report"
-                className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
-              >
-                <Plus />
-              </TooltipButton>
+              <Link href="pcr/create">
+                <TooltipButton
+                  tooltipText="Add New Report"
+                  className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
+                >
+                  <Plus />
+                </TooltipButton>
+              </Link>
               <ColumnVisibilityDropdown table={table} />
               <TooltipButton
                 tooltipText="Export Data"

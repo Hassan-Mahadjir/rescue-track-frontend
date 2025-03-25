@@ -1,0 +1,37 @@
+"use client";
+import Carousel from "@/components/Cards-Carousel";
+import { useRouter } from "next/navigation";
+import React from "react";
+
+const CreateReport = () => {
+  const router = useRouter();
+  const slides = [
+    {
+      title: "Registered patient",
+      imageSrc: "/report/regulatory.png",
+      text: "create report for registered patient in the system",
+      buttons: [
+        {
+          label: "Existing patient",
+          onClick: () => router.push("create/registered"),
+        },
+      ],
+    },
+    {
+      title: "Unregistered patient",
+      imageSrc: "/report/regulatory.png",
+      text: "create new patient profile, and report",
+      buttons: [
+        { label: "New patient", onClick: () => console.log("Create new") },
+      ],
+    },
+  ];
+  return (
+    <div className="flex flex-col items-center text-center justify-center mt-5">
+      {/* Slider */}
+      <Carousel slides={slides} />
+    </div>
+  );
+};
+
+export default CreateReport;

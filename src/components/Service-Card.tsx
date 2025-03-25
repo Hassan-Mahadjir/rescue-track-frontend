@@ -6,6 +6,7 @@ interface ServiceCardProps {
   title: string;
   imageSrc?: string;
   icon?: React.ReactNode;
+  text?: string;
   buttons: { label: string; onClick: () => void }[];
 }
 
@@ -13,6 +14,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   title,
   imageSrc,
   icon,
+  text,
   buttons,
 }) => {
   return (
@@ -26,6 +28,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           <Image src={imageSrc} alt="Service icon" width={100} height={100} />
         )
       )}
+      <p className="text-white text-xs">{text}</p>
 
       {buttons.map((button, index) => (
         <Button
