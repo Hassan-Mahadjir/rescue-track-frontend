@@ -35,8 +35,12 @@ import {
 } from "@/components/ui/command";
 import { useNewUserFormContext } from "@/hooks/userFormContext";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import FormInput from "@/components/FormInput";
 
 const formSchema = z.object({
+  firstName: z.string().nonempty("Please enter your first name"),
+  lastName: z.string().nonempty("Please enter your last name"),
   phone: z
     .string()
     .refine(isValidPhoneNumber, { message: "Invalid phone number." }),
@@ -62,6 +66,8 @@ const StepTwoForm = () => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      firstName: formContext.propertyForm?.firstName,
+      lastName: formContext.propertyForm?.lastName,
       phone: formContext.propertyForm?.phone,
       role: formContext.propertyForm?.role,
     },
@@ -78,6 +84,22 @@ const StepTwoForm = () => {
       <div className="flex-col w-3/4 justify-self-center">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormInput
+              form={form}
+              name="firstName"
+              label="What's your first Name?"
+              placeholder="Enter your first Name."
+              className="mb-4"
+            />
+
+            <FormInput
+              form={form}
+              name="lastName"
+              label="What's your last Name?"
+              placeholder="Enter your last Name."
+              className="mb-4"
+            />
+
             <FormField
               control={form.control}
               name="phone"
@@ -169,16 +191,16 @@ const StepTwoForm = () => {
         </Form>
 
         {/* Divider */}
-        <div className="relative flex py-2 items-center w-full">
+        {/* <div className="relative flex py-2 items-center w-full">
           <div className="flex-grow border-t border-gray-400"></div>
           <span className="flex-shrink mx-4 text-gray-400">
             {t("continueWith")}
           </span>
           <div className="flex-grow border-t border-gray-400"></div>
-        </div>
+        </div> */}
 
         {/* other accounts */}
-        <div className="flex flex-col items-center justify-center gap-4 w-full md:flex-row">
+        {/* <div className="flex flex-col items-center justify-center gap-4 w-full md:flex-row">
           <button className="flex items-center justify-center gap-x-2 w-full xs:w-1/2 px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150">
             <Image
               src="/auth/microsoft.png"
@@ -204,7 +226,7 @@ const StepTwoForm = () => {
               {t("loginWithGoogle")}
             </span>
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ const hiddenPaths = [
   "/signup/step-one",
   "/signup/step-two",
   "/signup/step-three",
+  "/signup/validation",
 ];
 
 export default function NavBarWrapper() {

@@ -77,16 +77,16 @@ const StepThreeForm = () => {
         </Form>
 
         {/* Divider */}
-        <div className="relative flex py-2 items-center w-full">
+        {/* <div className="relative flex py-2 items-center w-full">
           <div className="flex-grow border-t border-gray-400"></div>
           <span className="flex-shrink mx-4 text-gray-400">
             {t("continueWith")}
           </span>
           <div className="flex-grow border-t border-gray-400"></div>
-        </div>
+        </div> */}
 
         {/* other accounts */}
-        <div className="flex flex-col items-center justify-center gap-4 w-full md:flex-row">
+        {/* <div className="flex flex-col items-center justify-center gap-4 w-full md:flex-row">
           <button className="flex items-center justify-center gap-x-2 w-full xs:w-1/2 px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150">
             <Image
               src="/auth/microsoft.png"
@@ -112,7 +112,7 @@ const StepThreeForm = () => {
               {t("loginWithGoogle")}
             </span>
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

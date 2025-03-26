@@ -6,6 +6,8 @@ export type User = {
   role: string;
   password: string;
   confirm: string;
+  firstName: string;
+  lastName: string;
 };
 
 export interface UserContextProps {
