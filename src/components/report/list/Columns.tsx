@@ -117,7 +117,7 @@ export const columns: ColumnDef<Person>[] = [
       const id = row.original.id;
       return (
         <Link
-          href={`report/pcr/${id}`}
+          href={`./pcr/${id}`}
           onClick={() => {
             console.log("Action clicked for:", row.original);
           }}

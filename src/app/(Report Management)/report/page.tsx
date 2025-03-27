@@ -6,11 +6,14 @@ export default function SwiperComponent() {
   const router = useRouter();
   const slides = [
     {
-      title: "Medical History",
+      title: "Run Report",
       imageSrc: "/report/health-check.png",
       buttons: [
-        { label: "Create new", onClick: () => console.log("Create new") },
-        { label: "View all", onClick: () => console.log("View All") },
+        {
+          label: "Create new",
+          onClick: () => router.push("/report/run-report/create"),
+        },
+        { label: "View all", onClick: () => router.push("/report/run-report") },
       ],
     },
 
@@ -18,13 +21,16 @@ export default function SwiperComponent() {
       title: "Patient Care Report",
       imageSrc: "/report/patient.png",
       buttons: [
-        { label: "Create new", onClick: () => console.log("Create new") },
+        {
+          label: "Create new",
+          onClick: () => router.push("/report/pcr/create"),
+        },
         { label: "View all", onClick: () => router.push("/report/pcr") },
       ],
     },
 
     {
-      title: "Lab Reports",
+      title: "Compliance and Performance",
       imageSrc: "/report/regulatory.png",
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },

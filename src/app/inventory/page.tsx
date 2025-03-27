@@ -8,7 +8,7 @@ const page = () => {
   const slides = [
     {
       title: "Medication & Consumables",
-      imageSrc: "/report/health-check.png",
+      imageSrc: "/inventory/syringe.png",
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
         {
@@ -20,7 +20,7 @@ const page = () => {
 
     {
       title: "Order Management",
-      imageSrc: "/report/patient.png",
+      imageSrc: "/inventory/shopping-list.png",
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
         { label: "View all Report", onClick: () => console.log("View all") },
@@ -29,7 +29,7 @@ const page = () => {
 
     {
       title: "Inventory Management",
-      imageSrc: "/report/regulatory.png",
+      imageSrc: "/inventory/inventory-management.png",
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
         {
@@ -40,7 +40,7 @@ const page = () => {
     },
     {
       title: "Supplier & Vendor Management",
-      imageSrc: "/report/regulatory.png",
+      imageSrc: "/inventory/supplier.png",
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
         {
@@ -51,7 +51,7 @@ const page = () => {
     },
     {
       title: "Equipment & Asset Management",
-      imageSrc: "/report/regulatory.png",
+      imageSrc: "/inventory/medical-devices.png",
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
         {

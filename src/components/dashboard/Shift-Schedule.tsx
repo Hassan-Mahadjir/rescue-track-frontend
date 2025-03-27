@@ -24,7 +24,7 @@ async function getData(): Promise<Shift[]> {
   return [
     {
       id: 1,
-      date: "04-03-2025",
+      date: "29-03-2025",
       start: "7:00",
       end: "16:00",
       driver: "Hassan Mahadjir",
@@ -32,7 +32,7 @@ async function getData(): Promise<Shift[]> {
     },
     {
       id: 2,
-      date: "02-03-2025",
+      date: "27-03-2025",
       start: "9:00",
       end: "17:00",
       driver: "Belimer Ayden",
@@ -40,7 +40,7 @@ async function getData(): Promise<Shift[]> {
     },
     {
       id: 3,
-      date: "02-03-2025",
+      date: "27-03-2025",
       start: "10:00",
       end: "18:00",
       driver: "Ali Mohammed",

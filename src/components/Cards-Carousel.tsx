@@ -11,7 +11,8 @@ interface CarouselProps {
 }
 
 const Carousel: React.FC<CarouselProps> = ({ slides }) => {
-  const startIndex = slides.length === 1 ? 0 : 1;
+  const startIndex =
+    slides.length === 1 ? 0 : Math.floor((slides.length - 1) / 2);
 
   const [currentPage, setCurrentPage] = useState<number>(startIndex);
 
