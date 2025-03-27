@@ -1,23 +1,22 @@
-import { PCRFormContextProider } from "@/components/PCRFormContextProvider";
+"use client";
+import MedicationInforForm from "@/components/report/MedicationInforForm";
 import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
-import CrewTab from "@/components/report/pcr/CrewTab";
-import IncidentTab from "@/components/report/pcr/IncidentTab";
-import MedicationTab from "@/components/report/pcr/MedicationTab";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Trash2 } from "lucide-react";
-import React from "react";
+import { Search } from "lucide-react";
+import React, { useState } from "react";
 
 const Registered = () => {
+  const [step, setStep] = useState(1);
+
+  const stepToTabValue: Record<number, string> = {
+    1: "patient_Info",
+    2: "medication_info",
+    3: "crew_Info",
+    4: "medical_history",
+  };
+
   const patientData = [
     {
       id: 1,
@@ -53,11 +52,18 @@ const Registered = () => {
     },
   ];
 
+  const nextStep = () => {
+    if (step < 4) setStep(step + 1);
+  };
+  const prevStep = () => {
+    if (step > 1) setStep(step - 1);
+  };
+
   return (
     <div className="mx-5 my-2">
       <div className="space-y-4">
         <div className="w-full max-w-3xl mx-auto px-4 py-3">
-          <div className="flex flex-col md:flex-row items-start md:items-center w-full space-y-3 md:space-y-0 md:space-x-4  shadow-sm p-3">
+          <div className="flex flex-col md:flex-row items-center justify-center space-y-3 md:space-y-0 md:space-x-4">
             <div className="flex w-full space-x-2">
               <div className="relative flex-1">
                 <Input
@@ -65,124 +71,93 @@ const Registered = () => {
                   className="pl-3 pr-3 py-2 h-10 w-full"
                 />
               </div>
-              <Button className="shrink-0 h-10">
+              <Button className="shrink-0 h-10 bg-main">
                 <Search className="h-4 w-4 mr-2" />
                 Search
               </Button>
             </div>
+            {step}
           </div>
         </div>
-        <Tabs defaultValue="patient_Info" className="space-y-4">
+        <Tabs value={stepToTabValue[step]} className="space-y-4">
           <TabsList className="grid w-full grid-cols-4 border-b rounded-none bg-transparent p-0">
             <TabsTrigger
               value="patient_Info"
               className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+              onClick={() => setStep(1)}
             >
               Patient Information
             </TabsTrigger>
             <TabsTrigger
               value="medication_info"
               className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+              onClick={() => setStep(2)}
             >
               Medication information
             </TabsTrigger>
             <TabsTrigger
               value="crew_Info"
               className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+              onClick={() => setStep(3)}
             >
               Crew Information
             </TabsTrigger>
             <TabsTrigger
               value="medical_history"
               className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+              onClick={() => setStep(4)}
             >
               Medical History
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="patient_Info">
-            {/*Patient personal information */}
-            {patientData.map((pateint) => (
-              <div className="mb-4" key={pateint.id}>
-                <PatientPersonalInfo patient={pateint} />{" "}
-              </div>
-            ))}
-          </TabsContent>
-          <TabsContent value="medication_info">
-            <div className="space-y-4">
-              <h2 className="text-lg font-medium mb-3">
-                Treatment provided during transport
-              </h2>
-              <Card>
-                <div className="space-y-2">
-                  <div>
-                    <div>
-                      <div>
-                        #
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select medication" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Paracetamol 500mg">
-                              Paracetamol 500mg
-                            </SelectItem>
-                            <SelectItem value="Ibuprofen 400mg">
-                              Ibuprofen 400mg
-                            </SelectItem>
-                            <SelectItem value="Morphine 10mg">
-                              Morphine 10mg
-                            </SelectItem>
-                            <SelectItem value="Aspirin 300mg">
-                              Aspirin 300mg
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <div>
-                      <div>
-                        #
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Dosage" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="500 mg">500 mg</SelectItem>
-                            <SelectItem value="1000 mg">1000 mg</SelectItem>
-                            <SelectItem value="250 mg">250 mg</SelectItem>
-                            <SelectItem value="100 mg">100 mg</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Remove medication</span>
-                    </Button>
-                  </div>
+          {step == 1 && (
+            <TabsContent value="patient_Info">
+              {patientData.map((pateint) => (
+                <div className="mb-4" key={pateint.id}>
+                  <PatientPersonalInfo patient={pateint} />
                 </div>
-              </Card>
-            </div>
-          </TabsContent>
-          <TabsContent value="crew_Info">
-            <div className="space-y-4">Crew Information</div>
-          </TabsContent>
-          <TabsContent value="medical_history">
-            <div className="space-y-4">Medical History</div>
-          </TabsContent>
+              ))}
+            </TabsContent>
+          )}
+
+          {step == 2 && (
+            <TabsContent value="medication_info">
+              <MedicationInforForm />
+            </TabsContent>
+          )}
+          {step == 3 && (
+            <TabsContent value="crew_Info">
+              <div className="space-y-4">Crew Information</div>
+            </TabsContent>
+          )}
+          {step == 4 && (
+            <TabsContent value="medical_history">
+              <div className="space-y-4">Medical History</div>
+            </TabsContent>
+          )}
         </Tabs>
         <div className="flex items-center justify-center space-x-4">
-          <Button variant="outline" size="lg" disabled={true}>
+          <Button
+            variant="outline"
+            size="lg"
+            disabled={step === 1}
+            onClick={prevStep}
+          >
             prev
           </Button>
-          <Button size="lg" className="bg-main">
-            next
-          </Button>
+          {step === 4 ? (
+            <Button
+              size="lg"
+              className="bg-main"
+              onClick={() => console.log("ok")}
+            >
+              Submit
+            </Button>
+          ) : (
+            <Button size="lg" className="bg-main" onClick={nextStep}>
+              next
+            </Button>
+          )}
         </div>
       </div>
     </div>
