@@ -65,25 +65,25 @@ const page = () => {
         <TabsList className="grid w-full grid-cols-4 border-b rounded-none bg-transparent p-0">
           <TabsTrigger
             value="medication"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none py-2.5 font-medium hover:text-gray-950"
+            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
           >
             Medication
           </TabsTrigger>
           <TabsTrigger
             value="vaccine"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none py-2.5 font-medium hover:text-gray-950"
+            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
           >
             Vaccine
           </TabsTrigger>
           <TabsTrigger
             value="syringe"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none py-2.5 font-medium hover:text-gray-950"
+            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
           >
             Syringe
           </TabsTrigger>
           <TabsTrigger
             value="lab"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none py-2.5 font-medium hover:text-gray-950"
+            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
           >
             Lab Reagents
           </TabsTrigger>

@@ -14,49 +14,98 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2 } from "lucide-react";
-import Image from "next/image";
+import { Search, Trash2 } from "lucide-react";
 import React from "react";
 
 const Registered = () => {
-  const patientData = {
-    fullName: "Mahamat Hassan Mahadjir Hassan",
-    age: 24,
-    phone: "+90 533 867 28 35",
-    email: "hm.mahadjir@gmail.com",
-    profileImage: "/report/sample.jpg",
-    identifyNumber: "20910394",
-    dateOfBirth: "17-05-2000",
-    nationality: "Chad",
-    address: "Northern Cyprus",
-    sex: "Male",
-    height: 189,
-    weight: 74,
-    bloodType: "- O",
-  };
+  const patientData = [
+    {
+      id: 1,
+      fullName: "Mahamat Hassan Mahadjir Hassan",
+      age: 24,
+      phone: "+90 533 867 28 35",
+      email: "hm.mahadjir@gmail.com",
+      profileImage: "/report/sample.jpg",
+      identifyNumber: "20910394",
+      dateOfBirth: "17-05-2000",
+      nationality: "Chad",
+      address: "Northern Cyprus",
+      sex: "Male",
+      height: 189,
+      weight: 74,
+      bloodType: "- O",
+    },
+    {
+      id: 2,
+      fullName: "Mahamat Hassan",
+      age: 25,
+      phone: "+90 533 867 28 35",
+      email: "hm.mahadjir@gmail.com",
+      profileImage: "/report/sample.jpg",
+      identifyNumber: "20910394",
+      dateOfBirth: "17-05-2000",
+      nationality: "Chad",
+      address: "Northern Cyprus",
+      sex: "Male",
+      height: 189,
+      weight: 74,
+      bloodType: "- O",
+    },
+  ];
 
   return (
     <div className="mx-5 my-2">
       <div className="space-y-4">
-        <div>
-          <Input />
-          <Button>Search</Button>
+        <div className="w-full max-w-3xl mx-auto px-4 py-3">
+          <div className="flex flex-col md:flex-row items-start md:items-center w-full space-y-3 md:space-y-0 md:space-x-4  shadow-sm p-3">
+            <div className="flex w-full space-x-2">
+              <div className="relative flex-1">
+                <Input
+                  placeholder="Search by patient ID"
+                  className="pl-3 pr-3 py-2 h-10 w-full"
+                />
+              </div>
+              <Button className="shrink-0 h-10">
+                <Search className="h-4 w-4 mr-2" />
+                Search
+              </Button>
+            </div>
+          </div>
         </div>
-        <Tabs defaultValue="patient_Info">
-          <TabsList className="mb-4 flex space-x-4 justify-start">
-            <TabsTrigger value="patient_Info">Patient Information</TabsTrigger>
-            <TabsTrigger value="medication_info">
+        <Tabs defaultValue="patient_Info" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-4 border-b rounded-none bg-transparent p-0">
+            <TabsTrigger
+              value="patient_Info"
+              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+            >
+              Patient Information
+            </TabsTrigger>
+            <TabsTrigger
+              value="medication_info"
+              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+            >
               Medication information
             </TabsTrigger>
-            <TabsTrigger value="crew_Info">Crew Information</TabsTrigger>
-            <TabsTrigger value="medical_history">Medical History</TabsTrigger>
+            <TabsTrigger
+              value="crew_Info"
+              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+            >
+              Crew Information
+            </TabsTrigger>
+            <TabsTrigger
+              value="medical_history"
+              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+            >
+              Medical History
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="patient_Info">
-            <div className="space-y-4">
-              {/*Patient personal information */}
-              <PatientPersonalInfo patient={patientData} />
-              <PatientPersonalInfo patient={patientData} />
-            </div>
+            {/*Patient personal information */}
+            {patientData.map((pateint) => (
+              <div className="mb-4" key={pateint.id}>
+                <PatientPersonalInfo patient={pateint} />{" "}
+              </div>
+            ))}
           </TabsContent>
           <TabsContent value="medication_info">
             <div className="space-y-4">
