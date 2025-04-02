@@ -15,7 +15,7 @@ interface Medication {
   id: number;
 }
 
-const MedicationCard = () => {
+const PcrReportStep2 = () => {
   const [medications, setMedications] = useState<Medication[]>([{ id: 1 }]);
 
   const addMedication = () => {
@@ -90,4 +90,4 @@ const MedicationCard = () => {
   );
 };
 
-export default MedicationCard;
+export default PcrReportStep2;
