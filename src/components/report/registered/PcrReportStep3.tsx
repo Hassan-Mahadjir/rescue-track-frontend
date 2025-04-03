@@ -11,8 +11,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { UseFormReturn } from "react-hook-form";
+import { PcrReportFormValues } from "@/types/formSchema";
 
-const PcrReportStep3 = () => {
+interface PcrReportStep3Props {
+  form: UseFormReturn<PcrReportFormValues>;
+}
+
+const PcrReportStep3 = ({ form }: PcrReportStep3Props) => {
   return (
     <Tabs defaultValue="crew_Info">
       <TabsContent value="crew_Info" className="space-y-6">
