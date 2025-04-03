@@ -111,19 +111,54 @@ const Registered = () => {
 
   return (
     <div className="mx-5 my-2">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="space-y-4">
+        <div className="w-full max-w-3xl mx-auto px-4 py-3">
+          <div className="flex flex-col md:flex-row items-center justify-center space-y-3 md:space-y-0 md:space-x-4">
+            <div className="flex w-full space-x-2">
+              <div className="relative flex-1">
+                <Input
+                  placeholder="Search by patient ID"
+                  className="pl-3 pr-3 py-2 h-10 w-full"
+                />
+              </div>
+              <Button className="shrink-0 h-10 bg-main">
+                <Search className="h-4 w-4 mr-2" />
+                Search
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
         <Tabs value={stepToTabValue[step]} className="space-y-4">
           <TabsList className="grid w-full grid-cols-4 border-b rounded-none bg-transparent p-0">
-            <TabsTrigger value="patient_Info" onClick={() => setStep(1)}>
+            <TabsTrigger
+              value="patient_Info"
+              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+              onClick={() => setStep(1)}
+            >
               Patient Information
             </TabsTrigger>
-            <TabsTrigger value="medication_info" onClick={() => setStep(2)}>
+            <TabsTrigger
+              value="medication_info"
+              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+              onClick={() => setStep(2)}
+            >
               Medication information
             </TabsTrigger>
-            <TabsTrigger value="crew_Info" onClick={() => setStep(3)}>
+            <TabsTrigger
+              value="crew_Info"
+              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+              onClick={() => setStep(3)}
+            >
               Crew Information
             </TabsTrigger>
-            <TabsTrigger value="medical_history" onClick={() => setStep(4)}>
+            <TabsTrigger
+              value="medical_history"
+              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
+              onClick={() => setStep(4)}
+            >
               Medical History
             </TabsTrigger>
           </TabsList>
@@ -154,7 +189,7 @@ const Registered = () => {
             </Button>
           )}
         </div>
-      </form>
+      </div>
     </div>
   );
 };
