@@ -11,6 +11,8 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/FormInput";
 import { useLogin } from "@/services/api/auth";
+import { Ellipsis } from "lucide-react";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -69,8 +71,13 @@ const Login = () => {
               type="password"
               icon={<TbLockPassword />}
             />
-            <Button type="submit" className="bg-main mt-4 hover:bg-second-main">
-              {t("login")}
+
+            <Button
+              type="submit"
+              className="bg-main mt-4 hover:bg-second-main"
+              disabled={isPending}
+            >
+              {isPending ? <LoadingIndicator /> : t("login")}
             </Button>
           </form>
         </Form>
