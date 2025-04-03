@@ -8,7 +8,14 @@ import type {
 import type { PcrReportFormValues } from "@/types/formSchema";
 import clsx from "clsx";
 import PatientPersonalInfo from "../PatientPersonalInfo";
-import { FormField, FormItem, FormControl } from "@/components/ui/form";
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 type PatientData = {
   id: number;
@@ -41,6 +48,9 @@ const PcrReportStep1 = ({
   form,
 }: PcrReportStep1Props) => {
   const selectedPatientId = watch("PatientId");
+  const {
+    formState: { errors },
+  } = form;
 
   const handleSelectPatient = (patientId: number) => {
     setValue("PatientId", patientId, { shouldValidate: true });
@@ -48,6 +58,15 @@ const PcrReportStep1 = ({
 
   return (
     <div className="space-y-3">
+      {errors.PatientId && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {errors.PatientId.message as string}
+          </AlertDescription>
+        </Alert>
+      )}
+
       <FormField
         control={form.control}
         name="PatientId"
@@ -71,6 +90,7 @@ const PcrReportStep1 = ({
                 ))}
               </div>
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />

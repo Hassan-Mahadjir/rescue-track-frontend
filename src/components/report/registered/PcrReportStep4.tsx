@@ -8,16 +8,27 @@ import {
   FormItem,
   FormControl,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import clsx from "clsx";
 
 interface PcrReportStep4Props {
   form: UseFormReturn<PcrReportFormValues>;
 }
 
 const PcrReportStep4 = ({ form }: PcrReportStep4Props) => {
-  const { control } = form;
+  const {
+    control,
+    formState: { errors },
+  } = form;
+
+  // Check if there are any errors in the medicalHistory object
+  const hasMedicalHistoryErrors =
+    errors.medicalHistory && "message" in errors.medicalHistory;
 
   // Common medical conditions
   const medicalConditions = [
@@ -43,6 +54,15 @@ const PcrReportStep4 = ({ form }: PcrReportStep4Props) => {
 
   return (
     <div>
+      {hasMedicalHistoryErrors && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {errors.medicalHistory?.message as string}
+          </AlertDescription>
+        </Alert>
+      )}
+
       <h2 className="text-lg font-medium text-gray-800 mb-4">
         Medical History
       </h2>
@@ -72,6 +92,10 @@ const PcrReportStep4 = ({ form }: PcrReportStep4Props) => {
                                   )
                                 );
                           }}
+                          className={clsx(
+                            errors.medicalHistory?.conditions &&
+                              "border-red-500"
+                          )}
                         />
                       </FormControl>
                       <FormLabel className="font-normal cursor-pointer">
@@ -109,6 +133,9 @@ const PcrReportStep4 = ({ form }: PcrReportStep4Props) => {
                                   )
                                 );
                           }}
+                          className={clsx(
+                            errors.medicalHistory?.allergies && "border-red-500"
+                          )}
                         />
                       </FormControl>
                       <FormLabel className="font-normal cursor-pointer">
@@ -132,10 +159,14 @@ const PcrReportStep4 = ({ form }: PcrReportStep4Props) => {
                 <FormControl>
                   <Textarea
                     placeholder="Enter any additional medical history notes here..."
-                    className="min-h-[120px] resize-none"
+                    className={clsx(
+                      "min-h-[120px] resize-none",
+                      errors.medicalHistory?.notes && "border-red-500"
+                    )}
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

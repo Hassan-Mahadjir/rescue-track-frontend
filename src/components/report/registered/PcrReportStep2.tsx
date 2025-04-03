@@ -10,10 +10,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash } from "lucide-react";
+import { Plus, Trash, AlertCircle } from "lucide-react";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";
 import type { PcrReportFormValues } from "@/types/formSchema";
-import { FormField, FormItem, FormControl } from "@/components/ui/form";
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import clsx from "clsx";
 
 // Predefined medication options
 const medicationsName = [
@@ -35,7 +42,10 @@ interface PcrReportStep2Props {
 }
 
 const PcrReportStep2 = ({ form }: PcrReportStep2Props) => {
-  const { control } = form;
+  const {
+    control,
+    formState: { errors },
+  } = form;
 
   // Use React Hook Form's useFieldArray to manage medications
   const { fields, append, remove } = useFieldArray({
@@ -50,18 +60,38 @@ const PcrReportStep2 = ({ form }: PcrReportStep2Props) => {
     }
   }, [fields.length, append]);
 
+  // Check if there are any errors in the medications array
+  const hasMedicationErrors =
+    errors.medications &&
+    (Array.isArray(errors.medications) || "message" in errors.medications);
+
   return (
     <div>
       <h2 className="text-lg font-medium text-gray-800 mb-4">
         Treatment provided during transport
       </h2>
+
+      {hasMedicationErrors && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {Array.isArray(errors.medications)
+              ? "Please complete all medication fields"
+              : (errors.medications?.message as string)}
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Card className="p-4 border border-gray-300">
         {/* Grid for medication rows */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="flex items-center gap-2 border rounded-md p-2 bg-gray-100"
+              className={clsx(
+                "flex items-center gap-2 border rounded-md p-2 bg-gray-100",
+                errors.medications?.[index] && "border-red-500"
+              )}
             >
               <FormField
                 control={control}
@@ -73,7 +103,12 @@ const PcrReportStep2 = ({ form }: PcrReportStep2Props) => {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger className="flex-1 border-none bg-transparent">
+                        <SelectTrigger
+                          className={clsx(
+                            "flex-1 border-none bg-transparent",
+                            errors.medications?.[index]?.name && "text-red-500"
+                          )}
+                        >
                           <SelectValue placeholder="Select med" />
                         </SelectTrigger>
                         <SelectContent>
@@ -88,6 +123,7 @@ const PcrReportStep2 = ({ form }: PcrReportStep2Props) => {
                         </SelectContent>
                       </Select>
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -102,7 +138,12 @@ const PcrReportStep2 = ({ form }: PcrReportStep2Props) => {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger className="w-24 border-none bg-transparent">
+                        <SelectTrigger
+                          className={clsx(
+                            "w-24 border-none bg-transparent",
+                            errors.medications?.[index]?.size && "text-red-500"
+                          )}
+                        >
                           <SelectValue placeholder="Size" />
                         </SelectTrigger>
                         <SelectContent>
@@ -114,6 +155,7 @@ const PcrReportStep2 = ({ form }: PcrReportStep2Props) => {
                         </SelectContent>
                       </Select>
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Search } from "lucide-react";
+import { Search, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,8 @@ import PcrReportStep2 from "@/components/report/registered/PcrReportStep2";
 import PcrReportStep3 from "@/components/report/registered/PcrReportStep3";
 import PcrReportStep4 from "@/components/report/registered/PcrReportStep4";
 import { Form } from "@/components/ui/form";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import FormSummary from "@/components/report/registered/FormSummary";
 
 const patientData = [
   {
@@ -55,6 +57,10 @@ const patientData = [
 const Registered = () => {
   const [step, setStep] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedData, setSubmittedData] =
+    useState<PcrReportFormValues | null>(null);
 
   // React Hook Form setup
   const form = useForm<PcrReportFormValues>({
@@ -62,7 +68,13 @@ const Registered = () => {
     defaultValues: {
       PatientId: undefined,
       medications: [{ name: "", size: "" }],
-      crew: [{ name: "", role: "" }],
+      transportInfo: {
+        transferType: "",
+        vehicleId: "",
+        emergencyType: "",
+        pickupAddress: "",
+        destinationAddress: "",
+      },
       medicalHistory: {
         conditions: [],
         allergies: [],
@@ -77,7 +89,8 @@ const Registered = () => {
     trigger,
     watch,
     setValue,
-    formState: { errors, isValid },
+    reset,
+    formState: { errors, isValid, isSubmitting },
   } = form;
 
   // Step-to-tab mapping
@@ -92,38 +105,91 @@ const Registered = () => {
   const stepValidationFields: Record<number, string[]> = {
     1: ["PatientId"], // Fields to validate in step 1
     2: ["medications"], // Fields to validate in step 2
-    3: ["crew"], // Fields to validate in step 3
+    3: ["transportInfo"], // Fields to validate in step 3
     4: ["medicalHistory"], // Fields to validate in step 4
+  };
+
+  // Error messages for each step
+  const stepErrorMessages: Record<number, string> = {
+    1: "Please select a patient to continue",
+    2: "Please add at least one medication with name and size",
+    3: "Please complete the transport information",
+    4: "Please complete the medical history information",
   };
 
   // Handle next step with validation
   const nextStep = async () => {
+    // Clear previous validation error
+    setValidationError(null);
+
     // Only validate the fields relevant to the current step
     const fieldsToValidate = stepValidationFields[step];
     const isStepValid = await trigger(fieldsToValidate as any);
 
     if (isStepValid) {
       setStep((prev) => Math.min(prev + 1, 4));
+    } else {
+      // Show error message for this step
+      setValidationError(stepErrorMessages[step]);
+
+      // Also show toast notification
+      alert({
+        title: "Validation Error",
+        description: stepErrorMessages[step],
+        variant: "destructive",
+      });
     }
   };
 
   // Handle previous step
   const prevStep = () => {
+    setValidationError(null);
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
   // Handle tab click
   const handleTabClick = (stepNumber: number) => {
-    // Optional: Add validation before allowing tab navigation
-    // For simplicity, we'll allow direct navigation via tabs
+    // Clear validation error when changing tabs
+    setValidationError(null);
     setStep(stepNumber);
   };
 
+  // Reset form and start over
+  const handleReset = () => {
+    reset();
+    setIsSubmitted(false);
+    setSubmittedData(null);
+    setStep(1);
+  };
+
   // Form submission
-  const onSubmit = (data: PcrReportFormValues) => {
-    console.log("Form submitted:", data);
-    alert("Form submitted successfully!");
-    // Here you would typically send the data to your API
+  const onSubmit = async (data: PcrReportFormValues) => {
+    try {
+      console.log("Form submitted:", data);
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Store the submitted data and set submission state
+      setSubmittedData(data);
+      setIsSubmitted(true);
+
+      alert({
+        title: "Success!",
+        description: "Form submitted successfully",
+        variant: "default",
+      });
+
+      // Here you would typically send the data to your API
+    } catch (error) {
+      console.error("Error submitting form:", error);
+
+      alert({
+        title: "Error",
+        description: "Error submitting form. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   // Handle search
@@ -135,7 +201,19 @@ const Registered = () => {
   // For debugging
   useEffect(() => {
     console.log("Current form values:", form.getValues());
-  }, [form, step]);
+    console.log("Form errors:", errors);
+  }, [form, errors, step]);
+
+  // If form is submitted, show the summary
+  if (isSubmitted && submittedData) {
+    return (
+      <FormSummary
+        data={submittedData}
+        patients={patientData}
+        onReset={handleReset}
+      />
+    );
+  }
 
   return (
     <div className="mx-5 my-2">
@@ -162,6 +240,14 @@ const Registered = () => {
 
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {validationError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{validationError}</AlertDescription>
+            </Alert>
+          )}
+
           <Tabs value={stepToTabValue[step]} className="space-y-4">
             <TabsList className="grid w-full grid-cols-4 border-b rounded-none bg-transparent p-0">
               <TabsTrigger
@@ -240,8 +326,13 @@ const Registered = () => {
               Prev
             </Button>
             {step === 4 ? (
-              <Button size="lg" className="bg-main" type="submit">
-                Submit
+              <Button
+                size="lg"
+                className="bg-main"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             ) : (
               <Button

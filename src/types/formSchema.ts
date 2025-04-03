@@ -6,10 +6,13 @@ const medicationSchema = z.object({
   size: z.string().min(1, "Medication size is required"),
 });
 
-// Define the schema for crew information
-const crewSchema = z.object({
-  name: z.string().min(2, "Crew member name is required"),
-  role: z.string().min(1, "Role is required"),
+// Define the schema for transport information
+const transportInfoSchema = z.object({
+  transferType: z.string().optional(),
+  vehicleId: z.string().optional(),
+  emergencyType: z.string().optional(),
+  pickupAddress: z.string().optional(),
+  destinationAddress: z.string().optional(),
 });
 
 // Define the schema for medical history
@@ -26,8 +29,10 @@ export const PcrReportFormSchema = z.object({
   }),
   medications: z
     .array(medicationSchema)
-    .min(1, "At least one medication is required"),
-  crew: z.array(crewSchema).min(1, "At least one crew member is required"),
+    .optional()
+    .default([{ name: "", size: "" }]),
+
+  transportInfo: transportInfoSchema.optional().default({}),
   medicalHistory: medicalHistorySchema,
 });
 
