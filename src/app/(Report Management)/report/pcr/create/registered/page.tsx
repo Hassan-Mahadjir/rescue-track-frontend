@@ -56,8 +56,6 @@ const patientData = [
 
 const Registered = () => {
   const [step, setStep] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [validationError, setValidationError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submittedData, setSubmittedData] =
     useState<PcrReportFormValues | null>(null);
@@ -90,7 +88,7 @@ const Registered = () => {
     watch,
     setValue,
     reset,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isSubmitting },
   } = form;
 
   // Step-to-tab mapping
@@ -119,9 +117,6 @@ const Registered = () => {
 
   // Handle next step with validation
   const nextStep = async () => {
-    // Clear previous validation error
-    setValidationError(null);
-
     // Only validate the fields relevant to the current step
     const fieldsToValidate = stepValidationFields[step];
     const isStepValid = await trigger(fieldsToValidate as any);
@@ -129,10 +124,7 @@ const Registered = () => {
     if (isStepValid) {
       setStep((prev) => Math.min(prev + 1, 4));
     } else {
-      // Show error message for this step
-      setValidationError(stepErrorMessages[step]);
-
-      // Also show toast notification
+      // show toast notification
       alert({
         title: "Validation Error",
         description: stepErrorMessages[step],
@@ -143,14 +135,11 @@ const Registered = () => {
 
   // Handle previous step
   const prevStep = () => {
-    setValidationError(null);
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
   // Handle tab click
   const handleTabClick = (stepNumber: number) => {
-    // Clear validation error when changing tabs
-    setValidationError(null);
     setStep(stepNumber);
   };
 
@@ -192,12 +181,6 @@ const Registered = () => {
     }
   };
 
-  // Handle search
-  const handleSearch = () => {
-    console.log("Searching for:", searchQuery);
-    // Implement your search logic here
-  };
-
   // For debugging
   useEffect(() => {
     console.log("Current form values:", form.getValues());
@@ -225,11 +208,9 @@ const Registered = () => {
                 <Input
                   placeholder="Search by patient ID"
                   className="pl-3 pr-3 py-2 h-10 w-full"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button className="shrink-0 h-10 bg-main" onClick={handleSearch}>
+              <Button className="shrink-0 h-10 bg-main">
                 <Search className="h-4 w-4 mr-2" />
                 Search
               </Button>
@@ -240,14 +221,6 @@ const Registered = () => {
 
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {validationError && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{validationError}</AlertDescription>
-            </Alert>
-          )}
-
           <Tabs value={stepToTabValue[step]} className="space-y-4">
             <TabsList className="grid w-full grid-cols-4 border-b rounded-none bg-transparent p-0">
               <TabsTrigger
