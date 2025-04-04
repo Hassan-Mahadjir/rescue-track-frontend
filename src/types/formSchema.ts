@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-// Define the schema for medications
+// Medication
 const medicationSchema = z.object({
   name: z.string().min(1, "Medication name is required"),
-  size: z.string().min(1, "Medication size is required"),
+  size: z.string().min(1, "Size is required"),
 });
 
-// Define the schema for transport information
+// Transport
 const transportInfoSchema = z.object({
   transferType: z.string().optional(),
   vehicleId: z.string().optional(),
@@ -15,26 +15,33 @@ const transportInfoSchema = z.object({
   destinationAddress: z.string().optional(),
 });
 
-// Define the schema for medical history
+// Medical history
 const medicalHistorySchema = z.object({
   conditions: z.array(z.string()).optional().default([]),
   allergies: z.array(z.string()).optional().default([]),
   notes: z.string().optional().default(""),
 });
 
-// Main form schema
-export const PcrReportFormSchema = z.object({
-  PatientId: z.number({
-    required_error: "Please select a patient",
+// ✨ Step-wise schemas
+export const stepSchemas = [
+  z.object({
+    patientId: z.string().min(1, "Please select a patient"),
   }),
-  medications: z
-    .array(medicationSchema)
-    .optional()
-    .default([{ name: "", size: "" }]),
+  z.object({
+    medications: z.array(medicationSchema),
+  }),
+  z.object({
+    transportInfo: transportInfoSchema,
+  }),
+  z.object({
+    medicalHistory: medicalHistorySchema,
+  }),
+];
 
-  transportInfo: transportInfoSchema.optional().default({}),
-  medicalHistory: medicalHistorySchema,
-});
+// ✨ Merged full schema
+export const PcrReportFormSchema = stepSchemas.reduce(
+  (acc, curr) => acc.merge(curr),
+  z.object({})
+);
 
-// Type for form values
 export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
