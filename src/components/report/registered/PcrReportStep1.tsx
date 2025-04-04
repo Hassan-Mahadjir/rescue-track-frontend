@@ -70,7 +70,7 @@ const PcrReportStep1 = ({
       <FormField
         control={form.control}
         name="PatientId"
-        render={({ field }) => (
+        render={() => (
           <FormItem>
             <FormControl>
               <div className="space-y-4">
@@ -78,10 +78,10 @@ const PcrReportStep1 = ({
                   <div
                     key={patient.id}
                     className={clsx(
-                      "cursor-pointer p-4 border rounded-lg transition-colors",
+                      "cursor-pointer  border rounded-lg transition-colors hover:shadow-md",
                       selectedPatientId === patient.id
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                        ? "border-gray-900"
+                        : "hover:border-gray-400"
                     )}
                     onClick={() => handleSelectPatient(patient.id)}
                   >

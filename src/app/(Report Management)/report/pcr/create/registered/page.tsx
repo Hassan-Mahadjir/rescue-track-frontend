@@ -100,7 +100,7 @@ const Registered = () => {
   };
 
   // Define validation fields for each step
-  const stepValidationFields: Record<number, string[]> = {
+  const stepValidationFields: Record<number, (keyof PcrReportFormValues)[]> = {
     1: ["PatientId"], // Fields to validate in step 1
     2: ["medications"], // Fields to validate in step 2
     3: ["transportInfo"], // Fields to validate in step 3
@@ -119,17 +119,13 @@ const Registered = () => {
   const nextStep = async () => {
     // Only validate the fields relevant to the current step
     const fieldsToValidate = stepValidationFields[step];
-    const isStepValid = await trigger(fieldsToValidate as any);
+    const isStepValid = await trigger(fieldsToValidate);
 
     if (isStepValid) {
       setStep((prev) => Math.min(prev + 1, 4));
     } else {
       // show toast notification
-      alert({
-        title: "Validation Error",
-        description: stepErrorMessages[step],
-        variant: "destructive",
-      });
+      alert(stepErrorMessages[step]);
     }
   };
 
@@ -163,21 +159,13 @@ const Registered = () => {
       setSubmittedData(data);
       setIsSubmitted(true);
 
-      alert({
-        title: "Success!",
-        description: "Form submitted successfully",
-        variant: "default",
-      });
+      alert("Form submitted successfully");
 
       // Here you would typically send the data to your API
     } catch (error) {
       console.error("Error submitting form:", error);
 
-      alert({
-        title: "Error",
-        description: "Error submitting form. Please try again.",
-        variant: "destructive",
-      });
+      alert(stepErrorMessages[step]);
     }
   };
 
