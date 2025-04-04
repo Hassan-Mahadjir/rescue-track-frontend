@@ -45,3 +45,23 @@ export const PcrReportFormSchema = stepSchemas.reduce(
 );
 
 export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
+
+export type PatientReportData = {
+  patientId: string;
+  medications: {
+    name: string;
+    size: string;
+  }[];
+  transportInfo: {
+    transferType?: string;
+    vehicleId?: string;
+    emergencyType?: string;
+    pickupAddress?: string;
+    destinationAddress?: string;
+  };
+  medicalHistory: {
+    conditions: string[];
+    allergies: string[];
+    notes: string;
+  };
+};

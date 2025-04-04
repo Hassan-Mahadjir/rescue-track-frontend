@@ -1,29 +1,35 @@
-"use client";
-
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { PcrReportFormValues } from "@/types/formSchema";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Printer, ArrowLeft } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { PatientReportData, PcrReportFormValues } from "@/types/formSchema";
+import { ArrowLeft, CheckCircle2, Printer } from "lucide-react";
 import Image from "next/image";
+import React from "react";
 
 interface FormSummaryProps {
-  data: PcrReportFormValues;
-  patients: any[]; // Using the patient data type from your app
-  onReset: () => void;
+  data: PatientReportData; // Using Partial as the data might not have all fields
 }
 
-const FormSummary = ({ data, patients, onReset }: FormSummaryProps) => {
-  // Find the selected patient
-  const selectedPatient = patients.find(
-    (patient) => patient.id === data.PatientId
-  );
-
-  // Function to print the summary
+const FormSummary = ({ data }: FormSummaryProps) => {
+  const selectedPatient = {
+    id: "4",
+    fullName: "John Smith",
+    age: 45,
+    phone: "+1 555 123 4567",
+    email: "john.smith@example.com",
+    profileImage: "/report/sample.jpg",
+    identifyNumber: "98765432",
+    dateOfBirth: "22-11-1978",
+    nationality: "United States",
+    address: "New York, USA",
+    sex: "Male",
+    height: 178,
+    weight: 82,
+    bloodType: "B-",
+  };
   const handlePrint = () => {
     window.print();
   };
-
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-sm border print:shadow-none print:border-none">
       {/* Success Header */}
@@ -226,11 +232,7 @@ const FormSummary = ({ data, patients, onReset }: FormSummaryProps) => {
 
       {/* Action Buttons */}
       <div className="flex justify-between mt-8 print:hidden">
-        <Button
-          variant="outline"
-          onClick={onReset}
-          className="flex items-center gap-2"
-        >
+        <Button variant="outline" className="flex items-center gap-2">
           <ArrowLeft className="h-4 w-4" />
           Create New Report
         </Button>

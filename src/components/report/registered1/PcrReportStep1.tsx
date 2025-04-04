@@ -145,8 +145,8 @@ export default function PcrReportStep1() {
                           key={patient.id}
                           className={clsx(
                             "cursor-pointer border rounded-lg transition-colors hover:shadow-md",
-                            selectedPatientId === patient.id
-                              ? "border-gray-900 bg-gray-50"
+                            selectedPatientId === patient.identifyNumber
+                              ? "border-gray-900"
                               : "hover:border-gray-400"
                           )}
                           onClick={() =>
