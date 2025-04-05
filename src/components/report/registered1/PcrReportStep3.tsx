@@ -85,9 +85,9 @@ export default function PcrReportStep3() {
         <h3 className="text-base font-medium mb-4">Transport Information</h3>
 
         {/* First Row */}
-        <div className="grid grid-cols-4 gap-4 mb-4">
-          {/* Transfer Type (Primary) */}
-          <div className="col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          {/* Transfer Type (Primary) - Full width on mobile, 2 cols on desktop */}
+          <div className="md:col-span-2">
             <FormField
               control={control}
               name="transportInfo.transferType"
@@ -114,8 +114,8 @@ export default function PcrReportStep3() {
             />
           </div>
 
-          {/* Vehicle ID */}
-          <div className="col-span-1">
+          {/* Vehicle ID - Full width on mobile, 1 col on desktop */}
+          <div className="md:col-span-1">
             <FormField
               control={control}
               name="transportInfo.vehicleId"
@@ -133,8 +133,8 @@ export default function PcrReportStep3() {
             />
           </div>
 
-          {/* Transfer Type (Secondary) */}
-          <div className="col-span-1">
+          {/* Emergency Type - Full width on mobile, 1 col on desktop */}
+          <div className="md:col-span-1">
             <FormField
               control={control}
               name="transportInfo.emergencyType"
