@@ -57,6 +57,7 @@ const RegisteredForm = () => {
   const {
     handleSubmit,
     trigger,
+    reset,
     formState: { errors, isValid, isSubmitting },
     getValues,
   } = form;
@@ -106,6 +107,10 @@ const RegisteredForm = () => {
   const handleFinalSubmit = () => {
     setShowConfirmDialog(false);
     console.log("Form Submitted!", getValues());
+    reset();
+    setShowSummary(false);
+    setTouchedSteps([]);
+    setCurrentStep(0);
     // Add your submission logic here (API call, etc.)
   };
 
@@ -152,43 +157,48 @@ const RegisteredForm = () => {
                   value={steps[currentStep].id}
                   className="space-y-6 w-full"
                 >
-                  <TabsList className="grid grid-cols-4 border-b rounded-none bg-transparent p-0 h-auto">
-                    {steps.map((step, index) => {
-                      const hasError =
-                        touchedSteps.includes(index) && hasStepErrors(index);
-                      const isCompleted =
-                        touchedSteps.includes(index) && !hasStepErrors(index);
+                  {/* For mobile screens: scrollable horizontal tabs */}
+                  <div className="overflow-x-auto pb-1 -mb-1">
+                    <TabsList className="flex min-w-max border-b rounded-none bg-transparent p-0 h-auto">
+                      {steps.map((step, index) => {
+                        const hasError =
+                          touchedSteps.includes(index) && hasStepErrors(index);
+                        const isCompleted =
+                          touchedSteps.includes(index) && !hasStepErrors(index);
 
-                      return (
-                        <TabsTrigger
-                          key={step.id}
-                          value={step.id}
-                          onClick={() => goToStep(index)}
-                          className={`
-                            py-3 px-4 rounded-none font-medium transition-all
-                            ${
-                              hasError
-                                ? "border-b-2 border-red-500 text-red-600"
-                                : isCompleted
-                                ? "border-b-2 border-green-500 text-green-600"
-                                : "data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary"
-                            }
-                            hover:bg-gray-50
-                          `}
-                        >
-                          <div className="flex items-center gap-2">
-                            {hasError && (
-                              <AlertCircle className="h-4 w-4 text-red-500" />
-                            )}
-                            {isCompleted && !hasError && (
-                              <CheckCircle2 className="h-4 w-4 text-green-500" />
-                            )}
-                            <span>{step.label}</span>
-                          </div>
-                        </TabsTrigger>
-                      );
-                    })}
-                  </TabsList>
+                        return (
+                          <TabsTrigger
+                            key={step.id}
+                            value={step.id}
+                            onClick={() => goToStep(index)}
+                            className={`
+                  py-3 px-3 sm:px-4 rounded-none font-medium transition-all flex-1 min-w-[80px]
+                  ${
+                    hasError
+                      ? "border-b-2 border-red-500 text-red-600"
+                      : isCompleted
+                      ? "border-b-2 border-green-500 text-green-600"
+                      : "data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary"
+                  }
+                  hover:bg-gray-50
+                `}
+                          >
+                            <div className="flex items-center justify-center sm:justify-start gap-1 sm:gap-2">
+                              {hasError && (
+                                <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+                              )}
+                              {isCompleted && !hasError && (
+                                <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                              )}
+                              <span className="text-xs sm:text-sm">
+                                {step.label}
+                              </span>
+                            </div>
+                          </TabsTrigger>
+                        );
+                      })}
+                    </TabsList>
+                  </div>
                   {steps.map((step, index) => (
                     <TabsContent key={step.id} value={step.id} className="p-6">
                       <div className="min-h-[300px]">
