@@ -10,6 +10,7 @@ import { IoNotificationsOutline } from "react-icons/io5";
 import { IoCloseOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import useprofile from "@/services/api/profile";
 
 const navItems = [
   {
@@ -47,6 +48,11 @@ function NavBar() {
   const pathName = usePathname();
   const currentPath = pathName.split("/").pop();
   const [currentItem, setCurrentItem] = useState(0);
+  const { profileData, isPending } = useprofile();
+  const profileImage =
+    profileData?.data.data.avatar ||
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+  console.log("profileImage", profileImage);
 
   useEffect(() => {
     const stepIndex = navItems.findIndex((item) => item.route === currentPath);
@@ -132,7 +138,7 @@ function NavBar() {
         <div className="">
           <Link href="/profile">
             <Image
-              src="/auth/login-plant.jpg"
+              src={profileImage}
               alt="profile"
               className="w-12 h-12 object-cover rounded-full hover:shadow-lg transition-shadow duration-500"
               width={50}
