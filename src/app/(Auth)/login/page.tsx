@@ -13,6 +13,7 @@ import FormInput from "@/components/FormInput";
 import { useLogin } from "@/services/api/auth";
 import { Ellipsis } from "lucide-react";
 import LoadingIndicator from "@/components/Loading-Indicator";
+import useRedirectIfAuthenticated from "@/hooks/useRedirectIfAuthenticated";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -39,7 +40,7 @@ const Login = () => {
     console.log(values);
     mutateLogin(values);
   };
-
+  // useRedirectIfAuthenticated();
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Sign up section */}

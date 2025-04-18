@@ -19,6 +19,12 @@ class AuthService extends BaseService {
     );
     return response;
   }
+
+  async postLogout() {
+    const resonse = await http.post<AppResponse<null>>("/auth/logout");
+    console.log("use logedout");
+    return resonse;
+  }
 }
 
 export default new AuthService();

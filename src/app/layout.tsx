@@ -35,7 +35,7 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>
-            <TokenChecker />
+            {/* <TokenChecker /> */}
             <NavBarWrapper />
             {children}
           </QueryProvider>
