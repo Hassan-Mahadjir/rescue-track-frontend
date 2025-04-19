@@ -8,6 +8,7 @@ import { shouldHideNavBar } from "@/functions/hideNaveBar";
 import NavBarWrapper from "@/components/NavBarWrapper";
 import useCheckToken from "@/hooks/check-token";
 import TokenChecker from "@/components/Token-Checker";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default async function RootLayout({
             {/* <TokenChecker /> */}
             <NavBarWrapper />
             {children}
+            <Toaster />
           </QueryProvider>
         </NextIntlClientProvider>
       </body>

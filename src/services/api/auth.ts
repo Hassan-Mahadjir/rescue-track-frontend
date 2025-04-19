@@ -5,6 +5,7 @@ import authService from "../auth-service";
 import { getItem, removeItem, setItem } from "@/utils/storage";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { useToast } from "@/hooks/use-toast";
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -14,6 +15,7 @@ export enum Role {
 
 export const useLogin = () => {
   const router = useRouter();
+  const { toast } = useToast();
 
   const {
     mutate: mutateLogin,
@@ -23,15 +25,33 @@ export const useLogin = () => {
     mutationFn: (data: LoginFormValues) =>
       authService.postLogin({ password: data.password, email: data.email }),
     onSuccess: async (response) => {
-      // console.log(`success from auth.ts ${data.data.data.accessToken}`);
+      console.log(`success from auth.ts ${response.data.data.accessToken}`);
       const token = response.data.data.accessToken;
       if (token) {
         setItem("token", token);
         Cookies.set("token", token, { path: "/", sameSite: "Lax" });
         router.replace("/dashboard");
+
+        // Successful login toast
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully logged in.",
+          variant: "default", // Optional, can use "default" as well
+          duration: 3000,
+          progressColor: "bg-green-500", // Optional, or your theme class
+        });
       }
     },
-    onError: () => {},
+    onError: () => {
+      // Unsuccessful login toast
+      toast({
+        title: "Login failed",
+        description: "Invalid email or password.",
+        variant: "destructive",
+        duration: 3000,
+        progressColor: "bg-red-500", // Optional, or your theme class
+      });
+    },
   });
 
   return { mutateLogin, isPending, ...props };
