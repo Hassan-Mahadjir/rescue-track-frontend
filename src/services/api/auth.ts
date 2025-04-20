@@ -6,6 +6,7 @@ import { getItem, removeItem, setItem } from "@/utils/storage";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useToast } from "@/hooks/use-toast";
+import { SignupFormValues } from "@/types/signup.type";
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -78,4 +79,69 @@ export const useLogout = () => {
   });
 
   return { logout, isPending };
+};
+
+export const useSignup = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const {
+    mutate: mutateSingup,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: SignupFormValues) => authService.postSignup(data),
+    onSuccess: async (response) => {
+      setItem("validation-email", response.data.data.email);
+      authService.verifyEmail(response.data.data.email);
+      router.replace("/signup/validation");
+    },
+    onError: (error: any) => {
+      // Unsuccessful login toast
+      toast({
+        title: "unsuccessful signup",
+        description: error.message,
+        variant: "destructive",
+        duration: 3000,
+        progressColor: "bg-red-500", // Optional, or your theme class
+      });
+    },
+  });
+
+  return { mutateSingup, isPending, ...props };
+};
+
+export const useResendEmail = (email: string) => {
+  const { toast } = useToast();
+
+  const {
+    mutate: resendVerificationEmail,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: () => {
+      if (!email) throw new Error("Email is missing.");
+      return authService.verifyEmail(email);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Verification email sent",
+        description: "Please check your inbox.",
+        variant: "default",
+        duration: 4000,
+        progressColor: "bg-green-500",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to resend",
+        description: error.message,
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { resendVerificationEmail, isPending, ...props };
 };

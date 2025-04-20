@@ -6,7 +6,14 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Define your public routes
-  const publicRoutes = ["/login", "/signup", "/forgot-password"];
+  const publicRoutes = [
+    "/login",
+    "/signup",
+    "signup/step-one",
+    "/signup/step-two",
+    "singup/step-three",
+    "/signup/validation",
+  ];
 
   const isPublicRoute = publicRoutes.some((path) => pathname.startsWith(path));
 

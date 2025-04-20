@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { cn } from "@/lib/utils";
@@ -35,7 +34,6 @@ import {
 } from "@/components/ui/command";
 import { useNewUserFormContext } from "@/hooks/userFormContext";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
 import FormInput from "@/components/FormInput";
 
 const formSchema = z.object({
@@ -50,8 +48,8 @@ const formSchema = z.object({
 });
 
 const staff_roles = [
-  { value: "admin", label: "Admin" },
-  { value: "user", label: "User" },
+  { value: "ADMIN", label: "Admin" },
+  { value: "EMPLOYEE", label: "Employee" },
 ] as const;
 
 type FormSchema = z.infer<typeof formSchema>;
