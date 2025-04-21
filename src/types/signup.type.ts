@@ -16,3 +16,8 @@ export type SignupReturnValues = {
   phone: string;
   role: string;
 };
+
+export type ValidationFormValues = {
+  otp: string;
+  email: string;
+};

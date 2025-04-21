@@ -2,7 +2,11 @@ import BaseService from "./base-service";
 import http from "./api/http";
 import { LoginFormValues } from "@/types/login.type";
 import { AppResponse, AuthDataType } from "@/types/common.type";
-import { SignupFormValues, SignupReturnValues } from "@/types/signup.type";
+import {
+  SignupFormValues,
+  SignupReturnValues,
+  ValidationFormValues,
+} from "@/types/signup.type";
 
 class AuthService extends BaseService {
   async postLogin(data: LoginFormValues) {
@@ -31,6 +35,14 @@ class AuthService extends BaseService {
     const response = await http.post<AppResponse<null>>(
       "/auth/send-verification-email",
       { email }
+    );
+    return response;
+  }
+
+  async verifyOTP(data: ValidationFormValues) {
+    const response = await http.post<AppResponse<null>>(
+      "/auth/validate-otpCode",
+      data
     );
     return response;
   }

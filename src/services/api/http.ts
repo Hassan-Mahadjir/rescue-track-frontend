@@ -3,7 +3,7 @@ import { getItem, removeItem, setItem } from "@/utils/storage";
 import Cookies from "js-cookie";
 import { AuthDataType } from "@/types/common.type";
 
-const baseurl = "http://192.168.33.80:3000";
+const baseurl = "http://192.168.51.26:3000";
 
 const http = axios.create({
   baseURL: baseurl,
@@ -14,60 +14,86 @@ const http = axios.create({
   withCredentials: true,
 });
 
+// Attach access token to every request
 http.interceptors.request.use(async (config) => {
   const token = (await getItem("token")) || Cookies.get("token");
+
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
-let retryCount = 0;
-const MAX_RETRIES = 2;
-
+// Handle response globally (refresh token logic)
 http.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (
+    // Only handle 401 errors from protected routes
+    const isTokenExpired =
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      retryCount < MAX_RETRIES &&
-      !originalRequest.url.includes("/auth/refresh")
-    ) {
+      !originalRequest.url.includes("/auth/refresh");
+
+    if (isTokenExpired) {
       originalRequest._retry = true;
-      retryCount++;
 
       try {
+        const refreshToken =
+          (await getItem("refreshToken")) || Cookies.get("refreshToken");
+
+        if (!refreshToken) {
+          console.warn("⚠️ No refresh token available");
+          throw new Error("No refresh token available");
+        }
+
         const refreshResponse = await axios.post<AuthDataType>(
           `${baseurl}/auth/refresh`,
           {},
-          { withCredentials: true }
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+            withCredentials: true,
+          }
         );
 
-        const newAccessToken = refreshResponse.data.accessToken;
-        if (newAccessToken) {
-          await setItem("token", newAccessToken);
-          Cookies.set("token", newAccessToken, { path: "/", sameSite: "Lax" });
+        const { accessToken, refreshToken: newRefreshToken } =
+          refreshResponse.data;
 
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return http(originalRequest);
+        // Store new tokens
+        if (accessToken) {
+          await setItem("token", accessToken);
+          Cookies.set("token", accessToken, { path: "/", sameSite: "Lax" });
         }
+
+        if (newRefreshToken) {
+          await setItem("refreshToken", newRefreshToken);
+          Cookies.set("refreshToken", newRefreshToken, {
+            path: "/",
+            sameSite: "Lax",
+          });
+        }
+
+        // Retry the original request with new token
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return http(originalRequest);
       } catch (refreshError) {
-        // If refresh fails, clear token & redirect
+        console.error("❌ Refresh token expired or invalid");
+
+        // Clear everything & optionally redirect user to login
         await removeItem("token");
+        await removeItem("refreshToken");
         Cookies.remove("token");
-        window.location.href = "/login";
+        Cookies.remove("refreshToken");
+
+        // You can redirect to login or show a message here
+        // window.location.href = "/login";
+
         return Promise.reject(refreshError);
       }
-    }
-
-    // Logout on persistent 401
-    if (error.response?.status === 401 && retryCount >= MAX_RETRIES) {
-      await removeItem("token");
-      Cookies.remove("token");
-      window.location.href = "/login";
     }
 
     return Promise.reject(error);

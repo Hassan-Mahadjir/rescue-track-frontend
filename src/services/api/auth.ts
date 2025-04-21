@@ -6,7 +6,7 @@ import { getItem, removeItem, setItem } from "@/utils/storage";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useToast } from "@/hooks/use-toast";
-import { SignupFormValues } from "@/types/signup.type";
+import { SignupFormValues, ValidationFormValues } from "@/types/signup.type";
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -26,11 +26,17 @@ export const useLogin = () => {
     mutationFn: (data: LoginFormValues) =>
       authService.postLogin({ password: data.password, email: data.email }),
     onSuccess: async (response) => {
-      console.log(`success from auth.ts ${response.data.data.accessToken}`);
+      // console.log(`success from auth.ts ${response.data.data.accessToken}`);
       const token = response.data.data.accessToken;
+      const refreshToken = response.data.data.refreshToken;
       if (token) {
-        setItem("token", token);
+        await setItem("token", token);
+        await setItem("refreshToken", refreshToken);
         Cookies.set("token", token, { path: "/", sameSite: "Lax" });
+        Cookies.set("refreshToken", refreshToken, {
+          path: "/",
+          sameSite: "Lax",
+        });
         router.replace("/dashboard");
 
         // Successful login toast
@@ -66,7 +72,9 @@ export const useLogout = () => {
     mutationFn: () => authService.postLogout(),
     onSuccess: async () => {
       await removeItem("token");
+      await removeItem("refreshToken");
       Cookies.remove("token");
+      Cookies.remove("refreshToken");
 
       queryClient.clear();
       router.replace("/login");
@@ -144,4 +152,39 @@ export const useResendEmail = (email: string) => {
   });
 
   return { resendVerificationEmail, isPending, ...props };
+};
+
+export const useVerifyEmail = () => {
+  const { toast } = useToast();
+
+  const {
+    mutate: verifyEmail,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: ValidationFormValues) => {
+      if (!data.email || !data.otp) throw new Error("Email or OTP is missing.");
+      return authService.verifyOTP(data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Verification successful",
+        description: "Your email has been verified.",
+        variant: "default",
+        duration: 4000,
+        progressColor: "bg-green-500",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Verification failed",
+        description: error.message,
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { verifyEmail, isVerifyPending: isPending, ...props };
 };

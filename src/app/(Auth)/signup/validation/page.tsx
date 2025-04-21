@@ -22,10 +22,10 @@ import { MdMarkEmailUnread } from "react-icons/md";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getItem } from "@/utils/storage";
-import { useResendEmail } from "@/services/api/auth";
+import { useResendEmail, useVerifyEmail } from "@/services/api/auth";
 
 const FormSchema = z.object({
-  pin: z.string().min(6, {
+  otp: z.string().min(6, {
     message: "Your one-time password must be 6 characters.",
   }),
 });
@@ -33,11 +33,12 @@ const FormSchema = z.object({
 const validation = () => {
   const [email, setEmail] = useState<string>("");
   const { resendVerificationEmail, isPending } = useResendEmail(email);
+  const { verifyEmail, isVerifyPending } = useVerifyEmail();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      pin: "",
+      otp: "",
     },
   });
 
@@ -50,7 +51,12 @@ const validation = () => {
   }, []);
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    console.log(values);
+    try {
+      await verifyEmail({ email: email, otp: values.otp });
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+      // Display an error message to the user
+    }
   };
 
   return (
@@ -77,7 +83,7 @@ const validation = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
-              name="pin"
+              name="otp"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
