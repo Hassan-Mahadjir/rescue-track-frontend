@@ -1,11 +1,12 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import { Patient } from "@/types/patient.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown, Ellipsis } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<Person>[] = [
+export const columns: ColumnDef<Patient>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -28,17 +29,24 @@ export const columns: ColumnDef<Person>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: "fullName",
-    header: "Full Name",
+    id: "firstName",
+    header: "First Name",
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
     cell: ({ row }) => {
       const id = row.original.id;
-      const fullName = row.getValue("fullName");
+      const firstName = row.original.firstName || "";
 
-      return <Link href={`/report/pcr/${id}`}>{fullName as string}</Link>;
+      return <Link href={`/report/pcr/${id}`}>{firstName}</Link>;
     },
+  },
+  {
+    accessorKey: "lastName",
+    header: "Last Name",
+    enableSorting: true,
+    enableColumnFilter: true,
+    enableHiding: true,
   },
   {
     accessorKey: "gender",
@@ -48,24 +56,24 @@ export const columns: ColumnDef<Person>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "country",
-    header: "Country",
+    accessorKey: "nationality",
+    header: "Nationality",
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
   },
   {
-    accessorKey: "idNumber",
+    accessorKey: "id",
     header: "ID Number",
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
   },
   {
-    accessorKey: "incidentDate",
+    accessorKey: "createdAt",
     header: "Incident Date",
     cell: ({ row }) => {
-      const date = new Date(row.getValue("incidentDate"));
+      const date = new Date(row.getValue("createdAt"));
       const incidentDate = date.toLocaleDateString();
       return <div>{incidentDate}</div>;
     },
@@ -100,7 +108,7 @@ export const columns: ColumnDef<Person>[] = [
               ? "bg-red-100 text-red-800"
               : "bg-yellow-100 text-yellow-800"
           }`}
-          style={{ minWidth: "80px", textAlign: "center" }} // Ensures alignment
+          style={{ minWidth: "80px", textAlign: "center" }}
         >
           {status as string}
         </div>

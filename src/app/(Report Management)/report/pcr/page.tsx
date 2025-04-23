@@ -1,9 +1,21 @@
+"use client";
 import PcrReportList from "@/components/report/PcrReportList";
 import ReportSummaryCard from "@/components/report/ReportSummaryCard";
+import usePatients from "@/services/api/patient";
 import { Siren, Users, FileText } from "lucide-react";
 import React from "react";
 
 const PcrPage = () => {
+  const { patientData, isPending } = usePatients();
+  const data = patientData?.data.data;
+
+  const totalReports = data?.reduce((count, patient) => {
+    return (
+      count +
+      (Array.isArray(patient.updateHistory) ? patient.updateHistory.length : 0)
+    );
+  }, 0);
+
   return (
     <div className="mt-5 px-5 space-y-3">
       <div className="flex flex-col items-center justify-between sm:flex-row">
@@ -19,16 +31,20 @@ const PcrPage = () => {
         {/*Report Summary */}
         <div className="flex flex-row space-x-6 mr-5">
           <ReportSummaryCard icon={Siren} number={5} title="Urgent Cases" />
-          <ReportSummaryCard icon={Users} number={120} title="Total Patients" />
+          <ReportSummaryCard
+            icon={Users}
+            number={data?.length ?? 0}
+            title="Total Patients"
+          />
           <ReportSummaryCard
             icon={FileText}
-            number={80}
+            number={totalReports ?? 0}
             title="Total Reports"
           />
         </div>
       </div>
       <div>
-        <PcrReportList />
+        <PcrReportList patients={data} />
       </div>
     </div>
   );
