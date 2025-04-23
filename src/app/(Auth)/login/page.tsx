@@ -11,6 +11,8 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/FormInput";
 import { useLogin } from "@/services/api/auth";
+import LoadingIndicator from "@/components/Loading-Indicator";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -24,6 +26,8 @@ type FormSchema = z.infer<typeof formSchema>;
 const Login = () => {
   const t = useTranslations("Auth");
   const { mutateLogin, isPending } = useLogin();
+
+  const { toast } = useToast();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -69,8 +73,13 @@ const Login = () => {
               type="password"
               icon={<TbLockPassword />}
             />
-            <Button type="submit" className="bg-main mt-4 hover:bg-second-main">
-              {t("login")}
+
+            <Button
+              type="submit"
+              className="bg-main mt-4 hover:bg-second-main"
+              disabled={isPending}
+            >
+              {isPending ? <LoadingIndicator /> : t("login")}
             </Button>
           </form>
         </Form>

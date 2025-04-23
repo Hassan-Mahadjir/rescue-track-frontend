@@ -15,29 +15,48 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Mo } from "react-flags-select";
 import { useForm } from "react-hook-form";
 import { MdMarkEmailUnread } from "react-icons/md";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { getItem } from "@/utils/storage";
+import { useResendEmail, useVerifyEmail } from "@/services/api/auth";
 
 const FormSchema = z.object({
-  pin: z.string().min(6, {
+  otp: z.string().min(6, {
     message: "Your one-time password must be 6 characters.",
   }),
 });
 
 const validation = () => {
+  const [email, setEmail] = useState<string>("");
+  const { resendVerificationEmail, isPending } = useResendEmail(email);
+  const { verifyEmail, isVerifyPending } = useVerifyEmail();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      pin: "",
+      otp: "",
     },
   });
 
+  useEffect(() => {
+    const fetchEmail = async () => {
+      const storedEmail = await getItem("validation-email");
+      if (typeof storedEmail === "string") setEmail(storedEmail);
+    };
+    fetchEmail();
+  }, []);
+
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    console.log(values);
+    try {
+      await verifyEmail({ email: email, otp: values.otp });
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+      // Display an error message to the user
+    }
   };
 
   return (
@@ -51,7 +70,7 @@ const validation = () => {
         <p className="text-xs text-dark-gray">
           We sent a 4-digit code to{" "}
           <span className="text-second-green font-semibold">
-            hm.mahadjir@gmail.com
+            {email}
             <br />
           </span>{" "}
           Please enter it below. Can’t find it? Check your spam folder.
@@ -64,7 +83,7 @@ const validation = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
-              name="pin"
+              name="otp"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -95,12 +114,14 @@ const validation = () => {
         </Form>
 
         <div className="mt-4">
-          <a
-            href="#"
-            className="text-xs underline text-semibold hover:text-main"
+          <Button
+            variant="link"
+            className="text-xs underline font-semibold hover:text-main p-0 h-auto"
+            onClick={() => resendVerificationEmail()}
+            disabled={isPending}
           >
-            Click to send a new code
-          </a>
+            {isPending ? "Resending..." : "Click to send a new code"}
+          </Button>
         </div>
       </div>
     </div>

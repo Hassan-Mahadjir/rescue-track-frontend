@@ -1,39 +1,88 @@
-import { getItem, removeItem } from "@/utils/storage";
 import axios from "axios";
+import { getItem, removeItem, setItem } from "@/utils/storage";
+import Cookies from "js-cookie";
+import { AuthDataType } from "@/types/common.type";
+
+const baseurl = "http://192.168.3.251:3000";
 
 const http = axios.create({
-  baseURL: "http://192.168.147.175:3000",
+  baseURL: baseurl,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
+// Attach access token to each request
 http.interceptors.request.use(async (config) => {
-  const token = await getItem("token"); // Ensure we wait for the token to be retrieved
+  const token = (await getItem("token")) || Cookies.get("token");
 
-  // console.log(`${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
-
-  // Ensure headers exist before modifying
-  config.headers = config.headers || {};
-
-  if (token) {
+  if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
   return config;
 });
 
+// Handle response errors globally
 http.interceptors.response.use(
-  (response) => {
-    // console.info("RESPONSE", JSON.stringify(response.data, undefined, 4));
-    return response;
-  },
-  (error) => {
-    console.error("ERROR", JSON.stringify(error.response, undefined, 4));
-    if (error.response?.status === 401) {
-      removeItem("token");
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Avoid infinite loop and skip refresh for refresh endpoint itself
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh")
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshToken = await getItem("refreshToken");
+
+        if (!refreshToken) {
+          console.error("No refresh token available");
+          throw new Error("No refresh token available");
+        }
+
+        // Try to refresh tokens
+        const refreshResponse = await axios.post<AuthDataType>(
+          `${baseurl}/auth/refresh`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+
+        const { accessToken, refreshToken: newRefreshToken } =
+          refreshResponse.data;
+
+        if (accessToken) {
+          await setItem("token", accessToken);
+          Cookies.set("token", accessToken, { path: "/", sameSite: "Lax" });
+        }
+
+        if (newRefreshToken) {
+          await setItem("refreshToken", newRefreshToken);
+        }
+
+        // Retry original request with new access token
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return http(originalRequest);
+      } catch (refreshError) {
+        console.error("🔴 Token refresh failed:", refreshError);
+        await removeItem("token");
+        await removeItem("refreshToken");
+        Cookies.remove("token");
+        return Promise.reject(refreshError);
+      }
     }
+
     return Promise.reject(error);
   }
 );

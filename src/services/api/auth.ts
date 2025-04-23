@@ -1,8 +1,12 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+"use client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LoginFormValues } from "@/types/login.type";
 import authService from "../auth-service";
-import { getItem, setItem } from "@/utils/storage";
+import { getItem, removeItem, setItem } from "@/utils/storage";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { useToast } from "@/hooks/use-toast";
+import { SignupFormValues, ValidationFormValues } from "@/types/signup.type";
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -12,6 +16,7 @@ export enum Role {
 
 export const useLogin = () => {
   const router = useRouter();
+  const { toast } = useToast();
 
   const {
     mutate: mutateLogin,
@@ -20,16 +25,166 @@ export const useLogin = () => {
   } = useMutation({
     mutationFn: (data: LoginFormValues) =>
       authService.postLogin({ password: data.password, email: data.email }),
-    onSuccess: async (data) => {
-      // console.log(`success from auth.ts ${data.data.data.accessToken}`);
-      setItem("token", data.data.data.accessToken);
-      if (await getItem("token")) {
-        router.push("/dashboard");
-        console.log("token is set", await getItem("token"));
+    onSuccess: async (response) => {
+      // console.log(`success from auth.ts ${response.data.data.accessToken}`);
+      const token = response.data.data.accessToken;
+      const refreshToken = response.data.data.refreshToken;
+      if (token) {
+        await setItem("token", token);
+        await setItem("refreshToken", refreshToken);
+        Cookies.set("token", token, { path: "/", sameSite: "Lax" });
+        Cookies.set("refreshToken", refreshToken, {
+          path: "/",
+          sameSite: "Lax",
+        });
+        router.replace("/dashboard");
+
+        // Successful login toast
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully logged in.",
+          variant: "default", // Optional, can use "default" as well
+          duration: 3000,
+          progressColor: "bg-green-500", // Optional, or your theme class
+        });
       }
     },
-    onError: () => {},
+    onError: () => {
+      // Unsuccessful login toast
+      toast({
+        title: "Login failed",
+        description: "Invalid email or password.",
+        variant: "destructive",
+        duration: 3000,
+        progressColor: "bg-red-500", // Optional, or your theme class
+      });
+    },
   });
 
   return { mutateLogin, isPending, ...props };
+};
+
+export const useLogout = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { mutate: logout, isPending } = useMutation({
+    mutationFn: () => authService.postLogout(),
+    onSuccess: async () => {
+      await removeItem("token");
+      await removeItem("refreshToken");
+      Cookies.remove("token");
+      Cookies.remove("refreshToken");
+
+      queryClient.clear();
+      router.replace("/login");
+    },
+
+    onError: (error) => {
+      console.error("Logout failed:", error);
+      // Optionally show a toast or feedback
+    },
+  });
+
+  return { logout, isPending };
+};
+
+export const useSignup = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const {
+    mutate: mutateSingup,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: SignupFormValues) => authService.postSignup(data),
+    onSuccess: async (response) => {
+      setItem("validation-email", response.data.data.email);
+      authService.verifyEmail(response.data.data.email);
+      router.replace("/signup/validation");
+    },
+    onError: (error: any) => {
+      // Unsuccessful login toast
+      toast({
+        title: "unsuccessful signup",
+        description: error.message,
+        variant: "destructive",
+        duration: 3000,
+        progressColor: "bg-red-500", // Optional, or your theme class
+      });
+    },
+  });
+
+  return { mutateSingup, isPending, ...props };
+};
+
+export const useResendEmail = (email: string) => {
+  const { toast } = useToast();
+
+  const {
+    mutate: resendVerificationEmail,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: () => {
+      if (!email) throw new Error("Email is missing.");
+      return authService.verifyEmail(email);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Verification email sent",
+        description: "Please check your inbox.",
+        variant: "default",
+        duration: 4000,
+        progressColor: "bg-green-500",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to resend",
+        description: error.message,
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { resendVerificationEmail, isPending, ...props };
+};
+
+export const useVerifyEmail = () => {
+  const { toast } = useToast();
+
+  const {
+    mutate: verifyEmail,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: ValidationFormValues) => {
+      if (!data.email || !data.otp) throw new Error("Email or OTP is missing.");
+      return authService.verifyOTP(data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Verification successful",
+        description: "Your email has been verified.",
+        variant: "default",
+        duration: 4000,
+        progressColor: "bg-green-500",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Verification failed",
+        description: error.message,
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { verifyEmail, isVerifyPending: isPending, ...props };
 };
