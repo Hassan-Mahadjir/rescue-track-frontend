@@ -1,7 +1,7 @@
 import React from "react";
-import { DataTable } from "./list/DataTable";
 import { columns } from "./list/Columns";
 import { Patient } from "@/types/patient.type";
+import { DataTable } from "../table/DataTable";
 
 interface PcrReportListProps {
   patients?: Patient[];
