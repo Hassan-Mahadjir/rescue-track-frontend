@@ -1,11 +1,12 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import { Patient } from "@/types/patient.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown, Ellipsis } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<Person>[] = [
+export const columns: ColumnDef<Patient>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -28,17 +29,31 @@ export const columns: ColumnDef<Person>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: "fullName",
-    header: "Full Name",
+    accessorKey: "firstName",
+    header: "First Name",
+    cell: ({ row }) => {
+      const id = row.original.id;
+      const firstName = row.original.firstName || "";
+
+      return <Link href={`/report/pcr/${id}`}>{firstName}</Link>;
+    },
+  },
+  {
+    accessorKey: "lastName",
+    header: "Last Name",
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
-    cell: ({ row }) => {
-      const id = row.original.id;
-      const fullName = row.getValue("fullName");
-
-      return <Link href={`/report/pcr/${id}`}>{fullName as string}</Link>;
-    },
+  },
+  {
+    id: "fullName",
+    header: "Full Name",
+    accessorFn: (row) => `${row.firstName ?? ""} ${row.lastName ?? ""}`,
+    enableSorting: true,
+    enableColumnFilter: true,
+    enableGlobalFilter: true,
+    // optionally hide it by default:
+    enableHiding: true,
   },
   {
     accessorKey: "gender",
@@ -48,24 +63,25 @@ export const columns: ColumnDef<Person>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "country",
-    header: "Country",
+    accessorKey: "nationality",
+    header: "Nationality",
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
   },
   {
-    accessorKey: "idNumber",
+    id: "id",
+    accessorKey: "id",
     header: "ID Number",
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
   },
   {
-    accessorKey: "incidentDate",
+    accessorKey: "createdAt",
     header: "Incident Date",
     cell: ({ row }) => {
-      const date = new Date(row.getValue("incidentDate"));
+      const date = new Date(row.getValue("createdAt"));
       const incidentDate = date.toLocaleDateString();
       return <div>{incidentDate}</div>;
     },
@@ -100,7 +116,7 @@ export const columns: ColumnDef<Person>[] = [
               ? "bg-red-100 text-red-800"
               : "bg-yellow-100 text-yellow-800"
           }`}
-          style={{ minWidth: "80px", textAlign: "center" }} // Ensures alignment
+          style={{ minWidth: "80px", textAlign: "center" }}
         >
           {status as string}
         </div>
@@ -121,7 +137,7 @@ export const columns: ColumnDef<Person>[] = [
           onClick={() => {
             console.log("Action clicked for:", row.original);
           }}
-          className="px-2 py-1 rounded hover:text-gray-400"
+          className="rounded flex justify-center items-center hover:text-gray-400"
         >
           <Ellipsis />
         </Link>

@@ -20,23 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { CardHeader } from "@/components/ui/card";
-import {
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
-  Plus,
-  Search,
-  SlidersHorizontal,
-  Upload,
-} from "lucide-react";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { TooltipButton } from "../TooltipButton";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { exportSelectedRows } from "@/utils/exportUtils";
-import FilterDialog from "../FilterDialog";
-import { ColumnVisibilityDropdown } from "./ColumnVisibilityDropdown";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -45,19 +29,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
 import { TableLoading } from "@/components/loading/TableLoading";
+import DefultToolbar from "./toolbars/DefultToolbar";
+
+export type ToolbarType =
+  | "cities"
+  | "orders"
+  | "products"
+  | "users"
+  | "default";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   loading?: boolean;
+  toolbarType?: ToolbarType;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   loading = false,
+  toolbarType = "default",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -91,66 +84,10 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <CardHeader className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-        <TooltipProvider>
-          {/* Search and Filter Section */}
-          <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-            {/* Search Bar and Filter Button */}
-            <div className="w-full md:w-auto flex items-center space-x-2">
-              <div className="relative w-full md:w-96">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input
-                  placeholder="Search by patient names or ID..."
-                  value={table.getState().globalFilter ?? ""}
-                  onChange={(e) => table.setGlobalFilter(e.target.value)}
-                  className="pl-10 w-full bg-white border"
-                />
-              </div>
-
-              <Dialog>
-                <DialogTrigger asChild>
-                  <TooltipButton
-                    tooltipText="Filter Data"
-                    className="bg-white text-black hover:text-white hover:bg-main"
-                  >
-                    <SlidersHorizontal />
-                  </TooltipButton>
-                </DialogTrigger>
-                <FilterDialog />
-              </Dialog>
-            </div>
-
-            {/* Spacer to create space between sections */}
-            <div className="flex-grow"></div>
-
-            {/* Action Buttons (Add, Export, etc.) */}
-            <div className="w-full md:w-auto flex justify-end items-center space-x-2">
-              <Link href="pcr/create">
-                <TooltipButton
-                  tooltipText="Add New Report"
-                  className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
-                >
-                  <Plus />
-                </TooltipButton>
-              </Link>
-              <ColumnVisibilityDropdown table={table} />
-              <TooltipButton
-                tooltipText="Export Data"
-                className="btn rounded-full bg-white font-semibold text-black hover:text-white hover:bg-main"
-                onClick={() => {
-                  const selectedRows = table.getSelectedRowModel().rows;
-                  exportSelectedRows(selectedRows, "patient_data.xlsx", "xlsx");
-                }}
-              >
-                <Upload />
-                Export
-              </TooltipButton>
-            </div>
-          </div>
-        </TooltipProvider>
-      </CardHeader>
-
       {/* Table Section */}
+      <div>
+        <DefultToolbar table={table} />
+      </div>
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
