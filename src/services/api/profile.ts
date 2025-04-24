@@ -18,7 +18,7 @@ const useprofile = () => {
     console.error("Failed to fetch profile:", error);
   }
 
-  return { profileData, ...props };
+  return { profileData, isError, ...props };
 };
 
 export default useprofile;

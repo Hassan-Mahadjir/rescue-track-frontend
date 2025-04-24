@@ -18,6 +18,8 @@ export function middleware(request: NextRequest) {
     "/signup/step-two",
     "/signup/step-three",
     "/signup/validation", // Add this route
+    "/google-redirect",
+    "/microsoft-redirect",
   ];
 
   const isPublicRoute = publicRoutes.some(
@@ -38,7 +40,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (!token && !isPublicRoute) {
-    // console.log("🚫 Not authenticated, redirecting to /login");
+    console.log("🚫 Not authenticated, redirecting to /login");
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

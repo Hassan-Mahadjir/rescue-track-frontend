@@ -46,6 +46,11 @@ class AuthService extends BaseService {
     );
     return response;
   }
+
+  async getUser(id: number) {
+    const response = await http.get<AppResponse<AuthDataType>>(`/user/${id}`);
+    return response;
+  }
 }
 
 export default new AuthService();
