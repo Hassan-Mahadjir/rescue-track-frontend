@@ -29,11 +29,8 @@ export const columns: ColumnDef<Patient>[] = [
     enableSorting: false,
   },
   {
-    id: "firstName",
+    accessorKey: "firstName",
     header: "First Name",
-    enableSorting: true,
-    enableColumnFilter: true,
-    enableHiding: true,
     cell: ({ row }) => {
       const id = row.original.id;
       const firstName = row.original.firstName || "";
@@ -46,6 +43,16 @@ export const columns: ColumnDef<Patient>[] = [
     header: "Last Name",
     enableSorting: true,
     enableColumnFilter: true,
+    enableHiding: true,
+  },
+  {
+    id: "fullName",
+    header: "Full Name",
+    accessorFn: (row) => `${row.firstName ?? ""} ${row.lastName ?? ""}`,
+    enableSorting: true,
+    enableColumnFilter: true,
+    enableGlobalFilter: true,
+    // optionally hide it by default:
     enableHiding: true,
   },
   {
@@ -63,6 +70,7 @@ export const columns: ColumnDef<Patient>[] = [
     enableHiding: true,
   },
   {
+    id: "id",
     accessorKey: "id",
     header: "ID Number",
     enableSorting: true,
@@ -129,7 +137,7 @@ export const columns: ColumnDef<Patient>[] = [
           onClick={() => {
             console.log("Action clicked for:", row.original);
           }}
-          className="px-2 py-1 rounded hover:text-gray-400"
+          className="rounded flex justify-center items-center hover:text-gray-400"
         >
           <Ellipsis />
         </Link>

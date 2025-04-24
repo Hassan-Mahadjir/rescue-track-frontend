@@ -44,7 +44,7 @@ const PcrPage = () => {
         </div>
       </div>
       <div>
-        <PcrReportList patients={data} />
+        <PcrReportList patients={data} loading={isPending} />
       </div>
     </div>
   );

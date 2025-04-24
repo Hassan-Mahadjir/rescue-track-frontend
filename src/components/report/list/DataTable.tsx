@@ -46,15 +46,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { TableLoading } from "@/components/loading/TableLoading";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  loading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  loading = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -70,6 +73,12 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       pagination,
+    },
+    initialState: {
+      columnVisibility: {
+        firstName: false,
+        lastName: false,
+      },
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -93,10 +102,7 @@ export function DataTable<TData, TValue>({
                 <Input
                   placeholder="Search by patient names or ID..."
                   value={table.getState().globalFilter ?? ""}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    table.setGlobalFilter(value);
-                  }}
+                  onChange={(e) => table.setGlobalFilter(e.target.value)}
                   className="pl-10 w-full bg-white border"
                 />
               </div>
@@ -192,7 +198,9 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {loading ? (
+              <TableLoading colSpan={columns.length} rows={3} />
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (

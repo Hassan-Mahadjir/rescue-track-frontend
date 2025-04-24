@@ -5,12 +5,13 @@ import { Patient } from "@/types/patient.type";
 
 interface PcrReportListProps {
   patients?: Patient[];
+  loading?: boolean;
 }
 
-const PcrReportList = ({ patients }: PcrReportListProps) => {
+const PcrReportList = ({ patients, loading }: PcrReportListProps) => {
   return (
     <div className="rounded-lg border-0 bg-gradient-to-r from-gray-100 to-white p-6 mb-4">
-      <DataTable columns={columns} data={patients ?? []} />
+      <DataTable columns={columns} data={patients ?? []} loading={loading} />
     </div>
   );
 };

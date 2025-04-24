@@ -7,7 +7,6 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 import { Table } from "@tanstack/react-table";
 import { TooltipButton } from "../TooltipButton";
