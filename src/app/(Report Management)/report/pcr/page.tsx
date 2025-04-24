@@ -15,7 +15,6 @@ const PcrPage = () => {
       (Array.isArray(patient.treatments) ? patient.treatments.length : 0)
     );
   }, 0);
-  console.log(data);
 
   return (
     <div className="mt-5 px-5 space-y-3">

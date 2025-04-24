@@ -31,6 +31,10 @@ export const columns: ColumnDef<PCRs>[] = [
   {
     accessorKey: "firstName",
     header: "First Name",
+    accessorFn: (row) => row.patient.firstName,
+    cell: ({ row: { original: patient } }) => (
+      <span>{patient.patient.firstName}</span>
+    ),
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -38,6 +42,7 @@ export const columns: ColumnDef<PCRs>[] = [
   {
     accessorKey: "lastName",
     header: "Last Name",
+    accessorFn: (row) => `${row.patient.lastName}`,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -55,6 +60,7 @@ export const columns: ColumnDef<PCRs>[] = [
   {
     accessorKey: "gender",
     header: "Gender",
+    accessorFn: (row) => `${row.patient.gender}`,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -62,6 +68,7 @@ export const columns: ColumnDef<PCRs>[] = [
   {
     accessorKey: "nationality",
     header: "Nationality",
+    accessorFn: (row) => `${row.patient.nationality}`,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -102,8 +109,8 @@ export const columns: ColumnDef<PCRs>[] = [
         </span>
       </div>
     ),
-    cell: ({ row }) => {
-      const status = row.getValue("status");
+    cell: ({ row: { original: data } }) => {
+      const status = data.patient.status;
       return (
         <div
           className={`rounded-lg text-sm ${

@@ -8,15 +8,13 @@ import MedicationTab from "@/components/report/pcr/MedicationTab";
 import { Form } from "@/components/ui/form";
 import { PCRFormContextProider } from "@/components/PCRFormContextProvider";
 import { usePatient } from "@/services/api/patients";
+import { useParams } from "next/navigation";
 
-const PatientDetails = async ({
-  params,
-}: {
-  params: Promise<{ patientId: string }>;
-}) => {
-  const patientId = (await params).patientId;
+const PatientDetails = () => {
+  const params = useParams();
+  const patientId = params.patientId;
 
-  const { patientData, isPending } = usePatient(+patientId);
+  const { patientData, isPending } = usePatient(Number(patientId));
   const patient = patientData?.data.data;
   if (!patient) {
     return <div>patient not found</div>;
@@ -25,7 +23,9 @@ const PatientDetails = async ({
   return (
     <div className="mx-5 my-2">
       {/*Patient personal information */}
-      <div>{/* <PatientPersonalInfo patient={patient} /> */}</div>
+      <div>
+        <PatientPersonalInfo patient={patient} />
+      </div>
 
       {/* Incident details */}
       <div className="bg-gray-100 shadow-lg rounded-lg mt-4 px-4 py-1">
