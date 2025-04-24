@@ -1,20 +1,21 @@
 "use client";
 import PcrReportList from "@/components/report/PcrReportList";
 import ReportSummaryCard from "@/components/report/ReportSummaryCard";
-import usePatients from "@/services/api/patient";
+import { usePCRs } from "@/services/api/patients";
 import { Siren, Users, FileText } from "lucide-react";
 import React from "react";
 
 const PcrPage = () => {
-  const { patientData, isPending } = usePatients();
+  const { patientData, isPending } = usePCRs();
   const data = patientData?.data.data;
 
   const totalReports = data?.reduce((count, patient) => {
     return (
       count +
-      (Array.isArray(patient.updateHistory) ? patient.updateHistory.length : 0)
+      (Array.isArray(patient.treatments) ? patient.treatments.length : 0)
     );
   }, 0);
+  console.log(data);
 
   return (
     <div className="mt-5 px-5 space-y-3">

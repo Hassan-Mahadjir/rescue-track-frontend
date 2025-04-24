@@ -1,12 +1,12 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { Patient } from "@/types/patient.type";
+import { PCRs } from "@/types/patients.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown, Ellipsis } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<Patient>[] = [
+export const columns: ColumnDef<PCRs>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -31,12 +31,9 @@ export const columns: ColumnDef<Patient>[] = [
   {
     accessorKey: "firstName",
     header: "First Name",
-    cell: ({ row }) => {
-      const id = row.original.id;
-      const firstName = row.original.firstName || "";
-
-      return <Link href={`/report/pcr/${id}`}>{firstName}</Link>;
-    },
+    enableSorting: true,
+    enableColumnFilter: true,
+    enableHiding: true,
   },
   {
     accessorKey: "lastName",
@@ -48,11 +45,11 @@ export const columns: ColumnDef<Patient>[] = [
   {
     id: "fullName",
     header: "Full Name",
-    accessorFn: (row) => `${row.firstName ?? ""} ${row.lastName ?? ""}`,
+    accessorFn: (row) =>
+      `${row.patient.firstName ?? ""} ${row.patient.lastName ?? ""}`.trim(),
     enableSorting: true,
     enableColumnFilter: true,
     enableGlobalFilter: true,
-    // optionally hide it by default:
     enableHiding: true,
   },
   {

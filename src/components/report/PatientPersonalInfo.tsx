@@ -12,26 +12,10 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import PersonalInfoDialog from "./PersonalInfoDialog";
-
-// Define the type for patient data
-interface PatientInfo {
-  fullName: string;
-  age: number;
-  phone: string;
-  email: string;
-  profileImage?: string;
-  identifyNumber: string;
-  dateOfBirth: string;
-  nationality: string;
-  address: string;
-  sex: string;
-  height: number;
-  weight: number;
-  bloodType: string;
-}
+import { Patient } from "@/types/patients.type";
 
 interface PatientPersonalInfoProps {
-  patient: PatientInfo;
+  patient: Patient;
 }
 
 const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({

@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,6 +7,7 @@ import CrewTab from "@/components/report/pcr/CrewTab";
 import MedicationTab from "@/components/report/pcr/MedicationTab";
 import { Form } from "@/components/ui/form";
 import { PCRFormContextProider } from "@/components/PCRFormContextProvider";
+import { usePatient } from "@/services/api/patients";
 
 const PatientDetails = async ({
   params,
@@ -14,28 +16,16 @@ const PatientDetails = async ({
 }) => {
   const patientId = (await params).patientId;
 
-  const patientData = {
-    fullName: "Mahamat Hassan Mahadjir Hassan",
-    age: 24,
-    phone: "+90 533 867 28 35",
-    email: "hm.mahadjir@gmail.com",
-    profileImage: "/report/sample.jpg",
-    identifyNumber: "20910394",
-    dateOfBirth: "17-05-2000",
-    nationality: "Chad",
-    address: "Northern Cyprus",
-    sex: "Male",
-    height: 189,
-    weight: 74,
-    bloodType: "- O",
-  };
-
+  const { patientData, isPending } = usePatient(+patientId);
+  const patient = patientData?.data.data;
+  if (!patient) {
+    return <div>patient not found</div>;
+  }
+  console.log(patient);
   return (
     <div className="mx-5 my-2">
       {/*Patient personal information */}
-      <div>
-        <PatientPersonalInfo patient={patientData} />
-      </div>
+      <div>{/* <PatientPersonalInfo patient={patient} /> */}</div>
 
       {/* Incident details */}
       <div className="bg-gray-100 shadow-lg rounded-lg mt-4 px-4 py-1">
