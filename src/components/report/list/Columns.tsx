@@ -1,12 +1,12 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { Patient } from "@/types/patient.type";
+import { PCRs } from "@/types/patients.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown, Ellipsis } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<Patient>[] = [
+export const columns: ColumnDef<PCRs>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -31,16 +31,18 @@ export const columns: ColumnDef<Patient>[] = [
   {
     accessorKey: "firstName",
     header: "First Name",
-    cell: ({ row }) => {
-      const id = row.original.id;
-      const firstName = row.original.firstName || "";
-
-      return <Link href={`/report/pcr/${id}`}>{firstName}</Link>;
-    },
+    accessorFn: (row) => row.patient.firstName,
+    cell: ({ row: { original: patient } }) => (
+      <span>{patient.patient.firstName}</span>
+    ),
+    enableSorting: true,
+    enableColumnFilter: true,
+    enableHiding: true,
   },
   {
     accessorKey: "lastName",
     header: "Last Name",
+    accessorFn: (row) => `${row.patient.lastName}`,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -48,16 +50,17 @@ export const columns: ColumnDef<Patient>[] = [
   {
     id: "fullName",
     header: "Full Name",
-    accessorFn: (row) => `${row.firstName ?? ""} ${row.lastName ?? ""}`,
+    accessorFn: (row) =>
+      `${row.patient.firstName ?? ""} ${row.patient.lastName ?? ""}`.trim(),
     enableSorting: true,
     enableColumnFilter: true,
     enableGlobalFilter: true,
-    // optionally hide it by default:
     enableHiding: true,
   },
   {
     accessorKey: "gender",
     header: "Gender",
+    accessorFn: (row) => `${row.patient.gender}`,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -65,6 +68,7 @@ export const columns: ColumnDef<Patient>[] = [
   {
     accessorKey: "nationality",
     header: "Nationality",
+    accessorFn: (row) => `${row.patient.nationality}`,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -105,8 +109,8 @@ export const columns: ColumnDef<Patient>[] = [
         </span>
       </div>
     ),
-    cell: ({ row }) => {
-      const status = row.getValue("status");
+    cell: ({ row: { original: data } }) => {
+      const status = data.patient.status;
       return (
         <div
           className={`rounded-lg text-sm ${
