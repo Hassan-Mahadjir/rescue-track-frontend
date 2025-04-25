@@ -47,14 +47,14 @@ export default function PcrReportStep2() {
       <h2 className="text-lg font-medium text-gray-800 mb-4">
         Treatment provided during transport
       </h2>
-      <Card className="p-4">
+      {/* <Card className="p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {fields.map((field, index) => (
             <div
               key={field.id}
               className="flex items-center gap-2 border rounded-md p-2 bg-gray-100"
             >
-              {/* Medication Name */}
+               Medication Name 
               <FormField
                 control={control}
                 name={`medications.${index}.name`}
@@ -72,7 +72,7 @@ export default function PcrReportStep2() {
                 )}
               />
 
-              {/* Medication Size */}
+              Medication Size 
               <FormField
                 control={control}
                 name={`medications.${index}.size`}
@@ -90,7 +90,7 @@ export default function PcrReportStep2() {
                 )}
               />
 
-              {/* Remove button */}
+              Remove button 
               <Button
                 variant="ghost"
                 size="icon"
@@ -104,7 +104,7 @@ export default function PcrReportStep2() {
           ))}
         </div>
 
-        {/* Add Medication Button */}
+         Add Medication Button 
         <div className="flex justify-end">
           <Button
             variant="default"
@@ -115,8 +115,8 @@ export default function PcrReportStep2() {
             <Plus className="mr-1 h-4 w-4" /> Add medication
           </Button>
         </div>
-      </Card>
-      {/* <Card className="p-4 border border-gray-300">
+      </Card> */}
+      <Card className="p-4 border border-gray-300">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {fields.map((field, index) => (
             <div
@@ -202,7 +202,7 @@ export default function PcrReportStep2() {
             <Plus className="mr-1 h-4 w-4" /> Add medication
           </Button>
         </div>
-      </Card> */}
+      </Card>
     </div>
   );
 }
