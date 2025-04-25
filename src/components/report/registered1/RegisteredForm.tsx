@@ -16,7 +16,7 @@ import PcrReportStep1 from "./PcrReportStep1";
 import PcrReportStep2 from "./PcrReportStep2";
 import PcrReportStep3 from "./PcrReportStep3";
 import PcrReportStep4 from "./PcrReportStep4";
-import FormSummary from "../registered/FormSummary";
+import FormSummary from "./FormSummary";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import {
   Dialog,
