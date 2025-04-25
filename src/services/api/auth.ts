@@ -188,3 +188,33 @@ export const useVerifyEmail = () => {
 
   return { verifyEmail, isVerifyPending: isPending, ...props };
 };
+
+export const usegetUser = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const {
+    mutate, // renamed mutate
+    data: userData,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: () => authService.getUser(id),
+    onSuccess: async (response) => {
+      const token = response.data.data.accessToken;
+      const refreshToken = response.data.data.refreshToken;
+      console.log(`success from auth.ts ${token}`);
+      // Store tokens if needed here
+    },
+    onError: () => {
+      toast({
+        title: "Login Failed",
+        description: "Could not fetch user. Please try again.",
+        variant: "destructive",
+      });
+      router.push("/login");
+    },
+  });
+
+  return { mutateGetUser: mutate, userData, isPending, ...props };
+};

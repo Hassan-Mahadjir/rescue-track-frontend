@@ -42,6 +42,13 @@ const Login = () => {
     mutateLogin(values);
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3000/auth/google/login";
+  };
+
+  const handleMicrosoftLogin = () => {
+    window.location.href = "http://localhost:3000/auth/microsoft/login";
+  };
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Sign up section */}
@@ -94,7 +101,10 @@ const Login = () => {
         </div>
 
         {/* other account Signin */}
-        <button className="flex items-center justify-center gap-x-2 border-2 border-[var(--main)] rounded-lg w-3/5 px-3 py-2 hover:text-white hover:bg-second-main transition-colors duration-150">
+        <button
+          onClick={handleMicrosoftLogin}
+          className="flex items-center justify-center gap-x-2 border-2 border-[var(--main)] rounded-lg w-3/5 px-3 py-2 hover:text-white hover:bg-second-main transition-colors duration-150"
+        >
           <Image
             src="/auth/microsoft.png"
             width={24}
@@ -107,7 +117,10 @@ const Login = () => {
           </span>
         </button>
 
-        <button className="flex items-center justify-center gap-x-2 border-2 border-[var(--main)] rounded-lg w-3/5 px-3 py-2 hover:text-white hover:bg-second-main transition-colors duration-150">
+        <button
+          onClick={handleGoogleLogin}
+          className="flex items-center justify-center gap-x-2 border-2 border-[var(--main)] rounded-lg w-3/5 px-3 py-2 hover:text-white hover:bg-second-main transition-colors duration-150"
+        >
           <Image
             src="/auth/GoogleGlogo.svg.webp"
             width={24}
