@@ -53,7 +53,7 @@ export type Patient = {
 
 export type PCR = {
   id: number;
-  patientCondition: string;
+  patientCondition: string | null;
   initialCondition: string | null;
   primarySymptoms: string | null;
   notes: string | null;
