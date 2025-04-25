@@ -12,18 +12,16 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import PersonalInfoDialog from "./PersonalInfoDialog";
-import { PCRs } from "@/types/patients.type";
+import { PCR } from "@/types/patients.type";
 
 interface PatientPersonalInfoProps {
-  patient: PCRs;
+  patient: PCR;
 }
 
 const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
   patient,
 }) => {
   const profile = patient.patient;
-  console.log(profile);
-  console.log(patient);
 
   return (
     <div className="bg-gray-100 shadow-md rounded-lg p-4 flex flex-col md:flex-row justify-center md:items-start gap-6">
@@ -76,7 +74,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
         ))}
 
         {/* Update Button */}
-        <div className="row-start-2 col-start-2 xmd:col-start-4 row-start-3">
+        <div className=" col-start-2 xmd:col-start-4 row-start-3">
           <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-main font-semibold">Update Info</Button>

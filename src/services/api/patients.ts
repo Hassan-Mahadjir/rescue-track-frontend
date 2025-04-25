@@ -21,7 +21,7 @@ export const usePCRs = () => {
   return { patientData, ...props };
 };
 
-export const usePatient = (id: number) => {
+export const usePCR = (id: number) => {
   // const router = useRouter();
   const {
     data: patientData,

@@ -51,9 +51,9 @@ export type Patient = {
   createdAt: string;
 };
 
-export type PCRs = {
+export type PCR = {
   id: number;
-  patientCondition: string;
+  patientCondition: string | null;
   initialCondition: string | null;
   primarySymptoms: string | null;
   notes: string | null;
@@ -62,5 +62,3 @@ export type PCRs = {
   initiatedBy: InitiatedBy;
   patient: Patient;
 };
-
-export type PCR = {};

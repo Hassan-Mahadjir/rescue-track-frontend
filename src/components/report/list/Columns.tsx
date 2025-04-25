@@ -1,12 +1,12 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { PCRs } from "@/types/patients.type";
+import { PCR } from "@/types/patients.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown, Ellipsis } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<PCRs>[] = [
+export const columns: ColumnDef<PCR>[] = [
   {
     id: "select",
     header: ({ table }) => (
