@@ -1,97 +1,57 @@
 "use client";
+
 import FormInput from "@/components/FormInput";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { useNewPCRFormContext } from "@/hooks/PCRFormContext";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const formSchema = z.object({
-  incidentNumber: z.string().min(2),
-  dateOfIncident: z.string().min(1, "Date of Incident is required"),
-  incidentType: z.string().min(1, "Incident Type is required"),
-  incidentStatus: z.string().min(1, "Incident Status is required"),
-  region: z.string().min(1, "Region is required"),
-  neighborhood: z.string().min(1, "Neighborhood is required"),
-  street: z.string().min(1, "Street is required"),
-  landmark: z.string().optional(),
-  reason: z.string().optional(),
-});
-
-type FormSchema = z.infer<typeof formSchema>;
+import { useFormContext } from "react-hook-form";
 
 const IncidentTab = () => {
-  const formContext = useNewPCRFormContext();
-
-  // Initialize form with default values
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      incidentNumber: formContext.propertyForm?.incidentNumber || "17891",
-    },
-  });
-
-  // Sync form value with context when the component mounts
-  useEffect(() => {
-    formContext.updatePropertyForm({
-      incidentNumber: form.getValues("incidentNumber"),
-    });
-  }, []); // Runs only once when the component mounts
-
-  // Watch form changes and update the context dynamically
-  useEffect(() => {
-    const subscription = form.watch((values) => {
-      formContext.updatePropertyForm(values);
-    });
-    return () => subscription.unsubscribe();
-  }, [form, formContext]);
-
-  const onSubmit = async (values: FormSchema) => {
-    console.log(formContext.propertyForm?.incidentNumber);
-  };
+  const form = useFormContext();
 
   return (
-    <div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4"
-        >
-          <FormInput
-            form={form}
-            label="Incident number"
-            name="incidentNumber"
-          />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+      {/* Read-only Incident ID */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-gray-600">
+          Incident Number
+        </label>
+        <div className="px-3 py-2 border rounded-md bg-gray-100 text-gray-800 text-sm">
+          {form.getValues("id")}
+        </div>
+      </div>
 
-          <FormInput
-            form={form}
-            name="dateOfIncident"
-            label="Date of incident"
-            placeholder="DD-MM-YYYY"
-          />
+      <FormInput
+        form={form}
+        name="createdAt"
+        label="Date of Incident"
+        type="date"
+      />
 
-          <FormInput
-            form={form}
-            name="incidentType"
-            label="Incident Type"
-            placeholder="Enter type"
-          />
-          <FormInput
-            form={form}
-            name="incidentStatus"
-            label="Incident Status"
-            placeholder="Status"
-          />
-          <FormInput
-            form={form}
-            name="region"
-            label="Region"
-            placeholder="Enter region"
-          />
-        </form>
-      </Form>
+      <FormInput
+        form={form}
+        name="patientCondition"
+        label="Patient Condition"
+        placeholder="e.g., Stable, Critical"
+      />
+
+      <FormInput
+        form={form}
+        name="initialCondition"
+        label="Initial Condition"
+        placeholder="e.g., Conscious, Unconscious"
+      />
+
+      <FormInput
+        form={form}
+        name="primarySymptoms"
+        label="Primary Symptoms"
+        placeholder="e.g., Headache, Nausea"
+      />
+
+      <FormInput
+        form={form}
+        name="notes"
+        label="Additional Notes"
+        placeholder="Optional notes about the patient or scene"
+      />
     </div>
   );
 };

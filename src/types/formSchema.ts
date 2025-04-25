@@ -65,3 +65,15 @@ export type PatientReportData = {
     notes: string;
   };
 };
+
+// new
+// PCR Schema
+export const PCRSchema = z.object({
+  id: z.number(),
+  patientCondition: z.string().nullable(),
+  initialCondition: z.string().nullable(),
+  primarySymptoms: z.string().nullable(),
+  notes: z.string().nullable(),
+  createdAt: z.string(),
+});
+export type PCRData = z.infer<typeof PCRSchema>;
