@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getItem } from "./utils/storage";
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
+export async function middleware(request: NextRequest) {
+  const token = request.cookies.get("token")?.value || (await getItem("token"));
   const pathname = request.nextUrl.pathname;
 
   // console.log("🔍 Middleware triggered");

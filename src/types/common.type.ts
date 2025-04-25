@@ -1,7 +1,7 @@
 export type AppResponse<T> = {
   data: T;
   message: string;
-  statusCode: string;
+  status: string;
 };
 
 export type AuthDataType = {

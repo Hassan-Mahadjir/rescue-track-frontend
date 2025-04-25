@@ -9,7 +9,7 @@ const StepHeader = () => {
       <h1 className=" text-2xl font-semibold mb-1">{t("createAccount")}</h1>
       <p className="text-xs">
         {t("alreadyHaveAccount")}{" "}
-        <a href="#" className="underline underline-offset-4">
+        <a href="/login" className="underline underline-offset-4">
           {t("login")}
         </a>
       </p>

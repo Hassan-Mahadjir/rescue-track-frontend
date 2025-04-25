@@ -23,6 +23,14 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
+export const handleGoogleLogin = () => {
+  window.location.href = "http://localhost:3000/auth/google/login";
+};
+
+export const handleMicrosoftLogin = () => {
+  window.location.href = "http://localhost:3000/auth/microsoft/login";
+};
+
 const Login = () => {
   const t = useTranslations("Auth");
   const { mutateLogin, isPending } = useLogin();
@@ -42,13 +50,6 @@ const Login = () => {
     mutateLogin(values);
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/auth/google/login";
-  };
-
-  const handleMicrosoftLogin = () => {
-    window.location.href = "http://localhost:3000/auth/microsoft/login";
-  };
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Sign up section */}
@@ -133,8 +134,8 @@ const Login = () => {
           </span>
         </button>
         <p className="text-sm font-semibold">
-          {t("noAccount")}
-          <a href="#" className="underline underline-offset-4">
+          {t("noAccount")}{" "}
+          <a href="/signup" className="underline underline-offset-4">
             {t("register")}
           </a>
         </p>

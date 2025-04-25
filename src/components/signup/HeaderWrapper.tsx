@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import StepHeader from "../Step-header";
-import StepNavigation from "../Step-navigation";
+import StepHeader from "./Step-header";
+import StepNavigation from "./Step-navigation";
 
 const hiddenPaths = ["/signup/validation"];
 

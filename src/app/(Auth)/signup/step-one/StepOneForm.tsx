@@ -12,6 +12,7 @@ import Image from "next/image";
 import { useNewUserFormContext } from "@/hooks/userFormContext";
 import { useRouter } from "next/navigation";
 import { setItem } from "@/utils/storage";
+import { handleGoogleLogin, handleMicrosoftLogin } from "../../login/page";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -70,7 +71,10 @@ const StepOneForm = () => {
 
         {/* other accounts */}
         <div className="flex flex-col items-center justify-center gap-4 w-full md:flex-row">
-          <button className="flex items-center justify-center gap-x-2 w-full px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150">
+          <button
+            onClick={handleMicrosoftLogin}
+            className="flex items-center justify-center gap-x-2 w-full px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150"
+          >
             <Image
               src="/auth/microsoft.png"
               width={24}
@@ -83,7 +87,10 @@ const StepOneForm = () => {
             </span>
           </button>
 
-          <button className="flex items-center justify-center gap-x-2 w-full px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150">
+          <button
+            onClick={handleGoogleLogin}
+            className="flex items-center justify-center gap-x-2 w-full px-8 py-3 border-2 border-[var(--main)] rounded-3xl hover:text-white hover:bg-second-main transition-colors duration-150"
+          >
             <Image
               src="/auth/GoogleGlogo.svg.webp"
               width={24}
