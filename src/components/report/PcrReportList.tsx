@@ -1,10 +1,10 @@
 import React from "react";
 import { columns } from "./list/Columns";
 import { DataTable } from "../table/DataTable";
-import { PCRs } from "@/types/patients.type";
+import { PCR } from "@/types/patients.type";
 
 interface PcrReportListProps {
-  patients?: PCRs[];
+  patients?: PCR[];
   loading?: boolean;
 }
 

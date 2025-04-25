@@ -7,14 +7,14 @@ import CrewTab from "@/components/report/pcr/CrewTab";
 import MedicationTab from "@/components/report/pcr/MedicationTab";
 import { Form } from "@/components/ui/form";
 import { PCRFormContextProider } from "@/components/PCRFormContextProvider";
-import { usePatient } from "@/services/api/patients";
 import { useParams } from "next/navigation";
+import { usePCR } from "@/services/api/patients";
 
 const PatientDetails = () => {
   const params = useParams();
   const patientId = params.patientId;
 
-  const { patientData, isPending } = usePatient(Number(patientId));
+  const { patientData, isPending } = usePCR(Number(patientId));
   const patient = patientData?.data.data;
   if (!patient) {
     return <div>patient not found</div>;
