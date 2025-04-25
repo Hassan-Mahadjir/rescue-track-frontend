@@ -1,12 +1,5 @@
 import { Treatments } from "@/types/patients.type";
-import { Button } from "@/components/ui/button";
-import { Pencil, Trash } from "lucide-react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import DeleteTreatment from "./edit report/DeleteTreatment";
 import EditTreatmentDialog from "./edit report/EditTreatmentDialog";
 
@@ -15,6 +8,13 @@ interface TreatmentProps {
 }
 
 const Treatment = ({ treatments }: TreatmentProps) => {
+  if (!treatments || treatments.length === 0) {
+    return (
+      <div className="flex items-center justify-center p-8 text-muted-foreground">
+        No treatments available
+      </div>
+    );
+  }
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {treatments.map((treat) => (
@@ -32,8 +32,8 @@ const Treatment = ({ treatments }: TreatmentProps) => {
               </div>
 
               <div className="flex gap-1">
-                <EditTreatmentDialog />
-                <DeleteTreatment />
+                <EditTreatmentDialog treatment={treat} />
+                <DeleteTreatment id={treat.id} />
               </div>
             </div>
           </CardContent>
