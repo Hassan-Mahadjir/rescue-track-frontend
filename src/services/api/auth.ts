@@ -1,6 +1,6 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LoginFormValues } from "@/types/login.type";
+import { ChangePassword, LoginFormValues } from "@/types/login.type";
 import authService from "../auth-service";
 import { getItem, removeItem, setItem } from "@/utils/storage";
 import { useRouter } from "next/navigation";
@@ -102,7 +102,7 @@ export const useSignup = () => {
     onSuccess: async (response) => {
       setItem("validation-email", response.data.data.email);
       authService.verifyEmail(response.data.data.email);
-      router.replace("/signup/validation");
+      router.replace("/validation");
     },
     onError: (error: any) => {
       // Unsuccessful login toast
@@ -174,6 +174,7 @@ export const useVerifyEmail = () => {
         duration: 4000,
         progressColor: "bg-green-500",
       });
+      removeItem("validation-email");
     },
     onError: (error: any) => {
       toast({
@@ -217,4 +218,34 @@ export const usegetUser = (id: number) => {
   });
 
   return { mutateGetUser: mutate, userData, isPending, ...props };
+};
+
+export const useChangePassword = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const {
+    mutate: mutateChangePassword,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: ChangePassword) =>
+      authService.postChangePassword({
+        oldPassword: data.oldPassword,
+        newPassword: data.newPassword,
+      }),
+    onSuccess: async (response) => {},
+    onError: () => {
+      // Unsuccessful login toast
+      toast({
+        title: "Change password failed",
+        description: "Something is not correct.",
+        variant: "destructive",
+        duration: 3000,
+        progressColor: "bg-red-500", // Optional, or your theme class
+      });
+    },
+  });
+
+  return { mutateChangePassword, isPending, ...props };
 };

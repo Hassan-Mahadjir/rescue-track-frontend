@@ -18,9 +18,11 @@ export function middleware(request: NextRequest) {
     "/signup/step-one",
     "/signup/step-two",
     "/signup/step-three",
-    "/signup/validation", // Add this route
+    "/validation",
     "/google-redirect",
     "/microsoft-redirect",
+    "/forgot-password",
+    "/reset-password",
   ];
 
   const isPublicRoute = publicRoutes.some(
