@@ -1,35 +1,30 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PatientReportData, PcrReportFormValues } from "@/types/formSchema";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ArrowLeft, CheckCircle2, Printer } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { ReportDocument } from "../template";
+import { PCR, Treatments, Patient, InitiatedBy } from "@/types/patients.type";
 
 interface FormSummaryProps {
-  data: PatientReportData; // Using Partial as the data might not have all fields
+  data: PCR;
 }
 
 const FormSummary = ({ data }: FormSummaryProps) => {
-  const selectedPatient = {
-    id: "4",
-    fullName: "John Smith",
-    age: 45,
-    phone: "+1 555 123 4567",
-    email: "john.smith@example.com",
-    profileImage: "/report/sample.jpg",
-    identifyNumber: "98765432",
-    dateOfBirth: "22-11-1978",
-    nationality: "United States",
-    address: "New York, USA",
-    sex: "Male",
-    height: 178,
-    weight: 82,
-    bloodType: "B-",
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
   };
-  const handlePrint = () => {
-    window.print();
+
+  const getFullName = (patient: Patient) => {
+    return `${patient.firstName} ${patient.lastName}`;
   };
+
+  const getStaffFullName = (initiatedBy: InitiatedBy) => {
+    return `${initiatedBy.profile.firstName} ${initiatedBy.profile.lastName}`;
+  };
+
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-sm border print:shadow-none print:border-none">
       {/* Success Header */}
@@ -48,187 +43,147 @@ const FormSummary = ({ data }: FormSummaryProps) => {
         <h2 className="text-lg font-semibold border-b pb-2 mb-4">
           Patient Information
         </h2>
-        {selectedPatient && (
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-shrink-0">
-              <div className="relative h-20 w-20">
-                <Image
-                  src={selectedPatient.profileImage || "/placeholder.svg"}
-                  alt={selectedPatient.fullName}
-                  className="rounded-full object-cover"
-                  fill
-                />
-              </div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-medium">
-                {selectedPatient.fullName}
-              </h3>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2">
-                <p className="text-gray-700">
-                  <span className="font-medium">ID:</span>{" "}
-                  {selectedPatient.identifyNumber}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Age:</span>{" "}
-                  {selectedPatient.age}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Gender:</span>{" "}
-                  {selectedPatient.sex}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Blood Type:</span>{" "}
-                  {selectedPatient.bloodType}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Nationality:</span>{" "}
-                  {selectedPatient.nationality}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Phone:</span>{" "}
-                  {selectedPatient.phone}
-                </p>
-              </div>
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-shrink-0">
+            <div className="relative h-20 w-20">
+              <Image
+                src="/placeholder.svg" // Replace with data.patient.avatar if available
+                alt={getFullName(data.patient)}
+                className="rounded-full object-cover"
+                fill
+              />
             </div>
           </div>
-        )}
+          <div className="flex-1">
+            <h3 className="text-xl font-medium">{getFullName(data.patient)}</h3>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2">
+              <p className="text-gray-700">
+                <span className="font-medium">ID:</span>{" "}
+                {data.patient.nationalID}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Age:</span>{" "}
+                {new Date().getFullYear() -
+                  new Date(data.patient.dateofBirth).getFullYear()}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Gender:</span>{" "}
+                {data.patient.gender}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Height:</span>{" "}
+                {data.patient.height} cm
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Weight:</span>{" "}
+                {data.patient.weight} kg
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Phone:</span> {data.patient.phone}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">DOB:</span>{" "}
+                {formatDate(data.patient.dateofBirth)}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Nationality:</span>{" "}
+                {data.patient.nationality}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+
+      {/* Report Information */}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold border-b pb-2 mb-4">
+          Report Information
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p className="text-gray-700">
+              <span className="font-medium">Report ID:</span> {data.id}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">Created At:</span>{" "}
+              {formatDate(data.createdAt)}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">Initial Condition:</span>{" "}
+              {data.initialCondition || "Not specified"}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-700">
+              <span className="font-medium">Patient Condition:</span>{" "}
+              {data.patientCondition || "Not specified"}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">Primary Symptoms:</span>{" "}
+              {data.primarySymptoms || "Not specified"}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">Reported By:</span>{" "}
+              {getStaffFullName(data.initiatedBy)}
+            </p>
+          </div>
+        </div>
       </div>
       <hr />
 
       {/* Medications */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold border-b pb-2 mb-4">
-          Medications Administered
+          Treatments Administered
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {data.medications.map(
-            (medication, index) =>
-              medication.name && (
-                <Card key={index} className="bg-gray-50">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">{medication.name}</p>
+          {data.treatments.length > 0 ? (
+            data.treatments.map((treatment: Treatments, index) => (
+              <Card key={treatment.id} className="bg-gray-50">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium">{treatment.name}</p>
+                      <p className="text-sm text-gray-600">
+                        Dosage: {treatment.quantity} {treatment.unit}
+                      </p>
+                      {treatment.category && (
                         <p className="text-sm text-gray-600">
-                          Dosage: {medication.size}
+                          Category: {treatment.category}
                         </p>
-                      </div>
-                      <Badge
-                        variant="outline"
-                        className="bg-blue-50 text-blue-700 border-blue-200"
-                      >
-                        Med #{index + 1}
-                      </Badge>
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
-              )
+                    <Badge
+                      variant="outline"
+                      className="bg-blue-50 text-blue-700 border-blue-200"
+                    >
+                      Treatment #{index + 1}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-gray-500 italic">No treatments administered</p>
           )}
-          {data.medications.length === 0 && (
-            <p className="text-gray-500 italic">No medications administered</p>
-          )}
-        </div>
-      </div>
-
-      <hr />
-
-      {/* Transport Information */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold border-b pb-2 mb-4">
-          Transport Information
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <p className="text-gray-700">
-              <span className="font-medium">Transfer Type:</span>{" "}
-              {data.transportInfo.transferType || "Not specified"}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Vehicle ID:</span>{" "}
-              {data.transportInfo.vehicleId || "Not specified"}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Emergency Type:</span>{" "}
-              {data.transportInfo.emergencyType || "Not specified"}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-700">
-              <span className="font-medium">Pickup Address:</span>{" "}
-              {data.transportInfo.pickupAddress || "Not specified"}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Destination Address:</span>{" "}
-              {data.transportInfo.destinationAddress || "Not specified"}
-            </p>
-          </div>
         </div>
       </div>
       <hr />
 
-      {/* Medical History */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold border-b pb-2 mb-4">
-          Medical History
-        </h2>
-
-        {/* Conditions */}
-        <div className="mb-4">
-          <h3 className="font-medium mb-2">Medical Conditions</h3>
-          <div className="flex flex-wrap gap-2">
-            {data.medicalHistory.conditions &&
-            data.medicalHistory.conditions.length > 0 ? (
-              data.medicalHistory.conditions.map((condition) => (
-                <Badge
-                  key={condition}
-                  variant="secondary"
-                  className="bg-gray-100"
-                >
-                  {condition.replace("_", " ")}
-                </Badge>
-              ))
-            ) : (
-              <p className="text-gray-500 italic">
-                No medical conditions reported
-              </p>
-            )}
-          </div>
+      {/* Notes */}
+      {data.notes && (
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold border-b pb-2 mb-4">
+            Additional Notes
+          </h2>
+          <Card className="bg-gray-50">
+            <CardContent className="p-4">
+              <p className="text-gray-700">{data.notes}</p>
+            </CardContent>
+          </Card>
         </div>
-
-        {/* Allergies */}
-        <div className="mb-4">
-          <h3 className="font-medium mb-2">Allergies</h3>
-          <div className="flex flex-wrap gap-2">
-            {data.medicalHistory.allergies &&
-            data.medicalHistory.allergies.length > 0 ? (
-              data.medicalHistory.allergies.map((allergy) => (
-                <Badge
-                  key={allergy}
-                  variant="secondary"
-                  className="bg-red-50 text-red-700 border-red-200"
-                >
-                  {allergy.replace("_", " ")}
-                </Badge>
-              ))
-            ) : (
-              <p className="text-gray-500 italic">No allergies reported</p>
-            )}
-          </div>
-        </div>
-
-        {/* Notes */}
-        {data.medicalHistory.notes && (
-          <div>
-            <h3 className="font-medium mb-2">Additional Notes</h3>
-            <Card className="bg-gray-50">
-              <CardContent className="p-4">
-                <p className="text-gray-700">{data.medicalHistory.notes}</p>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Action Buttons */}
       <div className="flex justify-between mt-8 print:hidden">
@@ -236,13 +191,20 @@ const FormSummary = ({ data }: FormSummaryProps) => {
           <ArrowLeft className="h-4 w-4" />
           Create New Report
         </Button>
-        <Button
-          onClick={handlePrint}
-          className="flex items-center gap-2 bg-main"
+        <PDFDownloadLink
+          document={<ReportDocument data={data} />}
+          fileName={`patient-report-${data.id}.pdf`}
         >
-          <Printer className="h-4 w-4" />
-          Print Report
-        </Button>
+          {({ loading }) => (
+            <Button
+              className="bg-main flex items-center gap-2"
+              disabled={loading}
+            >
+              <Printer className="h-4 w-4" />
+              {loading ? "Generating PDF..." : "Print Report"}
+            </Button>
+          )}
+        </PDFDownloadLink>
       </div>
 
       {/* Report Footer */}

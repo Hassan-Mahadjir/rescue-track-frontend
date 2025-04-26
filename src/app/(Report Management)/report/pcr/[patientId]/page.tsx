@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import EditPCRDialog from "@/components/report/pcr/edit report/EditPCRDialog";
 import Treatment from "@/components/report/pcr/Treatment";
 import CreateTreatmentDialog from "@/components/report/pcr/CreateTreatmentDialog";
+import { PCR } from "@/types/patients.type";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { ReportDocument } from "@/components/report/template";
 
 const PatientDetails = () => {
   const params = useParams();
@@ -38,10 +41,17 @@ const PatientDetails = () => {
           <div className="flex flex-row space-x-4">
             <EditPCRDialog pcr={patient} />
             <div>
-              <Button className="bg-main" size="sm">
-                <Printer className="w-4 h-4 mr-1" />
-                Print
-              </Button>
+              <PDFDownloadLink
+                document={<ReportDocument data={patient} />}
+                fileName={`patient-report-${patient.id}.pdf`}
+              >
+                {({ loading }) => (
+                  <Button className="bg-main" size="sm" disabled={loading}>
+                    <Printer className="w-4 h-4 mr-1" />
+                    {loading ? "Generating PDF..." : "Print"}
+                  </Button>
+                )}
+              </PDFDownloadLink>
             </div>
           </div>
         </div>
