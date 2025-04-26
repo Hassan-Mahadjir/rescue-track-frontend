@@ -8,6 +8,7 @@ class PatientsService extends BaseService {
     const response = await http.get<AppResponse<PCR[]>>(
       "/patient-care-report/manage"
     );
+
     return response;
   }
   async getPCR(id: number) {

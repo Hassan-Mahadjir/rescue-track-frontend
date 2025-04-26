@@ -3,7 +3,7 @@ import { getItem, removeItem, setItem } from "@/utils/storage";
 import Cookies from "js-cookie";
 import { AuthDataType } from "@/types/common.type";
 
-const baseurl = "http://192.168.0.105:3000";
+const baseurl = "http://192.168.0.106:3000";
 
 const http = axios.create({
   baseURL: baseurl,
@@ -16,8 +16,9 @@ const http = axios.create({
 
 // Attach access token to each request
 http.interceptors.request.use(async (config) => {
-  const token = (await getItem("token")) || Cookies.get("token");
+  // console.log("🔑 Token from cookies:", Cookies.get("token"));
 
+  const token = Cookies.get("token") || (await getItem("token"));
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
