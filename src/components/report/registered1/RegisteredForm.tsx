@@ -38,7 +38,7 @@ const RegisteredForm = () => {
     resolver: zodResolver(PcrReportFormSchema),
     defaultValues: {
       patientId: undefined,
-      medications: [{ name: "", size: "" }],
+      treatment: [],
       transportInfo: {
         transferType: "",
         vehicleId: "",

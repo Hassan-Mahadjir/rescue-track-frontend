@@ -1,3 +1,4 @@
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,16 +15,27 @@ interface FormSummaryProps {
 
 const FormSummary = ({ data }: FormSummaryProps) => {
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
+    return dateString ? new Date(dateString).toLocaleDateString() : "N/A";
   };
 
   const getFullName = (patient: Patient) => {
-    return `${patient.firstName} ${patient.lastName}`;
+    return (
+      `${patient?.firstName || ""} ${patient?.lastName || ""}`.trim() ||
+      "Unknown Patient"
+    );
   };
 
-  const getStaffFullName = (initiatedBy: InitiatedBy) => {
-    return `${initiatedBy.profile.firstName} ${initiatedBy.profile.lastName}`;
+  const getStaffFullName = (initiatedBy?: InitiatedBy) => {
+    if (!initiatedBy?.profile) return "Unknown Staff";
+    return `${initiatedBy.profile.firstName || ""} ${
+      initiatedBy.profile.lastName || ""
+    }`.trim();
   };
+
+  // Safely get patient data with fallbacks
+  const patient = data?.patient || ({} as Patient);
+  const treatments = data?.treatments || [];
+  const initiatedBy = data?.initiatedBy;
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-sm border print:shadow-none print:border-none">
@@ -47,47 +59,50 @@ const FormSummary = ({ data }: FormSummaryProps) => {
           <div className="flex-shrink-0">
             <div className="relative h-20 w-20">
               <Image
-                src="/placeholder.svg" // Replace with data.patient.avatar if available
-                alt={getFullName(data.patient)}
+                src="/placeholder.svg"
+                alt={getFullName(patient)}
                 className="rounded-full object-cover"
                 fill
               />
             </div>
           </div>
           <div className="flex-1">
-            <h3 className="text-xl font-medium">{getFullName(data.patient)}</h3>
+            <h3 className="text-xl font-medium">{getFullName(patient)}</h3>
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2">
               <p className="text-gray-700">
                 <span className="font-medium">ID:</span>{" "}
-                {data.patient.nationalID}
+                {patient.nationalID || "N/A"}
               </p>
               <p className="text-gray-700">
                 <span className="font-medium">Age:</span>{" "}
-                {new Date().getFullYear() -
-                  new Date(data.patient.dateofBirth).getFullYear()}
+                {patient.dateofBirth
+                  ? new Date().getFullYear() -
+                    new Date(patient.dateofBirth).getFullYear()
+                  : "N/A"}
               </p>
               <p className="text-gray-700">
                 <span className="font-medium">Gender:</span>{" "}
-                {data.patient.gender}
+                {patient.gender || "N/A"}
               </p>
               <p className="text-gray-700">
                 <span className="font-medium">Height:</span>{" "}
-                {data.patient.height} cm
+                {patient.height ? `${patient.height} cm` : "N/A"}
               </p>
               <p className="text-gray-700">
                 <span className="font-medium">Weight:</span>{" "}
-                {data.patient.weight} kg
+                {patient.weight ? `${patient.weight} kg` : "N/A"}
               </p>
               <p className="text-gray-700">
-                <span className="font-medium">Phone:</span> {data.patient.phone}
+                <span className="font-medium">Phone:</span>{" "}
+                {patient.phone || "N/A"}
               </p>
               <p className="text-gray-700">
                 <span className="font-medium">DOB:</span>{" "}
-                {formatDate(data.patient.dateofBirth)}
+                {formatDate(patient.dateofBirth)}
               </p>
               <p className="text-gray-700">
                 <span className="font-medium">Nationality:</span>{" "}
-                {data.patient.nationality}
+                {patient.nationality || "N/A"}
               </p>
             </div>
           </div>
@@ -103,7 +118,7 @@ const FormSummary = ({ data }: FormSummaryProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p className="text-gray-700">
-              <span className="font-medium">Report ID:</span> {data.id}
+              <span className="font-medium">Report ID:</span> {data.id || "N/A"}
             </p>
             <p className="text-gray-700">
               <span className="font-medium">Created At:</span>{" "}
@@ -125,28 +140,31 @@ const FormSummary = ({ data }: FormSummaryProps) => {
             </p>
             <p className="text-gray-700">
               <span className="font-medium">Reported By:</span>{" "}
-              {getStaffFullName(data.initiatedBy)}
+              {getStaffFullName(initiatedBy)}
             </p>
           </div>
         </div>
       </div>
       <hr />
 
-      {/* Medications */}
+      {/* Treatments */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold border-b pb-2 mb-4">
           Treatments Administered
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {data.treatments.length > 0 ? (
-            data.treatments.map((treatment: Treatments, index) => (
-              <Card key={treatment.id} className="bg-gray-50">
+          {treatments.length > 0 ? (
+            treatments.map((treatment: Treatments, index) => (
+              <Card key={treatment.id || index} className="bg-gray-50">
                 <CardContent className="p-4">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="font-medium">{treatment.name}</p>
+                      <p className="font-medium">
+                        {treatment.name || "Unnamed Treatment"}
+                      </p>
                       <p className="text-sm text-gray-600">
-                        Dosage: {treatment.quantity} {treatment.unit}
+                        Dosage: {treatment.quantity || "N/A"}{" "}
+                        {treatment.unit || ""}
                       </p>
                       {treatment.category && (
                         <p className="text-sm text-gray-600">
@@ -193,7 +211,7 @@ const FormSummary = ({ data }: FormSummaryProps) => {
         </Button>
         <PDFDownloadLink
           document={<ReportDocument data={data} />}
-          fileName={`patient-report-${data.id}.pdf`}
+          fileName={`patient-report-${data.id || "unknown"}.pdf`}
         >
           {({ loading }) => (
             <Button
