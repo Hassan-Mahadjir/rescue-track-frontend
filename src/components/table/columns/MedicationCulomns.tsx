@@ -13,9 +13,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { calculateStockLevel } from "@/utils/inventoryUtils";
-import format from "date-fns/format";
+import { format } from "date-fns";
+import MedicationActions from "../action/MedicationActions";
 
-export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
+export const InventoryMedicationColumns: ColumnDef<InventoryMedication>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -49,9 +50,9 @@ export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "barcode",
-    header: "Barcode",
-    cell: ({ row }) => <div>{row.getValue("barcode")}</div>,
+    accessorKey: "batchNumber",
+    header: "Batch Number",
+    cell: ({ row }) => <div>{row.getValue("batchNumber")}</div>,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -108,29 +109,9 @@ export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const inventory = row.original;
+      const batchNumber = row.original.batchNumber;
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(inventory.barcode)}
-            >
-              Copy Barcode
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View details</DropdownMenuItem>
-            <DropdownMenuItem>Edit inventory</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <MedicationActions batchNumber={batchNumber} />;
     },
   },
 ];

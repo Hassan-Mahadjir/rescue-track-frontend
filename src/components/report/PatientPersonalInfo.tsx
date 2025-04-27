@@ -23,6 +23,31 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
 }) => {
   const profile = patient.patient;
 
+  // Helper function to calculate age accurately
+  const calculateAge = (dateString: string): number => {
+    const birthDate = new Date(dateString);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
+
+  // Format date to readable format (e.g., "May 17, 1999")
+  const formatDate = (dateString: string): string => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
     <div className="bg-gray-100 shadow-md rounded-lg p-4 flex flex-col md:flex-row justify-center md:items-start gap-6">
       {/* Patient Info Section */}
@@ -41,9 +66,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
               {profile.firstName} {patient.patient.lastName}
             </h2>
             <p className="text-gray-600 text-sm">
-              <strong>Age:</strong>{" "}
-              {new Date().getFullYear() -
-                new Date(profile.dateofBirth).getFullYear()}
+              <strong>Age:</strong> {calculateAge(profile.dateofBirth)}
             </p>
             <p className="text-gray-600 text-sm">
               <strong>Phone:</strong> {profile.phone}
@@ -59,7 +82,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
       <div className="grid grid-cols-4 grid-rows-3 gap-4 px-4 text-gray-700 w-full xmd:flex-1 md:border-l">
         {[
           { label: "Identify Number", value: profile.id },
-          { label: "Date of Birth", value: profile.dateofBirth },
+          { label: "Date of Birth", value: formatDate(profile.dateofBirth) },
           { label: "Nationality", value: profile.nationality },
           { label: "Address", value: "addres not found in db" },
           { label: "Sex", value: profile.gender },

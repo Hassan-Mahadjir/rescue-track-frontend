@@ -1,5 +1,5 @@
-import { InventoryDataTable } from "@/components/inventory/list/InventoryDataTable";
-import { InventoryMedicationColumns } from "@/components/inventory/list/medicationCulomns";
+import { InventoryMedicationColumns } from "@/components/table/columns/MedicationCulomns";
+import { DataTable } from "@/components/table/DataTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 
@@ -89,16 +89,14 @@ const page = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="medication">
-          <InventoryDataTable
+          <DataTable
             columns={InventoryMedicationColumns}
             data={inventoryMedication}
+            toolbarType="inventory"
           />
         </TabsContent>
         <TabsContent value="vaccine">
-          <InventoryDataTable
-            columns={InventoryMedicationColumns}
-            data={vaccines}
-          />
+          <DataTable columns={InventoryMedicationColumns} data={vaccines} />
         </TabsContent>
         <TabsContent value="syringe">Insert some data</TabsContent>
         <TabsContent value="lab">No data found</TabsContent>

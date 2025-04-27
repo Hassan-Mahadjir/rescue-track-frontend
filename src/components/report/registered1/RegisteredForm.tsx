@@ -16,7 +16,7 @@ import PcrReportStep1 from "./PcrReportStep1";
 import PcrReportStep2 from "./PcrReportStep2";
 import PcrReportStep3 from "./PcrReportStep3";
 import PcrReportStep4 from "./PcrReportStep4";
-import FormSummary from "../registered/FormSummary";
+import FormSummary from "./FormSummary";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import {
   Dialog,
@@ -26,6 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { PCR } from "@/types/patients.type";
 
 const RegisteredForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -37,7 +38,7 @@ const RegisteredForm = () => {
     resolver: zodResolver(PcrReportFormSchema),
     defaultValues: {
       patientId: undefined,
-      medications: [{ name: "", size: "" }],
+      treatment: [],
       transportInfo: {
         transferType: "",
         vehicleId: "",
@@ -136,7 +137,7 @@ const RegisteredForm = () => {
                   </p>
                 </div>
               </div>
-              <FormSummary data={getValues() as PatientReportData} />
+              <FormSummary data={getValues() as PCR} />
               <div className="max-w-4xl mx-auto p-6 flex justify-between items-center mt-8">
                 <Button
                   type="button"

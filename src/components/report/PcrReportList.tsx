@@ -1,7 +1,7 @@
 import React from "react";
-import { columns } from "./list/Columns";
 import { DataTable } from "../table/DataTable";
 import { PCR } from "@/types/patients.type";
+import { PcrColumns } from "../table/columns/PcrColumns";
 
 interface PcrReportListProps {
   patients?: PCR[];
@@ -11,7 +11,16 @@ interface PcrReportListProps {
 const PcrReportList = ({ patients, loading }: PcrReportListProps) => {
   return (
     <div className="rounded-lg border-0 bg-gradient-to-r from-gray-100 to-white p-6 mb-4">
-      <DataTable columns={columns} data={patients ?? []} loading={loading} />
+      <DataTable
+        columns={PcrColumns}
+        data={patients ?? []}
+        loading={loading}
+        toolbarType="PCR"
+        initialColumnVisibility={{
+          firstName: false,
+          lastName: false,
+        }}
+      />
     </div>
   );
 };

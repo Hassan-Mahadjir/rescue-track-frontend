@@ -1,6 +1,14 @@
 import React from "react";
-import { InventoryDataTable } from "./list/InventoryDataTable";
-import { InventoryColumns } from "./list/InventoryColumns";
+import { InventoryColumns } from "../table/columns/InventoryColumns";
+import { DataTable } from "../table/DataTable";
+
+export type InventoryManagement = {
+  itemName: string;
+  barcode: string;
+  category: string;
+  quantity: number;
+  expirationDate: string;
+};
 
 const inventoryData: InventoryManagement[] = [
   {
@@ -148,7 +156,11 @@ const inventoryData: InventoryManagement[] = [
 const InventoryManagementList = () => {
   return (
     <div className="mb-5">
-      <InventoryDataTable columns={InventoryColumns} data={inventoryData} />
+      <DataTable
+        columns={InventoryColumns}
+        data={inventoryData}
+        toolbarType="inventory"
+      />
     </div>
   );
 };
