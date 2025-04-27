@@ -1,6 +1,6 @@
 import React from "react";
 import { InventoryDataTable } from "./list/InventoryDataTable";
-import { InventoryColumns } from "./list/InventoryColumns";
+import { InventoryColumns } from "../table/columns/InventoryColumns";
 
 const inventoryData: InventoryManagement[] = [
   {

@@ -1,5 +1,4 @@
 import { InventoryDataTable } from "@/components/inventory/list/InventoryDataTable";
-import { InventoryMedicationColumns } from "@/components/inventory/list/medicationCulomns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 

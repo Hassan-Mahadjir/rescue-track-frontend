@@ -27,20 +27,12 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
-  ChevronDown,
   Plus,
   Search,
-  SlidersHorizontal,
   Upload,
 } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -48,7 +40,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ColumnVisibilityDropdown } from "@/components/report/list/ColumnVisibilityDropdown";
 import { TooltipButton } from "@/components/report/TooltipButton";
 import { exportSelectedRows } from "@/utils/exportUtils";
 
