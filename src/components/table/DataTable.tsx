@@ -10,6 +10,8 @@ import {
   type SortingState,
   type ColumnFiltersState,
   getPaginationRowModel,
+  type VisibilityState,
+  type Table as TableType,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -30,20 +32,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TableLoading } from "@/components/loading/TableLoading";
-import DefultToolbar from "./toolbars/PcrToolbar";
+import PcrToolbar from "./toolbars/PcrToolbar";
+import RunReportToobar from "./toolbars/RunReportToobar";
+import InventoryToolbar from "./toolbars/InventoryToolbar";
+import MedicationToolbar from "./toolbars/MedicationToolbar";
+import DefultToolbar from "./toolbars/DefultToolbar";
 
+// Define toolbar types
 export type ToolbarType =
-  | "cities"
-  | "orders"
-  | "products"
-  | "users"
+  | "PCR"
+  | "runReport"
+  | "inventory"
+  | "medication"
   | "default";
+
+// Toolbar props type
+interface ToolbarProps<TData> {
+  table: TableType<TData>;
+}
+
+// Toolbar components lookup
+const toolbarComponents: Record<
+  ToolbarType,
+  React.ComponentType<ToolbarProps<unknown>>
+> = {
+  PCR: PcrToolbar,
+  runReport: RunReportToobar, // placeholder
+  inventory: InventoryToolbar, // placeholder
+  medication: MedicationToolbar, // placeholder
+  default: DefultToolbar,
+};
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   loading?: boolean;
   toolbarType?: ToolbarType;
+  initialColumnVisibility?: VisibilityState;
 }
 
 export function DataTable<TData, TValue>({
@@ -51,6 +76,7 @@ export function DataTable<TData, TValue>({
   data,
   loading = false,
   toolbarType = "default",
+  initialColumnVisibility = {},
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -58,6 +84,8 @@ export function DataTable<TData, TValue>({
     pageIndex: 0,
     pageSize: 10,
   });
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -66,61 +94,68 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       pagination,
+      rowSelection,
     },
     initialState: {
-      columnVisibility: {
-        firstName: false,
-        lastName: false,
-      },
+      columnVisibility: initialColumnVisibility,
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onPaginationChange: setPagination,
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const ToolbarComponent = toolbarComponents[toolbarType];
+
   return (
     <div>
-      {/* Table Section */}
+      {/* Toolbar */}
       <div>
-        <DefultToolbar table={table} />
+        <ToolbarComponent table={table as TableType<unknown>} />
       </div>
+
+      {/* Table */}
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  // Special handling for Status column
+                  const isSortable = header.column.getCanSort();
+                  const isSorted = header.column.getIsSorted();
                   const isStatusColumn = header.id.includes("status");
 
                   return (
                     <TableHead
+                      key={header.id}
                       className={`text-black ${
                         isStatusColumn ? "text-center" : ""
                       }`}
-                      key={header.id}
+                      onClick={
+                        isSortable
+                          ? header.column.getToggleSortingHandler()
+                          : undefined
+                      }
                     >
                       <div
-                        onClick={header.column.getToggleSortingHandler()}
-                        style={{ cursor: "pointer" }}
-                        className={`${
+                        className={`flex items-center ${
                           isStatusColumn ? "justify-center" : ""
-                        } flex items-center hover:text-gray-600`}
+                        } cursor-pointer hover:text-gray-600`}
                       >
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        <span className="w-2"></span>
-                        {header.column.getCanSort() && !isStatusColumn && (
-                          <span className="flex items-center text-gray-400">
-                            {header.column.getIsSorted() === "asc" ? (
+                        {isSortable && !isStatusColumn && (
+                          <span className="ml-2">
+                            {isSorted === "asc" ? (
                               <ArrowUp className="h-4 w-4" />
-                            ) : header.column.getIsSorted() === "desc" ? (
+                            ) : isSorted === "desc" ? (
                               <ArrowDown className="h-4 w-4" />
                             ) : (
                               <ArrowUpDown className="h-4 w-4" />
@@ -137,7 +172,7 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {loading ? (
               <TableLoading colSpan={columns.length} rows={3} />
-            ) : table.getRowModel().rows?.length ? (
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
@@ -164,15 +199,13 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/* Pagination Section */}
+      {/* Pagination */}
       <div className="flex flex-col md:flex-row items-center justify-between mt-4 space-y-4 md:space-y-0">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
             value={table.getState().pagination.pageSize.toString()}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value));
-            }}
+            onValueChange={(value) => table.setPageSize(Number(value))}
           >
             <SelectTrigger className="w-[100px]">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
@@ -186,12 +219,14 @@ export function DataTable<TData, TValue>({
             </SelectContent>
           </Select>
         </div>
+
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </p>
         </div>
+
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"

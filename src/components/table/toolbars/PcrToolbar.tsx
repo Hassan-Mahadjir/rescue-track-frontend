@@ -16,11 +16,11 @@ import React from "react";
 import { TooltipButton } from "@/components/report/TooltipButton";
 import FilterDialog from "@/components/report/FilterDialog";
 
-interface DefaultToolbarProps<TData> {
+interface PcrToolbarProps<TData> {
   table: Table<TData>;
 }
 
-const DefaultToolbar = <TData,>({ table }: DefaultToolbarProps<TData>) => {
+const PcrToolbar = <TData,>({ table }: PcrToolbarProps<TData>) => {
   return (
     <CardHeader className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
       <TooltipProvider>
@@ -112,4 +112,4 @@ const DefaultToolbar = <TData,>({ table }: DefaultToolbarProps<TData>) => {
   );
 };
 
-export default DefaultToolbar;
+export default PcrToolbar;

@@ -12,7 +12,7 @@ const page = () => {
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
         {
-          label: "View all Report",
+          label: "View all",
           onClick: () => router.push("/inventory/medication"),
         },
       ],
@@ -23,7 +23,7 @@ const page = () => {
       imageSrc: "/inventory/shopping-list.png",
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
-        { label: "View all Report", onClick: () => console.log("View all") },
+        { label: "View all", onClick: () => console.log("View all") },
       ],
     },
 
@@ -33,7 +33,7 @@ const page = () => {
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
         {
-          label: "View all Report",
+          label: "View all",
           onClick: () => router.push("/inventory/management"),
         },
       ],
@@ -44,7 +44,7 @@ const page = () => {
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
         {
-          label: "View all Report",
+          label: "View all",
           onClick: () => router.push("/inventory/management"),
         },
       ],
@@ -55,7 +55,7 @@ const page = () => {
       buttons: [
         { label: "Create new", onClick: () => console.log("Create new") },
         {
-          label: "View all Report",
+          label: "View all",
           onClick: () => router.push("/inventory/management"),
         },
       ],

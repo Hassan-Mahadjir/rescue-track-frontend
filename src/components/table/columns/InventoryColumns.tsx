@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { calculateStockLevel } from "@/utils/inventoryUtils";
 import format from "date-fns/format";
+import { InventoryManagement } from "@/components/inventory/InventoryManagementList";
 
 export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
   {

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { calculateStockLevel } from "@/utils/inventoryUtils";
 import { format } from "date-fns";
+import MedicationActions from "../action/MedicationActions";
 
 export const InventoryMedicationColumns: ColumnDef<InventoryMedication>[] = [
   {
@@ -108,31 +109,9 @@ export const InventoryMedicationColumns: ColumnDef<InventoryMedication>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const inventory = row.original;
+      const batchNumber = row.original.batchNumber;
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(inventory.batchNumber)
-              }
-            >
-              Copy Batch Number ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View details</DropdownMenuItem>
-            <DropdownMenuItem>Edit inventory</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <MedicationActions batchNumber={batchNumber} />;
     },
   },
 ];
