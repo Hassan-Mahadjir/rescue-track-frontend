@@ -1,5 +1,6 @@
 "use client";
 
+import PcrActions from "@/components/table/action/PcrActions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PCR } from "@/types/patients.type";
 import { ColumnDef } from "@tanstack/react-table";
@@ -135,17 +136,7 @@ export const columns: ColumnDef<PCR>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const id = row.original.id;
-      return (
-        <Link
-          href={`./pcr/${id}`}
-          onClick={() => {
-            console.log("Action clicked for:", row.original);
-          }}
-          className="rounded flex justify-center items-center hover:text-gray-400"
-        >
-          <Ellipsis />
-        </Link>
-      );
+      return <PcrActions id={id} />;
     },
   },
 ];
