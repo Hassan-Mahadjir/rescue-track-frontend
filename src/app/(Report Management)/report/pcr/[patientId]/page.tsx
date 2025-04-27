@@ -3,14 +3,14 @@ import React from "react";
 import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
 import { useParams } from "next/navigation";
 import { usePCR } from "@/services/api/patients";
-import { Plus, Printer } from "lucide-react";
+import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EditPCRDialog from "@/components/report/pcr/edit report/EditPCRDialog";
 import Treatment from "@/components/report/pcr/Treatment";
 import CreateTreatmentDialog from "@/components/report/pcr/CreateTreatmentDialog";
-import { PCR } from "@/types/patients.type";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ReportDocument } from "@/components/report/template";
+import PCRLoading from "@/components/loading/PCRLoading";
 
 const PatientDetails = () => {
   const params = useParams();
@@ -18,16 +18,17 @@ const PatientDetails = () => {
 
   const { patientData, isPending } = usePCR(Number(patientId));
   const patient = patientData?.data.data;
+
   if (isPending) {
-    return <div>Loading</div>;
+    return <PCRLoading />;
   }
+
   if (!patient) {
-    return <div>no patient found</div>;
+    return <div className="mx-5 my-2">No patient found</div>;
   }
 
   return (
     <div className="mx-5 my-2">
-      {/*Patient personal information */}
       <div>
         <PatientPersonalInfo patient={patient} />
       </div>
