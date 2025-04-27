@@ -1,20 +1,26 @@
-import FilterDialog from "@/components/report/FilterDialog";
-import { ColumnVisibilityDropdown } from "@/components/report/list/ColumnVisibilityDropdown";
-import { TooltipButton } from "@/components/report/TooltipButton";
 import { CardHeader } from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { exportSelectedRows } from "@/utils/exportUtils";
 import { Table } from "@tanstack/react-table";
 import { Plus, Search, SlidersHorizontal, Upload } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import { TooltipButton } from "@/components/report/TooltipButton";
+import FilterDialog from "@/components/report/FilterDialog";
+
 interface DefaultToolbarProps<TData> {
   table: Table<TData>;
 }
 
-const DefultToolbar = <TData,>({ table }: DefaultToolbarProps<TData>) => {
+const DefaultToolbar = <TData,>({ table }: DefaultToolbarProps<TData>) => {
   return (
     <CardHeader className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
       <TooltipProvider>
@@ -58,7 +64,36 @@ const DefultToolbar = <TData,>({ table }: DefaultToolbarProps<TData>) => {
                 <Plus />
               </TooltipButton>
             </Link>
-            <ColumnVisibilityDropdown table={table} />
+
+            {/* Integrated Column Visibility Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <TooltipButton
+                  tooltipText="Toggle Columns"
+                  className="btn rounded-full bg-white text-black hover:text-white hover:bg-main"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                </TooltipButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <TooltipButton
               tooltipText="Export Data"
               className="btn rounded-full bg-white font-semibold text-black hover:text-white hover:bg-main"
@@ -77,4 +112,4 @@ const DefultToolbar = <TData,>({ table }: DefaultToolbarProps<TData>) => {
   );
 };
 
-export default DefultToolbar;
+export default DefaultToolbar;

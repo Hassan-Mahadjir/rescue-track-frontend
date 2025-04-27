@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TableLoading } from "@/components/loading/TableLoading";
-import DefultToolbar from "./toolbars/DefultToolbar";
+import DefultToolbar from "./toolbars/PcrToolbar";
 
 export type ToolbarType =
   | "cities"

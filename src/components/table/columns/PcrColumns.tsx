@@ -4,10 +4,9 @@ import PcrActions from "@/components/table/action/PcrActions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PCR } from "@/types/patients.type";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ArrowUpDown, Ellipsis } from "lucide-react";
-import Link from "next/link";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 
-export const columns: ColumnDef<PCR>[] = [
+export const PcrColumns: ColumnDef<PCR>[] = [
   {
     id: "select",
     header: ({ table }) => (
