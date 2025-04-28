@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { TbPasswordFingerprint } from "react-icons/tb";
 import { useChangePassword } from "@/services/api/auth";
+import { getItem, removeItem } from "@/utils/storage";
 
 const formSchema = z
   .object({
@@ -37,14 +38,17 @@ const ResetPasswordPage = () => {
 
   const onSubmit = async (values: FormSchema) => {
     console.log("Password reset values:", values);
+    const email = await getItem("validation-email");
+
     const newPassword = {
-      oldPassword: values.password,
-      newPassword: values.confirm,
+      email: email as string,
+      password: values.confirm,
     };
     try {
       await mutateChangePassword(newPassword);
-      // Handle success (e.g., show a success message, redirect, etc.)
-      console.log("Password reset successful");
+
+      removeItem("validation-email");
+      removeItem("Is-forget-password");
     } catch (error) {
       // Handle error (e.g., show an error message)
       console.error("Error resetting password:", error);

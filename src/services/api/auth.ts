@@ -1,6 +1,10 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChangePassword, LoginFormValues } from "@/types/login.type";
+import {
+  ChangePassword,
+  LoginFormValues,
+  ResetPassword,
+} from "@/types/login.type";
 import authService from "../auth-service";
 import { getItem, removeItem, setItem } from "@/utils/storage";
 import { useRouter } from "next/navigation";
@@ -174,7 +178,6 @@ export const useVerifyEmail = () => {
         duration: 4000,
         progressColor: "bg-green-500",
       });
-      removeItem("validation-email");
     },
     onError: (error: any) => {
       toast({
@@ -229,12 +232,21 @@ export const useChangePassword = () => {
     isPending,
     ...props
   } = useMutation({
-    mutationFn: (data: ChangePassword) =>
-      authService.postChangePassword({
-        oldPassword: data.oldPassword,
-        newPassword: data.newPassword,
+    mutationFn: (data: ResetPassword) =>
+      authService.patchChangePassword({
+        email: data.email,
+        password: data.password,
       }),
-    onSuccess: async (response) => {},
+    onSuccess: async (response) => {
+      toast({
+        title: `${response.data.message}`,
+        description: "You can now log in with your new password.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.replace("/login");
+    },
     onError: () => {
       // Unsuccessful login toast
       toast({

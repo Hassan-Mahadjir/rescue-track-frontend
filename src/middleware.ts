@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
     "/google-redirect",
     "/microsoft-redirect",
     "/forgot-password",
-    "/reset-password",
+    "/change-password",
   ];
 
   const isPublicRoute = publicRoutes.some(

@@ -3,6 +3,7 @@
 import FormInput from "@/components/FormInput";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useResendEmail, useVerifyEmail } from "@/services/api/auth";
 import { setItem } from "@/utils/storage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -19,6 +20,8 @@ type FormSchema = z.infer<typeof formSchema>;
 
 const ForgetPasswordpage = () => {
   const router = useRouter();
+  const [email, setEmail] = React.useState<string>("");
+  const { resendVerificationEmail } = useResendEmail(email);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -30,6 +33,9 @@ const ForgetPasswordpage = () => {
   const onSubmit = async (values: FormSchema) => {
     setItem("validation-email", values.email);
     setItem("Is-forget-password", true);
+
+    setEmail(values.email);
+    resendVerificationEmail();
 
     router.push("/validation");
   };

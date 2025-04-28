@@ -34,9 +34,7 @@ const FormSchema = z.object({
 const validation = () => {
   const router = useRouter();
 
-  const [email, setEmail] = useState<string>("");
-  const { resendVerificationEmail, isPending } = useResendEmail(email);
-  const { verifyEmail, isVerifyPending } = useVerifyEmail();
+  const [email, setEmail] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -45,23 +43,32 @@ const validation = () => {
     },
   });
 
+  const { resendVerificationEmail, isPending } = useResendEmail(email || "");
+  const { verifyEmail, isVerifyPending } = useVerifyEmail();
+
   useEffect(() => {
     const fetchEmail = async () => {
       const storedEmail = await getItem("validation-email");
-      if (typeof storedEmail === "string") setEmail(storedEmail);
+      setEmail(typeof storedEmail === "string" ? storedEmail : "");
     };
+
     fetchEmail();
   }, []);
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     try {
-      await verifyEmail({ email: email, otp: values.otp });
+      if (email) {
+        await verifyEmail({ email: email, otp: values.otp });
+      } else {
+        console.error("Email is null. Cannot verify OTP.");
+      }
       const isForgetPassword = await getItem("Is-forget-password");
       if (isForgetPassword === true) {
-        router.replace("/reset-password");
         removeItem("Is-forget-password");
+        router.replace("/change-password");
       } else {
         router.replace("/dashboard");
+        removeItem("validation-email");
       }
     } catch (error) {
       console.error("OTP verification failed:", error);

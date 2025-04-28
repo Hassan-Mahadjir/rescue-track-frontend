@@ -1,6 +1,10 @@
 import BaseService from "./base-service";
 import http from "./api/http";
-import { ChangePassword, LoginFormValues } from "@/types/login.type";
+import {
+  ChangePassword,
+  LoginFormValues,
+  ResetPassword,
+} from "@/types/login.type";
 import { AppResponse, AuthDataType } from "@/types/common.type";
 import {
   SignupFormValues,
@@ -52,9 +56,9 @@ class AuthService extends BaseService {
     return response;
   }
 
-  async postChangePassword(data: ChangePassword) {
-    const response = await http.put<AppResponse<null>>(
-      "auth/forget-password",
+  async patchChangePassword(data: ResetPassword) {
+    const response = await http.patch<AppResponse<null>>(
+      "/auth/forget-password",
       data
     );
     return response;

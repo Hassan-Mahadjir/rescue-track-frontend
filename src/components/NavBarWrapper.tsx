@@ -13,7 +13,7 @@ const hiddenPaths = [
   "/forgot-password",
   "/google-redirect",
   "/microsoft-redirect",
-  "/reset-password",
+  "/change-password",
 ];
 
 export default function NavBarWrapper() {

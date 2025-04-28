@@ -140,7 +140,7 @@ const Login = () => {
           </a>
         </p>
         <a
-          href="#"
+          href="/forgot-password"
           className="text-end inline-block text-sm underline-offset-4 hover:underline"
         >
           {t("forgetPassword")}
