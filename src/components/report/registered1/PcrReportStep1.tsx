@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import PatientPersonalInfo from "../PatientPersonalInfo";
+import { PatientInfoSkeleton } from "@/components/loading/PatientInfoSkeleton";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -26,7 +27,12 @@ export default function PcrReportStep1() {
 
   useEffect(() => {
     if (!data) return;
-    setResults(data);
+
+    const sorted = [...data].sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+
+    setResults(sorted.slice(0, 5));
   }, [data]);
 
   useEffect(() => {
@@ -45,16 +51,13 @@ export default function PcrReportStep1() {
         reportId.includes(searchLower)
       );
     });
-    setResults(filtered);
+
+    const sorted = [...filtered].sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+
+    setResults(sorted.slice(0, 5));
   }, [search, data]);
-
-  if (isPending) {
-    return <div>Loading patients...</div>;
-  }
-
-  if (!data) {
-    return <div>No patient data available</div>;
-  }
 
   return (
     <div className="space-y-4">
@@ -78,7 +81,12 @@ export default function PcrReportStep1() {
               <FormControl>
                 <ScrollArea className="h-[300px] md:h-[400px] lg:h-[500px] rounded-md border">
                   <div className="p-4 space-y-4">
-                    {results.length === 0 ? (
+                    {isPending ? (
+                      // Show 5 loading skeletons while fetching
+                      Array.from({ length: 5 }).map((_, index) => (
+                        <PatientInfoSkeleton key={index} />
+                      ))
+                    ) : results.length === 0 ? (
                       <div className="flex items-center justify-center h-full text-gray-500">
                         No patients found
                       </div>
