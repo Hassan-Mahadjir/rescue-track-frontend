@@ -2,7 +2,7 @@
 import React from "react";
 import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
 import { useParams } from "next/navigation";
-import { usePCR } from "@/services/api/patients";
+import { usePCR } from "@/services/api/reports";
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EditPCRDialog from "@/components/report/pcr/edit report/EditPCRDialog";

@@ -40,7 +40,7 @@ export type Patient = {
   firstName: string;
   lastName: string;
   email: string;
-  gender: string;
+  gender: "male" | "female";
   phone: string;
   dateofBirth: string;
   eligibility: string | null;

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "../ui/form";
 import FormInput from "../FormInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CalendarIcon } from "lucide-react";
@@ -16,36 +16,80 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import ReactFlagsSelect from "react-flags-select";
 import countryNames from "@/providers/countries";
+import { useGetPatient } from "@/services/api/patient";
 
 // ✅ Define validation schema
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   middleName: z.string().optional(),
   lastName: z.string().min(1, "Last name is required"),
-  dob: z.date(),
+  dateofBirth: z.date(),
   gender: z.enum(["male", "female"], { message: "Gender is required" }),
   email: z.string().email("Invalid email"),
   phoneNumber: z.string().optional(),
   nationality: z.string().min(1, "Nationality is required"),
   passportNumber: z.string().optional(),
-  identityNumber: z.string().optional(),
+  nationalID: z.string().optional(),
 });
 
+const eligibilities = [
+  { value: "student", label: "Student" },
+  { value: "employee", label: "Employee" },
+  { value: "eligible", label: "Eligible" },
+  { value: "not eligible", label: "Not Eligible" },
+  { value: "other", label: "Other" },
+];
 type FormSchema = z.infer<typeof formSchema>;
 
-const PersonalInfoDialog = () => {
+const PersonalInfoDialog = ({ id }: { id: number }) => {
+  // 📌 Get Patient information
+  const { patientData, isPending } = useGetPatient(id);
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [selectedNationality, setSelectedNationality] = useState<string>("");
 
   // ✅ Initialize form with default values
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      dob: new Date(),
-      gender: "male", // Set default gender
-      nationality: "", // Ensure nationality is set in the default values
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      dateofBirth: new Date(),
+      gender: "male",
+      email: "",
+      phoneNumber: "",
+      nationality: "",
+      nationalID: "",
     },
   });
+
+  useEffect(() => {
+    if (patientData) {
+      const patientInfo = patientData.data.data;
+      form.reset({
+        firstName: patientInfo.firstName || "",
+        middleName: "",
+        lastName: patientInfo.lastName || "",
+        dateofBirth: patientInfo.dateofBirth
+          ? new Date(patientInfo.dateofBirth)
+          : new Date(),
+        gender: patientInfo.gender || "male",
+        email: patientInfo.email || "",
+        phoneNumber: patientInfo.phone || "",
+        nationality: patientInfo.nationality || "",
+        nationalID: patientInfo.nationalID,
+      });
+
+      if (patientInfo.dateofBirth) {
+        setDate(new Date(patientInfo.dateofBirth));
+      }
+      if (patientInfo.nationality) {
+        setSelectedNationality(patientInfo.nationality);
+      }
+    }
+  }, [patientData, form]);
 
   // ✅ Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +125,7 @@ const PersonalInfoDialog = () => {
           )}
           <input type="file" className="hidden" onChange={handleImageUpload} />
         </label>
-        <span className="text-sm text-gray-600">Add photo</span>
+        {/* <span className="text-sm text-gray-600">Add photo</span> */}
       </div>
 
       {/* Patient Personal Information Form */}
@@ -126,7 +170,7 @@ const PersonalInfoDialog = () => {
                     onSelect={(selectedDate) => {
                       setDate(selectedDate);
                       if (selectedDate) {
-                        form.setValue("dob", selectedDate, {
+                        form.setValue("dateofBirth", selectedDate, {
                           shouldValidate: true,
                         });
                       }
@@ -181,16 +225,8 @@ const PersonalInfoDialog = () => {
               placeholder="+05334829810"
               label="Phone number"
             />
-            <FormInput
-              form={form}
-              name="identityNumber"
-              label="Identity number"
-            />
-            <FormInput
-              form={form}
-              name="passportNumber"
-              label="Passport number"
-            />
+            <FormInput form={form} name="nationalID" label="Identity number" />
+            <FormInput form={form} name="passportNumber" label="Eligibility" />
 
             {/* Nationality Selection */}
             <div>

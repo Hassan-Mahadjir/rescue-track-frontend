@@ -97,21 +97,21 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
         ))}
 
         {/* Update Button */}
-        <div className=" col-start-2 xmd:col-start-4 row-start-3">
+        <div className="col-start-2 xmd:col-start-4 row-start-3">
           <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-main font-semibold">Update Info</Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[700px]">
+            <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Modify Patient Information</DialogTitle>
                 <DialogDescription>
-                  Update and manage patient details, Ensure that all records are
+                  Update and manage patient details, ensure that all records are
                   accurate and up-to-date.
                 </DialogDescription>
               </DialogHeader>
-              <PersonalInfoDialog />
+              <PersonalInfoDialog id={patient.id} />
             </DialogContent>
           </Dialog>
         </div>

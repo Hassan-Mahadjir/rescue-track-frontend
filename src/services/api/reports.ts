@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import patientsService from "../patients-service";
+import reportService from "../reports-service";
 
 export const usePCRs = () => {
   // const router = useRouter();
@@ -10,8 +10,8 @@ export const usePCRs = () => {
     isError,
     ...props
   } = useQuery({
-    queryFn: () => patientsService.getPCRs(),
-    queryKey: ["patients"],
+    queryFn: () => reportService.getPCRs(),
+    queryKey: ["PCRS"],
   });
 
   if (isError) {
@@ -29,8 +29,8 @@ export const usePCR = (id: number) => {
     isError,
     ...props
   } = useQuery({
-    queryFn: () => patientsService.getPCR(id),
-    queryKey: ["patient", id],
+    queryFn: () => reportService.getPCR(id),
+    queryKey: ["PCR", id],
   });
 
   if (isError) {

@@ -3,7 +3,7 @@ import http from "./api/http";
 import BaseService from "./base-service";
 import { PCR } from "@/types/patients.type";
 
-class PatientsService extends BaseService {
+class ReportService extends BaseService {
   async getPCRs() {
     const response = await http.get<AppResponse<PCR[]>>(
       "/patient-care-report/manage"
@@ -19,4 +19,4 @@ class PatientsService extends BaseService {
   }
 }
 
-export default new PatientsService();
+export default new ReportService();
