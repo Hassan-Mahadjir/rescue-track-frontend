@@ -7,7 +7,7 @@ import { ArrowLeft, CheckCircle2, Printer } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { ReportDocument } from "../template";
-import { PCR, Treatments, Patient, InitiatedBy } from "@/types/patients.type";
+import { PCR, Treatments, Patient, InitiatedBy } from "@/types/PCR.type";
 
 interface FormSummaryProps {
   data: PCR;

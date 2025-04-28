@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Treatments } from "./patients.type";
+import { Treatments } from "./PCR.type";
 
 export const TreatmentsSchema = z.object({
   id: z.number().optional(),

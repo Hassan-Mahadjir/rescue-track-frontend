@@ -26,7 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PCR } from "@/types/patients.type";
+import { PCR } from "@/types/PCR.type";
 
 const RegisteredForm = () => {
   const [currentStep, setCurrentStep] = useState(0);

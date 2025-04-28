@@ -1,16 +1,16 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import patientsService from "../patients-service";
+import patientService from "../patient-service";
 
-export const usePCRs = () => {
+export const usePatients = () => {
   // const router = useRouter();
   const {
-    data: patientData,
+    data: patientsData,
     error,
     isError,
     ...props
   } = useQuery({
-    queryFn: () => patientsService.getPCRs(),
+    queryFn: () => patientService.getPatients(),
     queryKey: ["patients"],
   });
 
@@ -18,10 +18,10 @@ export const usePCRs = () => {
     console.error("Failed to fetch patients:", error);
   }
 
-  return { patientData, ...props };
+  return { patientsData, ...props };
 };
 
-export const usePCR = (id: number) => {
+export const usePatient = (id: number) => {
   // const router = useRouter();
   const {
     data: patientData,
@@ -29,7 +29,7 @@ export const usePCR = (id: number) => {
     isError,
     ...props
   } = useQuery({
-    queryFn: () => patientsService.getPCR(id),
+    queryFn: () => patientService.getpatient(id),
     queryKey: ["patient", id],
   });
 

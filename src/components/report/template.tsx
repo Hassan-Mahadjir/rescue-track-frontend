@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
-import { PCR } from "@/types/patients.type";
+import { PCR } from "@/types/PCR.type";
 
 // Styles
 const styles = StyleSheet.create({

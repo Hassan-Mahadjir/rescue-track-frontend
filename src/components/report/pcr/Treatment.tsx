@@ -1,4 +1,4 @@
-import { Treatments } from "@/types/patients.type";
+import { Treatments } from "@/types/PCR.type";
 import { Card, CardContent } from "@/components/ui/card";
 import DeleteTreatment from "./edit report/DeleteTreatment";
 import EditTreatmentDialog from "./edit report/EditTreatmentDialog";

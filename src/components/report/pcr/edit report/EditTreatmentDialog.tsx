@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { TreatmentsData, TreatmentsSchema } from "@/types/formSchema";
-import { Treatments } from "@/types/patients.type";
+import { Treatments } from "@/types/PCR.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Pencil } from "lucide-react";
 import React from "react";

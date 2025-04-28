@@ -2,7 +2,7 @@
 import React from "react";
 import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
 import { useParams } from "next/navigation";
-import { usePCR } from "@/services/api/patients";
+import { usePCR } from "@/services/api/PCR";
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EditPCRDialog from "@/components/report/pcr/edit report/EditPCRDialog";
@@ -16,8 +16,8 @@ const PatientDetails = () => {
   const params = useParams();
   const patientId = params.patientId;
 
-  const { patientData, isPending } = usePCR(Number(patientId));
-  const patient = patientData?.data.data;
+  const { PCRData, isPending } = usePCR(Number(patientId));
+  const patient = PCRData?.data.data;
 
   if (isPending) {
     return <PCRLoading />;
