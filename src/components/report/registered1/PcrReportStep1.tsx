@@ -66,7 +66,7 @@ export default function PcrReportStep1() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, national ID, or report ID"
+            placeholder="Search by name, or report ID"
             className="pl-3 pr-3 py-2 h-10 w-full"
           />
         </div>
@@ -96,12 +96,12 @@ export default function PcrReportStep1() {
                           key={patient.id}
                           className={clsx(
                             "cursor-pointer border rounded-lg transition-colors hover:shadow-md",
-                            selectedPatientId === patient.nationalID
+                            selectedPatientId === patient.id
                               ? "border-gray-900"
                               : "hover:border-gray-400"
                           )}
                           onClick={() =>
-                            setValue("patientId", patient.nationalID, {
+                            setValue("patientId", patient.id, {
                               shouldValidate: true,
                             })
                           }

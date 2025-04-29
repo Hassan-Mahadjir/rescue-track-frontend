@@ -29,8 +29,12 @@ export const usePatient = (id: number) => {
     isError,
     ...props
   } = useQuery({
-    queryFn: () => patientService.getpatient(id),
+    queryFn: () => {
+      if (!id) throw new Error("No patient ID");
+      return patientService.getpatient(id);
+    },
     queryKey: ["patient", id],
+    enabled: !!id, // <-- Only run if id is truthy
   });
 
   if (isError) {

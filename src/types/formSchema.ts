@@ -71,7 +71,7 @@ const medicalHistorySchema = z.object({
 // ✨ Step-wise schemas
 export const stepSchemas = [
   z.object({
-    patientId: z.string().min(1, "Please select a patient"),
+    patientId: z.number().min(1, "Please select a patient"),
   }),
   z.object({
     treatment: z.array(TreatmentsSchema),
@@ -93,7 +93,7 @@ export const PcrReportFormSchema = stepSchemas.reduce(
 export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
 
 export type PatientReportData = {
-  patientId: string;
+  patientId: number;
   treatment: Treatments[];
   transportInfo: {
     transferType?: string;

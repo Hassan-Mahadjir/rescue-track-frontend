@@ -137,7 +137,7 @@ const RegisteredForm = () => {
                   </p>
                 </div>
               </div>
-              <FormSummary data={getValues() as PCR} />
+              <FormSummary data={getValues() as PatientReportData} />
               <div className="max-w-4xl mx-auto p-6 flex justify-between items-center mt-8">
                 <Button
                   type="button"
