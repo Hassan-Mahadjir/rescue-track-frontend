@@ -15,7 +15,7 @@ import FormInput from "../FormInput";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
@@ -26,11 +26,12 @@ import countryNames from "@/providers/countries";
 import { useGetPatient } from "@/services/api/patient";
 import { cn } from "@/lib/utils";
 
+// ✅ Define validation schema
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   middleName: z.string().optional(),
   lastName: z.string().min(1, "Last name is required"),
-  dateOfBirth: z.date({ required_error: "Date of birth is required" }),
+  dateofBirth: z.date(),
   gender: z.enum(["male", "female"], { message: "Gender is required" }),
   email: z.string().email("Invalid email"),
   phoneNumber: z.string().optional(),
@@ -39,22 +40,33 @@ const formSchema = z.object({
   nationalID: z.string().optional(),
 });
 
+const eligibilities = [
+  { value: "student", label: "Student" },
+  { value: "employee", label: "Employee" },
+  { value: "eligible", label: "Eligible" },
+  { value: "not eligible", label: "Not Eligible" },
+];
 type FormSchema = z.infer<typeof formSchema>;
 
-const PersonalInfoDialog = ({ id }: { id: number }) => {
-  const { patientData } = useGetPatient(id);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedNationality, setSelectedNationality] = useState<string>("");
-  const [month, setMonth] = useState<number>(new Date().getMonth());
-  const [year, setYear] = useState<number>(new Date().getFullYear());
+const formatDate = (dateString: string): string => {
+  return new Date(dateString).toLocaleDateString("en-US");
+};
 
+const PersonalInfoDialog = ({ id }: { id: number }) => {
+  // 📌 Get Patient information
+  const { patientData, isPending } = useGetPatient(id);
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [date, setDate] = useState<Date | undefined>();
+  const [selectedNationality, setSelectedNationality] = useState<string>("");
+
+  // ✅ Initialize form with default values
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: "",
       middleName: "",
       lastName: "",
-      dateOfBirth: undefined,
       gender: "male",
       email: "",
       phoneNumber: "",
@@ -66,28 +78,27 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
   useEffect(() => {
     if (patientData) {
       const patientInfo = patientData.data.data;
-      const dob = patientInfo.dateofBirth
-        ? new Date(patientInfo.dateofBirth)
-        : undefined;
       form.reset({
         firstName: patientInfo.firstName || "",
         middleName: "",
         lastName: patientInfo.lastName || "",
-        dateOfBirth: dob,
         gender: patientInfo.gender || "male",
         email: patientInfo.email || "",
         phoneNumber: patientInfo.phone || "",
         nationality: patientInfo.nationality || "",
         nationalID: patientInfo.nationalID,
       });
-      if (dob) {
-        setMonth(dob.getMonth());
-        setYear(dob.getFullYear());
+
+      if (patientInfo.dateofBirth) {
+        setDate(new Date(patientInfo.dateofBirth));
       }
-      setSelectedNationality(patientInfo.nationality || "");
+      if (patientInfo.nationality) {
+        setSelectedNationality(patientInfo.nationality);
+      }
     }
   }, [patientData, form]);
 
+  // ✅ Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -95,26 +106,15 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
     }
   };
 
-  const handleMonthChange = (newMonth: number) => {
-    setMonth(newMonth);
-    // Create a new date with the updated month but keep the same year
-    const newDate = new Date(year, newMonth, 1);
-    form.setValue("dateOfBirth", newDate);
-  };
-
-  const handleYearChange = (newYear: number) => {
-    setYear(newYear);
-    // Create a new date with the updated year but keep the same month
-    const newDate = new Date(newYear, month, 1);
-    form.setValue("dateOfBirth", newDate);
-  };
-
+  // ✅ Form submission
   const onSubmit = async (values: FormSchema) => {
     console.log("Form submitted with values:", values);
+    console.log(selectedImage);
   };
 
   return (
     <div>
+      {/* Upload Image section */}
       <div className="flex flex-col items-center my-4">
         <label className="cursor-pointer relative">
           {selectedImage ? (
@@ -132,8 +132,10 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
           )}
           <input type="file" className="hidden" onChange={handleImageUpload} />
         </label>
+        {/* <span className="text-sm text-gray-600">Add photo</span> */}
       </div>
 
+      {/* Patient Personal Information Form */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-3 gap-2">
@@ -156,20 +158,21 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
               label="Last Name"
             />
 
+            {/* Date of Birth */}
             <div className="col-span-2">
               <FormField
                 control={form.control}
-                name="dateOfBirth"
+                name="dateofBirth"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Date of Birth</FormLabel>
+                    <FormLabel>Date of birth</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant={"outline"}
                             className={cn(
-                              "w-full pl-3 text-left font-normal",
+                              "pl-3 text-left font-normal",
                               !field.value && "text-muted-foreground"
                             )}
                           >
@@ -183,73 +186,6 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
-                        <div className="flex items-center justify-between px-4 pt-1">
-                          <div className="flex items-center gap-2">
-                            <select
-                              value={month}
-                              onChange={(e) =>
-                                handleMonthChange(Number(e.target.value))
-                              }
-                              className="bg-transparent text-sm"
-                            >
-                              {Array.from({ length: 12 }).map((_, i) => (
-                                <option key={i} value={i}>
-                                  {new Date(0, i).toLocaleString("default", {
-                                    month: "long",
-                                  })}
-                                </option>
-                              ))}
-                            </select>
-                            <select
-                              value={year}
-                              onChange={(e) =>
-                                handleYearChange(Number(e.target.value))
-                              }
-                              className="bg-transparent text-sm"
-                            >
-                              {Array.from(
-                                { length: new Date().getFullYear() - 1899 },
-                                (_, i) => (
-                                  <option key={i} value={1900 + i}>
-                                    {1900 + i}
-                                  </option>
-                                )
-                              )}
-                            </select>
-                          </div>
-                          <div className="flex gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                const newMonth = month - 1;
-                                if (newMonth < 0) {
-                                  setMonth(11);
-                                  setYear(year - 1);
-                                } else {
-                                  setMonth(newMonth);
-                                }
-                              }}
-                            >
-                              <ChevronLeft className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                const newMonth = month + 1;
-                                if (newMonth > 11) {
-                                  setMonth(0);
-                                  setYear(year + 1);
-                                } else {
-                                  setMonth(newMonth);
-                                }
-                              }}
-                            >
-                              <ChevronRight className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
                         <Calendar
                           mode="single"
                           selected={field.value}
@@ -257,21 +193,43 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
                           disabled={(date) =>
                             date > new Date() || date < new Date("1900-01-01")
                           }
-                          month={new Date(year, month, 1)}
-                          onMonthChange={(date) => {
-                            setMonth(date.getMonth());
-                            setYear(date.getFullYear());
-                          }}
                           initialFocus
                         />
                       </PopoverContent>
                     </Popover>
+
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              {/* <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="border p-2 rounded-md flex items-center gap-2 w-full justify-between"
+                  >
+                    {date ? format(date, "dd-MM-yyyy") : "Select Date"}
+                    <CalendarIcon size={16} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <Calendar
+                    selected={date}
+                    onSelect={(selectedDate) => {
+                      setDate(selectedDate);
+                      if (selectedDate) {
+                        form.setValue("dateofBirth", selectedDate, {
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
+                    mode="single"
+                  />
+                </PopoverContent>
+              </Popover> */}
             </div>
 
+            {/* Gender Selection */}
             <div>
               <label className="text-sm">Gender</label>
               <RadioGroup
@@ -299,6 +257,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
               )}
             </div>
 
+            {/* Email Input */}
             <div className="col-span-2">
               <FormInput
                 form={form}
@@ -317,6 +276,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
             <FormInput form={form} name="nationalID" label="Identity number" />
             <FormInput form={form} name="passportNumber" label="Eligibility" />
 
+            {/* Nationality Selection */}
             <div>
               <label className="text-sm">Nationality</label>
               <ReactFlagsSelect
@@ -324,11 +284,13 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
                 searchPlaceholder="Search countries"
                 selected={form.watch("nationality")}
                 onSelect={(code) => {
+                  const countryName = countryNames[code] || code;
                   form.setValue("nationality", code, {
                     shouldValidate: true,
                   });
                 }}
               />
+
               {form.formState.errors.nationality && (
                 <p className="text-red-500 text-xs">
                   {form.formState.errors.nationality.message}
@@ -337,6 +299,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
             </div>
           </div>
 
+          {/* Buttons */}
           <div className="flex justify-center gap-5 mt-5">
             <Button className="px-7" type="button">
               Cancel

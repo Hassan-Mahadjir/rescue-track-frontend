@@ -11,8 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import PersonalInfoDialog from "./PersonalInfoDialog";
 import { PCR } from "@/types/patients.type";
+import PersonalInfoDialog from "./PersonalInfoDialog";
 
 interface PatientPersonalInfoProps {
   patient: PCR;
@@ -98,7 +98,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
 
         {/* Update Button */}
         <div className="col-start-2 xmd:col-start-4 row-start-3">
-          <Dialog>
+          <Dialog modal={false}>
             <DialogTrigger asChild>
               <Button className="bg-main font-semibold">Update Info</Button>
             </DialogTrigger>
