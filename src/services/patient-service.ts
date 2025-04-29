@@ -6,7 +6,7 @@ import { Patient, PCR } from "@/types/patients.type";
 class PatientService extends BaseService {
   async getPatient(id: number) {
     const response = await http.get<AppResponse<Patient>>(
-      `patient/manage/${id}`
+      `/patient/manage/${id}`
     );
     return response;
   }

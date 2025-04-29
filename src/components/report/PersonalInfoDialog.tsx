@@ -37,9 +37,12 @@ const eligibilities = [
   { value: "employee", label: "Employee" },
   { value: "eligible", label: "Eligible" },
   { value: "not eligible", label: "Not Eligible" },
-  { value: "other", label: "Other" },
 ];
 type FormSchema = z.infer<typeof formSchema>;
+
+const formatDate = (dateString: string): string => {
+  return new Date(dateString).toLocaleDateString("en-US");
+};
 
 const PersonalInfoDialog = ({ id }: { id: number }) => {
   // 📌 Get Patient information
@@ -237,7 +240,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
                 selected={form.watch("nationality")}
                 onSelect={(code) => {
                   const countryName = countryNames[code] || code;
-                  form.setValue("nationality", countryName, {
+                  form.setValue("nationality", code, {
                     shouldValidate: true,
                   });
                 }}

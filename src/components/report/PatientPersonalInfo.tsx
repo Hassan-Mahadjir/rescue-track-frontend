@@ -111,7 +111,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
                   accurate and up-to-date.
                 </DialogDescription>
               </DialogHeader>
-              <PersonalInfoDialog id={patient.id} />
+              <PersonalInfoDialog id={profile.id ? Number(profile.id) : 0} />
             </DialogContent>
           </Dialog>
         </div>
