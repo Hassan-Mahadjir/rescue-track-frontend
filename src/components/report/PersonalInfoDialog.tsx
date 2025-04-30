@@ -15,7 +15,7 @@ import FormInput from "../FormInput";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarIcon, Check, ChevronLeft, ChevronRight, ChevronsUpDown } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
@@ -25,6 +25,19 @@ import ReactFlagsSelect from "react-flags-select";
 import countryNames from "@/providers/countries";
 import { useGetPatient } from "@/services/api/patient";
 import { cn } from "@/lib/utils";
+import { CustomCalendar } from "../custom-calendar";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
+import { EligibilitySelect } from "./EligibilitySelect";
+import { PhotoUpload } from "../PhotoUpload";
+
+
+const eligibilities = [
+  { value: "student", label: "Student" },
+  { value: "employee", label: "Employee" },
+  { value: "eligible", label: "Eligible" },
+  { value: "not eligible", label: "Not Eligible" },
+  { value: "other", label: "Other" },
+] as const;
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -37,6 +50,7 @@ const formSchema = z.object({
   nationality: z.string().min(1, "Nationality is required"),
   passportNumber: z.string().optional(),
   nationalID: z.string().optional(),
+  eligibility: z.enum(eligibilities.map((item) => item.value) as [string, ...string[]], { message: "Eligibility is required" }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -47,6 +61,8 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
   const [selectedNationality, setSelectedNationality] = useState<string>("");
   const [month, setMonth] = useState<number>(new Date().getMonth());
   const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [open,setOpen] = useState(false) ;
+
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -79,6 +95,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
         phoneNumber: patientInfo.phone || "",
         nationality: patientInfo.nationality || "",
         nationalID: patientInfo.nationalID,
+        eligibility: patientInfo.eligibility || "",
       });
       if (dob) {
         setMonth(dob.getMonth());
@@ -95,20 +112,6 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
     }
   };
 
-  const handleMonthChange = (newMonth: number) => {
-    setMonth(newMonth);
-    // Create a new date with the updated month but keep the same year
-    const newDate = new Date(year, newMonth, 1);
-    form.setValue("dateOfBirth", newDate);
-  };
-
-  const handleYearChange = (newYear: number) => {
-    setYear(newYear);
-    // Create a new date with the updated year but keep the same month
-    const newDate = new Date(newYear, month, 1);
-    form.setValue("dateOfBirth", newDate);
-  };
-
   const onSubmit = async (values: FormSchema) => {
     console.log("Form submitted with values:", values);
   };
@@ -116,22 +119,26 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
   return (
     <div>
       <div className="flex flex-col items-center my-4">
-        <label className="cursor-pointer relative">
-          {selectedImage ? (
-            <Image
-              src={selectedImage}
-              alt="Profile Preview"
-              width={80}
-              height={80}
-              className="rounded-full"
+        {/* Photo area */}
+        {/* <PhotoUpload
+        
+          onImageSelect={(file) => {
+            setSelectedImage(URL.createObjectURL(file));
+          }}
+          initialImage={selectedImage || undefined}
+          size="lg"
+          shape="square"
+          className="rounded-full"
+        /> */}
+        <div className="w-20 h-20 bg-main rounded-full flex items-center justify-center border border-gray-300">
+        <Image
+              src={"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+              alt="bland-profile"
+              className="object-cover rounded-full w-full h-full"
+              width={50}
+              height={50}
             />
-          ) : (
-            <div className="w-20 h-20 bg-green-700 rounded-full flex items-center justify-center text-white">
-              +
-            </div>
-          )}
-          <input type="file" className="hidden" onChange={handleImageUpload} />
-        </label>
+        </div>
       </div>
 
       <Form {...form}>
@@ -182,87 +189,10 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <div className="flex items-center justify-between px-4 pt-1">
-                          <div className="flex items-center gap-2">
-                            <select
-                              value={month}
-                              onChange={(e) =>
-                                handleMonthChange(Number(e.target.value))
-                              }
-                              className="bg-transparent text-sm"
-                            >
-                              {Array.from({ length: 12 }).map((_, i) => (
-                                <option key={i} value={i}>
-                                  {new Date(0, i).toLocaleString("default", {
-                                    month: "long",
-                                  })}
-                                </option>
-                              ))}
-                            </select>
-                            <select
-                              value={year}
-                              onChange={(e) =>
-                                handleYearChange(Number(e.target.value))
-                              }
-                              className="bg-transparent text-sm"
-                            >
-                              {Array.from(
-                                { length: new Date().getFullYear() - 1899 },
-                                (_, i) => (
-                                  <option key={i} value={1900 + i}>
-                                    {1900 + i}
-                                  </option>
-                                )
-                              )}
-                            </select>
-                          </div>
-                          <div className="flex gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                const newMonth = month - 1;
-                                if (newMonth < 0) {
-                                  setMonth(11);
-                                  setYear(year - 1);
-                                } else {
-                                  setMonth(newMonth);
-                                }
-                              }}
-                            >
-                              <ChevronLeft className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                const newMonth = month + 1;
-                                if (newMonth > 11) {
-                                  setMonth(0);
-                                  setYear(year + 1);
-                                } else {
-                                  setMonth(newMonth);
-                                }
-                              }}
-                            >
-                              <ChevronRight className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                        <Calendar
-                          mode="single"
+                      <PopoverContent className="w-auto p-0" align="start" side="bottom">
+                        <CustomCalendar
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          month={new Date(year, month, 1)}
-                          onMonthChange={(date) => {
-                            setMonth(date.getMonth());
-                            setYear(date.getFullYear());
-                          }}
-                          initialFocus
                         />
                       </PopoverContent>
                     </Popover>
@@ -315,7 +245,11 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
               label="Phone number"
             />
             <FormInput form={form} name="nationalID" label="Identity number" />
-            <FormInput form={form} name="passportNumber" label="Eligibility" />
+            <EligibilitySelect
+              control={form.control}
+              name="eligibility"
+              label="Eligibility"
+            />
 
             <div>
               <label className="text-sm">Nationality</label>
