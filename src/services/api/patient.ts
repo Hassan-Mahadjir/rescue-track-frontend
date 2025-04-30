@@ -18,3 +18,20 @@ export const useGetPatient = (id: number) => {
 
   return { patientData, ...props };
 };
+
+export const useGetPatients = () => {
+  const {
+    data: patientsData,
+    error,
+    isError,
+    ...props
+  } = useQuery({
+    queryFn: () => patientService.getPatients(),
+    queryKey: ["patients"],
+  });
+  if (isError) {
+    console.error("Failed to fetch patient:", error);
+  }
+
+  return { patientsData, ...props };
+};

@@ -13,11 +13,10 @@ import { PatientInfoSkeleton } from "@/components/loading/PatientInfoSkeleton";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { usePatients } from "@/services/api/patient";
-import { Patient } from "@/types/patient.type";
+import { useGetPatients } from "@/services/api/patient";
 
 export default function PcrReportStep1() {
-  const { patientsData, isPending } = usePatients();
+  const { patientsData, isPending } = useGetPatients();
   const data = patientsData?.data.data;
   const { setValue, watch, control } = useFormContext();
   const [search, setSearch] = useState("");

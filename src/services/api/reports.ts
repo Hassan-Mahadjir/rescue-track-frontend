@@ -1,6 +1,7 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import reportsService from "../reports-service";
+import { PcrReportFormValues } from "@/types/formSchema";
 
 export const usePCRs = () => {
   // const router = useRouter();
@@ -76,4 +77,33 @@ export const useRunReport = (id: number) => {
   }
 
   return { runReportData, ...props };
+};
+
+export const usePostPCR = () => {
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: PcrReportFormValues) => reportsService.postPCR(data),
+    onSuccess: async (response) => {},
+    onError: () => {},
+  });
+
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCR = (id: number) => {
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: PcrReportFormValues) =>
+      reportsService.updatePCR(data, id),
+    onSuccess: async (response) => {},
+    onError: () => {},
+  });
+
+  return { mutateUpdate, isPending, ...props };
 };
