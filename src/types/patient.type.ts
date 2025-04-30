@@ -1,4 +1,4 @@
-export type Patient = {
+type Patient = {
   id: number;
   nationalID: string;
   firstName: string;
