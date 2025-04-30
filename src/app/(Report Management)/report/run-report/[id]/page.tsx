@@ -1,10 +1,8 @@
 "use client";
 import PCRLoading from "@/components/loading/PCRLoading";
 import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
-import { useRunReport } from "@/services/api/runReport";
+import { useRunReport } from "@/services/api/reports";
 import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Printer } from "lucide-react";
 import React from "react";
 
 const RunReportPatientId = () => {
