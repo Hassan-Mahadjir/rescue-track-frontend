@@ -19,35 +19,21 @@ import {
 } from "@/components/ui/select";
 import { Plus, Trash } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
+import { TreatmentConfig } from "@/constants/treatments";
 
-// Predefined treatment options
-const treatmentOptions = [
-  { id: 1, name: "Paracetamol", category: "Analgesic" },
-  { id: 2, name: "Ibuprofen", category: "NSAID" },
-  { id: 3, name: "Morphine", category: "Opioid" },
-  { id: 4, name: "Aspirin", category: "Anti-inflammatory" },
-];
-
-const unitOptions = [
-  { id: 1, name: "mg" },
-  { id: 2, name: "ml" },
-  { id: 3, name: "g" },
-  { id: 4, name: "tablet" },
-  { id: 5, name: "dose" },
-];
-
-const quantityOptions = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+const { treatmentOptions, categoryOptions, unitOptions, quantityOptions } =
+  TreatmentConfig;
 
 export default function PcrReportStep2() {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "treatment", // Changed from "treatments" to match schema
+    name: "treatment",
   });
 
   const defaultTreatment = {
     name: "",
-    quantity: 50, // Changed default to match your quantity options
+    quantity: 100,
     unit: "mg",
     category: "",
   };
@@ -160,16 +146,26 @@ export default function PcrReportStep2() {
               {/* Category */}
               <FormField
                 control={control}
-                name={`treatment.${index}.category`} // Changed to match schema
+                name={`treatment.${index}.category`} // Keep name consistent with schema
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter category"
-                        value={field.value || ""}
-                      />
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categoryOptions.map((category) => (
+                            <SelectItem key={category.id} value={category.name}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
