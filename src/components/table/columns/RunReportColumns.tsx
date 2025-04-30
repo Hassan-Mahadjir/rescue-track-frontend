@@ -1,9 +1,9 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { RunReportItem } from "@/types/runReport.type";
 import { ColumnDef } from "@tanstack/react-table";
 import RunReportAction from "../action/RunReportAction";
+import { RunReportItem } from "@/types/report.type";
 
 export const RunReportColumns: ColumnDef<RunReportItem>[] = [
   {
