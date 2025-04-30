@@ -15,21 +15,17 @@ import FormInput from "../FormInput";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon, Check, ChevronLeft, ChevronRight, ChevronsUpDown } from "lucide-react";
-import { Calendar } from "../ui/calendar";
+import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import ReactFlagsSelect from "react-flags-select";
-import countryNames from "@/providers/countries";
 import { useGetPatient } from "@/services/api/patient";
 import { cn } from "@/lib/utils";
-import { CustomCalendar } from "../custom-calendar";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
-import { EligibilitySelect } from "./EligibilitySelect";
-import { PhotoUpload } from "../PhotoUpload";
+import { CustomCalendar } from "@/components/Custom-calendar";
 
+import { EligibilitySelect } from "./EligibilitySelect";
 
 const eligibilities = [
   { value: "student", label: "Student" },
@@ -50,7 +46,10 @@ const formSchema = z.object({
   nationality: z.string().min(1, "Nationality is required"),
   passportNumber: z.string().optional(),
   nationalID: z.string().optional(),
-  eligibility: z.enum(eligibilities.map((item) => item.value) as [string, ...string[]], { message: "Eligibility is required" }),
+  eligibility: z.enum(
+    eligibilities.map((item) => item.value) as [string, ...string[]],
+    { message: "Eligibility is required" }
+  ),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -61,8 +60,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
   const [selectedNationality, setSelectedNationality] = useState<string>("");
   const [month, setMonth] = useState<number>(new Date().getMonth());
   const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [open,setOpen] = useState(false) ;
-
+  const [open, setOpen] = useState(false);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -131,13 +129,15 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
           className="rounded-full"
         /> */}
         <div className="w-20 h-20 bg-main rounded-full flex items-center justify-center border border-gray-300">
-        <Image
-              src={"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-              alt="bland-profile"
-              className="object-cover rounded-full w-full h-full"
-              width={50}
-              height={50}
-            />
+          <Image
+            src={
+              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+            }
+            alt="bland-profile"
+            className="object-cover rounded-full w-full h-full"
+            width={50}
+            height={50}
+          />
         </div>
       </div>
 
@@ -189,7 +189,11 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start" side="bottom">
+                      <PopoverContent
+                        className="w-auto p-0"
+                        align="start"
+                        side="bottom"
+                      >
                         <CustomCalendar
                           selected={field.value}
                           onSelect={field.onChange}

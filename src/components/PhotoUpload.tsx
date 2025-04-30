@@ -28,7 +28,9 @@ export const PhotoUpload = ({
   size = "md",
   shape = "circle",
 }: PhotoUploadProps) => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(initialImage || null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(
+    initialImage || null
+  );
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,7 +45,13 @@ export const PhotoUpload = ({
     <div className={cn("flex flex-col items-center", className)}>
       <label className="cursor-pointer relative">
         {selectedImage ? (
-          <div className={cn(sizeClasses[size], shapeClasses[shape], "overflow-hidden")}>
+          <div
+            className={cn(
+              sizeClasses[size],
+              shapeClasses[shape],
+              "overflow-hidden"
+            )}
+          >
             <Image
               src={selectedImage}
               alt="Profile Preview"
@@ -72,4 +80,4 @@ export const PhotoUpload = ({
       </label>
     </div>
   );
-}; 
+};

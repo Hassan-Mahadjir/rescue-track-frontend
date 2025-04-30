@@ -3,14 +3,6 @@
 import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface CustomCalendarProps {
   selected: Date | undefined;
@@ -45,7 +37,9 @@ export function CustomCalendar({ selected, onSelect }: CustomCalendarProps) {
         >
           {Array.from({ length: 12 }, (_, i) => (
             <option key={i} value={i}>
-              {new Date(2000, i, 1).toLocaleString('default', { month: 'long' })}
+              {new Date(2000, i, 1).toLocaleString("default", {
+                month: "long",
+              })}
             </option>
           ))}
         </select>
@@ -80,35 +74,3 @@ export function CustomCalendar({ selected, onSelect }: CustomCalendarProps) {
     </div>
   );
 }
-
-const eligibilities = [
-  { value: "citizen", label: "Citizen" },
-  { value: "resident", label: "Resident" },
-  { value: "visitor", label: "Visitor" },
-  { value: "student", label: "Student" },
-  { value: "work_permit", label: "Work Permit" },
-  { value: "refugee", label: "Refugee" },
-  { value: "asylum_seeker", label: "Asylum Seeker" },
-];
-
-interface EligibilitySelectProps {
-  value: string;
-  onValueChange: (value: string) => void;
-}
-
-export function EligibilitySelect({ value, onValueChange }: EligibilitySelectProps) {
-  return (
-    <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder="Select eligibility" />
-      </SelectTrigger>
-      <SelectContent>
-        {eligibilities.map((eligibility) => (
-          <SelectItem key={eligibility.value} value={eligibility.value}>
-            {eligibility.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-} 
