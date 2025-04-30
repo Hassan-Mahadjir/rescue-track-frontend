@@ -87,7 +87,7 @@ type UpdateHistory = {
 };
 
 // Single Run Report interface
-type RunReportItem = {
+export type RunReportItem = {
   id: number;
   caller: string;
   callerPhone: string;
