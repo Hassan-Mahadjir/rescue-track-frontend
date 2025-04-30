@@ -22,7 +22,7 @@ const CreateReport = () => {
       imageSrc: "/report/new-account.png",
       text: "create new patient profile, and report",
       buttons: [
-        { label: "New patient", onClick: () => console.log("Create new") },
+        { label: "New patient", onClick: () => router.push("create/unregistered") },
       ],
     },
   ];
