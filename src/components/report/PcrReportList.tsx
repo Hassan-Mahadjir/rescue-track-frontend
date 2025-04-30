@@ -1,19 +1,19 @@
 import React from "react";
 import { DataTable } from "../table/DataTable";
-import { PCR } from "@/types/patients.type";
 import { PcrColumns } from "../table/columns/PcrColumns";
+import { PCR } from "@/types/report.type";
 
 interface PcrReportListProps {
-  patients?: PCR[];
+  pcr?: PCR[];
   loading?: boolean;
 }
 
-const PcrReportList = ({ patients, loading }: PcrReportListProps) => {
+const PcrReportList = ({ pcr, loading }: PcrReportListProps) => {
   return (
     <div className="rounded-lg border-0 bg-gradient-to-r from-gray-100 to-white p-6 mb-4">
       <DataTable
         columns={PcrColumns}
-        data={patients ?? []}
+        data={pcr ?? []}
         loading={loading}
         toolbarType="PCR"
         initialColumnVisibility={{

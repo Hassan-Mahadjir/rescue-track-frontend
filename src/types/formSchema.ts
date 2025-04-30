@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Treatments } from "./patients.type";
+import { Treatment } from "./report.type";
 
 export const TreatmentsSchema = z.object({
   id: z.number().optional(),
@@ -91,23 +91,6 @@ export const PcrReportFormSchema = stepSchemas.reduce(
 );
 
 export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
-
-export type PatientReportData = {
-  patientId: string;
-  treatment: Treatments[];
-  transportInfo: {
-    transferType?: string;
-    vehicleId?: string;
-    emergencyType?: string;
-    pickupAddress?: string;
-    destinationAddress?: string;
-  };
-  medicalHistory: {
-    conditions: string[];
-    allergies: string[];
-    notes: string;
-  };
-};
 
 // new
 // Treatments Schema with validation messages

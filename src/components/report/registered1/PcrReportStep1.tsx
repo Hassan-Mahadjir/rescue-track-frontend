@@ -12,12 +12,11 @@ import PatientPersonalInfo from "../PatientPersonalInfo";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PCR } from "@/types/patients.type";
-import { usePCRs } from "@/services/api/patients";
+import { useGetPatients } from "@/services/api/patient";
 
 export default function PcrReportStep1() {
-  const { patientData, isPending } = usePCRs();
-  const data = patientData?.data.data;
+  const { patientsData, isPending } = useGetPatients();
+  const data = patientsData?.data.data;
   const { setValue, watch, control } = useFormContext();
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<PCR[]>([]);

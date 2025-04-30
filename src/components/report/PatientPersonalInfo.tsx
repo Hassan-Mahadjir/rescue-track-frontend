@@ -11,11 +11,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { PCR } from "@/types/patients.type";
+import { PCR } from "@/types/report.type";
 import PersonalInfoDialog from "./PersonalInfoDialog";
 
 interface PatientPersonalInfoProps {
-  patient: PCR;
+  patient: PCR | any;
 }
 
 const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
