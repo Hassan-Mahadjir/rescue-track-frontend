@@ -39,6 +39,7 @@ export const usePCR = (id: number) => {
 
   return { PCRData, ...props };
 };
+
 export const useRunReports = () => {
   // const router = useRouter();
   const {
