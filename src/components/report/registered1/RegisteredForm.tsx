@@ -26,7 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PCR } from "@/types/patients.type";
+import { PCR } from "@/types/PCR.type";
 
 const RegisteredForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -137,7 +137,7 @@ const RegisteredForm = () => {
                   </p>
                 </div>
               </div>
-              <FormSummary data={getValues() as PCR} />
+              <FormSummary data={getValues() as PatientReportData} />
               <div className="max-w-4xl mx-auto p-6 flex justify-between items-center mt-8">
                 <Button
                   type="button"

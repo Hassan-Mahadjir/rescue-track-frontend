@@ -7,10 +7,13 @@ import { ArrowLeft, CheckCircle2, Printer } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { ReportDocument } from "../template";
-import { PCR, Treatments, Patient, InitiatedBy } from "@/types/patients.type";
+import { PCR, Treatments, InitiatedBy } from "@/types/PCR.type";
+import { Patient } from "@/types/patient.type";
+import { usePatient } from "@/services/api/patient";
+import { PatientReportData } from "@/types/formSchema";
 
 interface FormSummaryProps {
-  data: PCR;
+  data: PatientReportData;
 }
 
 const FormSummary = ({ data }: FormSummaryProps) => {
@@ -32,10 +35,26 @@ const FormSummary = ({ data }: FormSummaryProps) => {
     }`.trim();
   };
 
-  // Safely get patient data with fallbacks
-  const patient = data?.patient || ({} as Patient);
-  const treatments = data?.treatments || [];
-  const initiatedBy = data?.initiatedBy;
+  const patientId = data?.patientId;
+
+  // Only call the hook once patientId is available
+  const { patientData, isPending } = usePatient(patientId);
+
+  const patient = patientData?.data.data;
+
+  // Now handle loading properly
+  if (!patientId) {
+    return <div>no id</div>;
+  }
+  if (isPending) {
+    return <div>Loading patient...</div>;
+  }
+
+  if (!patient) {
+    return <div>No patient found</div>;
+  }
+
+  const treatments = data.treatment || [];
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-sm border print:shadow-none print:border-none">
@@ -116,13 +135,13 @@ const FormSummary = ({ data }: FormSummaryProps) => {
           Report Information
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
+          {/* <div>
             <p className="text-gray-700">
               <span className="font-medium">Report ID:</span> {data.id || "N/A"}
             </p>
             <p className="text-gray-700">
               <span className="font-medium">Created At:</span>{" "}
-              {formatDate(data.createdAt)}
+              {formatDate(new Date().toISOString())}
             </p>
             <p className="text-gray-700">
               <span className="font-medium">Initial Condition:</span>{" "}
@@ -142,7 +161,7 @@ const FormSummary = ({ data }: FormSummaryProps) => {
               <span className="font-medium">Reported By:</span>{" "}
               {getStaffFullName(initiatedBy)}
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
       <hr />
@@ -190,14 +209,14 @@ const FormSummary = ({ data }: FormSummaryProps) => {
       <hr />
 
       {/* Notes */}
-      {data.notes && (
+      {data.medicalHistory.notes && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold border-b pb-2 mb-4">
             Additional Notes
           </h2>
           <Card className="bg-gray-50">
             <CardContent className="p-4">
-              <p className="text-gray-700">{data.notes}</p>
+              <p className="text-gray-700">{data.medicalHistory.notes}</p>
             </CardContent>
           </Card>
         </div>
@@ -209,9 +228,9 @@ const FormSummary = ({ data }: FormSummaryProps) => {
           <ArrowLeft className="h-4 w-4" />
           Create New Report
         </Button>
-        <PDFDownloadLink
-          document={<ReportDocument data={data} />}
-          fileName={`patient-report-${data.id || "unknown"}.pdf`}
+        {/* <PDFDownloadLink
+          document={<ReportDocument data={data as PCR} />}
+          fileName={`patient-report-${data.patientId || "unknown"}.pdf`}
         >
           {({ loading }) => (
             <Button
@@ -222,7 +241,7 @@ const FormSummary = ({ data }: FormSummaryProps) => {
               {loading ? "Generating PDF..." : "Print Report"}
             </Button>
           )}
-        </PDFDownloadLink>
+        </PDFDownloadLink> */}
       </div>
 
       {/* Report Footer */}

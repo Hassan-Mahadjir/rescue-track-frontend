@@ -14,10 +14,10 @@ import PCRLoading from "@/components/loading/PCRLoading";
 
 const PatientDetails = () => {
   const params = useParams();
-  const patientId = params.patientId;
+  const PCRId = params.patientId;
 
-  const { patientData, isPending } = usePCR(Number(patientId));
-  const patient = patientData?.data.data;
+  const { PCRData, isPending } = usePCR(Number(PCRId));
+  const patient = PCRData?.data.data;
 
   if (isPending) {
     return <PCRLoading />;
@@ -30,7 +30,7 @@ const PatientDetails = () => {
   return (
     <div className="mx-5 my-2">
       <div>
-        <PatientPersonalInfo patient={patient} />
+        <PatientPersonalInfo patient={patient.patient} />
       </div>
 
       {/* preview */}

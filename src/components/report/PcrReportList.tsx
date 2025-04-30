@@ -1,6 +1,6 @@
 import React from "react";
 import { DataTable } from "../table/DataTable";
-import { PCR } from "@/types/patients.type";
+import { PCR } from "@/types/PCR.type";
 import { PcrColumns } from "../table/columns/PcrColumns";
 
 interface PcrReportListProps {

@@ -11,18 +11,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { PCR } from "@/types/patients.type";
 import PersonalInfoDialog from "./PersonalInfoDialog";
+import { Patient } from "@/types/patient.type";
 
 interface PatientPersonalInfoProps {
-  patient: PCR;
+  patient: Patient;
 }
 
 const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
   patient,
 }) => {
-  const profile = patient.patient;
-
   // Helper function to calculate age accurately
   const calculateAge = (dateString: string): number => {
     const birthDate = new Date(dateString);
@@ -55,24 +53,24 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
         <h2 className="text-lg font-bold text-gray-800">PATIENT INFORMATION</h2>
         <div className="flex flex-row">
           <Image
-            src={patient.initiatedBy.profile.avatar || "/report/sample.jpg"}
+            src={"/report/sample.jpg"}
             width={80}
             height={80}
-            alt="profile Picture"
+            alt="patient Picture"
             className="w-20 h-20 rounded-md object-cover"
           />
           <div className="flex flex-col ml-4">
             <h2 className="text-lg text-gray-800">
-              {profile.firstName} {patient.patient.lastName}
+              {patient.firstName} {patient.lastName}
             </h2>
             <p className="text-gray-600 text-sm">
-              <strong>Age:</strong> {calculateAge(profile.dateofBirth)}
+              <strong>Age:</strong> {calculateAge(patient.dateofBirth)}
             </p>
             <p className="text-gray-600 text-sm">
-              <strong>Phone:</strong> {profile.phone}
+              <strong>Phone:</strong> {patient.phone}
             </p>
             <p className="text-gray-600 text-sm">
-              <strong>Email:</strong> {profile.email}
+              <strong>Email:</strong> {patient.email}
             </p>
           </div>
         </div>
@@ -81,13 +79,13 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
       {/* Patient Details Section */}
       <div className="grid grid-cols-4 grid-rows-3 gap-4 px-4 text-gray-700 w-full xmd:flex-1 md:border-l">
         {[
-          { label: "Identify Number", value: profile.id },
-          { label: "Date of Birth", value: formatDate(profile.dateofBirth) },
-          { label: "Nationality", value: profile.nationality },
+          { label: "Identify Number", value: patient.id },
+          { label: "Date of Birth", value: formatDate(patient.dateofBirth) },
+          { label: "Nationality", value: patient.nationality },
           { label: "Address", value: "addres not found in db" },
-          { label: "Sex", value: profile.gender },
-          { label: "Height", value: `${profile.height} CM` },
-          { label: "Weight", value: `${profile.weight} KG` },
+          { label: "Sex", value: patient.gender },
+          { label: "Height", value: `${patient.height} CM` },
+          { label: "Weight", value: `${patient.weight} KG` },
           { label: "Blood Type", value: "not found under patient" },
         ].map((item, index) => (
           <div key={index} className={index >= 4 ? "row-start-2" : ""}>
@@ -111,7 +109,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
                   accurate and up-to-date.
                 </DialogDescription>
               </DialogHeader>
-              <PersonalInfoDialog id={profile.id ? Number(profile.id) : 0} />
+              <PersonalInfoDialog id={patient.id ? Number(patient.id) : 0} />
             </DialogContent>
           </Dialog>
         </div>

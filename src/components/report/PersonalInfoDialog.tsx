@@ -90,7 +90,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
         middleName: "",
         lastName: patientInfo.lastName || "",
         dateOfBirth: dob,
-        gender: patientInfo.gender || "male",
+        gender: (patientInfo.gender === "female" ? "female" : "male") as "male" | "female",
         email: patientInfo.email || "",
         phoneNumber: patientInfo.phone || "",
         nationality: patientInfo.nationality || "",

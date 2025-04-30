@@ -2,7 +2,7 @@
 
 import PcrActions from "@/components/table/action/PcrActions";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PCR } from "@/types/patients.type";
+import { PCR } from "@/types/PCR.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 
