@@ -35,20 +35,20 @@ export type InitiatedBy = {
 };
 
 export type Patient = {
-  id: number;
+  id?: number;
   nationalID: string;
   firstName: string;
   lastName: string;
   email: string;
-  gender: "male" | "female";
+  gender: string;
   phone: string;
   dateofBirth: string;
   eligibility: string | null;
   nationality: string;
   weight: number;
   height: number;
-  status: "active" | "inactive" | string; // More specific if possible
-  createdAt: string;
+  status: string; // More specific if possible
+  createdAt?: string;
 };
 
 export type PCR = {

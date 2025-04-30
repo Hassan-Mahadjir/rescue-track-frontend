@@ -10,6 +10,14 @@ class PatientService extends BaseService {
     );
     return response;
   }
+
+  async updatePatient(id: number, data: Patient) {
+    const response = await http.patch<AppResponse<Patient>>(
+      `/patient/${id}`,
+      data
+    );
+    return response;
+  }
 }
 
 export default new PatientService();

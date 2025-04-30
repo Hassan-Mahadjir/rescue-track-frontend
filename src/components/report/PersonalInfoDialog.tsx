@@ -21,7 +21,7 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import ReactFlagsSelect from "react-flags-select";
-import { useGetPatient } from "@/services/api/patient";
+import { useGetPatient, useUpdatePatient } from "@/services/api/patient";
 import { cn } from "@/lib/utils";
 import { CustomCalendar } from "@/components/Custom-calendar";
 
@@ -39,10 +39,10 @@ const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   middleName: z.string().optional(),
   lastName: z.string().min(1, "Last name is required"),
-  dateOfBirth: z.date({ required_error: "Date of birth is required" }),
+  dateofBirth: z.date({ required_error: "Date of birth is required" }),
   gender: z.enum(["male", "female"], { message: "Gender is required" }),
   email: z.string().email("Invalid email"),
-  phoneNumber: z.string().optional(),
+  phone: z.string().optional(),
   nationality: z.string().min(1, "Nationality is required"),
   passportNumber: z.string().optional(),
   nationalID: z.string().optional(),
@@ -50,6 +50,9 @@ const formSchema = z.object({
     eligibilities.map((item) => item.value) as [string, ...string[]],
     { message: "Eligibility is required" }
   ),
+  weight: z.string().optional(),
+  height: z.string().optional(),
+  bloodType: z.string().optional(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -62,16 +65,18 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [open, setOpen] = useState(false);
 
+  const { mutateUpdatePatient } = useUpdatePatient(id);
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: "",
       middleName: "",
       lastName: "",
-      dateOfBirth: undefined,
+      dateofBirth: undefined,
       gender: "male",
       email: "",
-      phoneNumber: "",
+      phone: "",
       nationality: "",
       nationalID: "",
     },
@@ -87,12 +92,19 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
         firstName: patientInfo.firstName || "",
         middleName: "",
         lastName: patientInfo.lastName || "",
-        dateOfBirth: dob,
-        gender: patientInfo.gender || "male",
+        dateofBirth: dob,
+        gender:
+          patientInfo.gender === "male" || patientInfo.gender === "female"
+            ? patientInfo.gender
+            : "male",
         email: patientInfo.email || "",
-        phoneNumber: patientInfo.phone || "",
+        phone: patientInfo.phone || "",
         nationality: patientInfo.nationality || "",
         nationalID: patientInfo.nationalID,
+        weight: patientInfo.weight || 0,
+        height: patientInfo.height || 0,
+        eligibility: patientInfo.eligibility || "other",
+        bloodType: "O+",
       });
       if (dob) {
         setMonth(dob.getMonth());
@@ -102,29 +114,19 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
     }
   }, [patientData, form]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedImage(URL.createObjectURL(file));
-    }
-  };
-
-  const handleMonthChange = (newMonth: number) => {
-    setMonth(newMonth);
-    // Create a new date with the updated month but keep the same year
-    const newDate = new Date(year, newMonth, 1);
-    form.setValue("dateOfBirth", newDate);
-  };
-
-  const handleYearChange = (newYear: number) => {
-    setYear(newYear);
-    // Create a new date with the updated year but keep the same month
-    const newDate = new Date(newYear, month, 1);
-    form.setValue("dateOfBirth", newDate);
-  };
-
   const onSubmit = async (values: FormSchema) => {
-    console.log("Form submitted with values:", values);
+    const formattedDateOfBirth = values.dateofBirth
+      ? values.dateofBirth.toISOString().split("T")[0]
+      : null;
+
+    console.log("Form submitted with values:", formattedDateOfBirth);
+    mutateUpdatePatient({
+      ...values,
+      dateofBirth: formattedDateOfBirth,
+      status: "active",
+      weight: Number(values.weight),
+      height: Number(values.height),
+    });
   };
 
   return (
@@ -179,7 +181,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
             <div className="col-span-2">
               <FormField
                 control={form.control}
-                name="dateOfBirth"
+                name="dateofBirth"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Date of Birth</FormLabel>
@@ -266,12 +268,35 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
 
             <FormInput
               form={form}
-              name="phoneNumber"
+              name="phone"
               placeholder="+05334829810"
               label="Phone number"
             />
+            <FormInput
+              form={form}
+              name="weight"
+              placeholder="Weight"
+              label="Weight"
+            />
+            <FormInput
+              form={form}
+              name="bloodType"
+              placeholder="Blood Type"
+              label="Blood Type"
+            />
+
+            <FormInput
+              form={form}
+              name="height"
+              placeholder="Height"
+              label="Height"
+            />
             <FormInput form={form} name="nationalID" label="Identity number" />
-            <FormInput form={form} name="passportNumber" label="Eligibility" />
+            <EligibilitySelect
+              control={form.control}
+              name="eligibility"
+              label="Eligibility"
+            />
 
             <div>
               <label className="text-sm">Nationality</label>
