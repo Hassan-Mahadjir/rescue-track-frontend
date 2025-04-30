@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Treatments } from "./PCR.type";
+import { Treatments } from "./patients.type";
 
 export const TreatmentsSchema = z.object({
   id: z.number().optional(),
@@ -71,7 +71,7 @@ const medicalHistorySchema = z.object({
 // ✨ Step-wise schemas
 export const stepSchemas = [
   z.object({
-    patientId: z.number().min(1, "Please select a patient"),
+    patientId: z.string().min(1, "Please select a patient"),
   }),
   z.object({
     treatment: z.array(TreatmentsSchema),
@@ -93,7 +93,7 @@ export const PcrReportFormSchema = stepSchemas.reduce(
 export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
 
 export type PatientReportData = {
-  patientId: number;
+  patientId: string;
   treatment: Treatments[];
   transportInfo: {
     transferType?: string;

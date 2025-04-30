@@ -1,7 +1,7 @@
 import { AppResponse } from "@/types/common.type";
 import http from "./api/http";
 import BaseService from "./base-service";
-import { PCR } from "@/types/PCR.type";
+import { PCR } from "@/types/patients.type";
 
 class ReportService extends BaseService {
   async getPCRs() {
