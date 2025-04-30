@@ -1,8 +1,7 @@
 "use client";
 
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import FormInput from "@/components/FormInput";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,22 +9,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import FormInput from "../FormInput";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Label } from "../ui/label";
-import { Button } from "../ui/button";
-import ReactFlagsSelect from "react-flags-select";
-import { useGetPatient } from "@/services/api/patient";
+} from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarIcon } from "lucide-react";
+import Image from "next/image";
+import React, { useState } from "react";
+import ReactFlagsSelect from "react-flags-select";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { format } from "date-fns";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { EligibilitySelect } from "@/components/report/EligibilitySelect";
 import { CustomCalendar } from "@/components/Custom-calendar";
-
-import { EligibilitySelect } from "./EligibilitySelect";
 
 const eligibilities = [
   { value: "student", label: "Student" },
@@ -54,8 +56,7 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-const PersonalInfoDialog = ({ id }: { id: number }) => {
-  const { patientData } = useGetPatient(id);
+const CreateUnregisteredPCRReport = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedNationality, setSelectedNationality] = useState<string>("");
   const [month, setMonth] = useState<number>(new Date().getMonth());
@@ -77,31 +78,6 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
     },
   });
 
-  useEffect(() => {
-    if (patientData) {
-      const patientInfo = patientData.data.data;
-      const dob = patientInfo.dateofBirth
-        ? new Date(patientInfo.dateofBirth)
-        : undefined;
-      form.reset({
-        firstName: patientInfo.firstName || "",
-        middleName: "",
-        lastName: patientInfo.lastName || "",
-        dateOfBirth: dob,
-        gender: patientInfo.gender || "male",
-        email: patientInfo.email || "",
-        phoneNumber: patientInfo.phone || "",
-        nationality: patientInfo.nationality || "",
-        nationalID: patientInfo.nationalID,
-      });
-      if (dob) {
-        setMonth(dob.getMonth());
-        setYear(dob.getFullYear());
-      }
-      setSelectedNationality(patientInfo.nationality || "");
-    }
-  }, [patientData, form]);
-
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -109,26 +85,12 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
     }
   };
 
-  const handleMonthChange = (newMonth: number) => {
-    setMonth(newMonth);
-    // Create a new date with the updated month but keep the same year
-    const newDate = new Date(year, newMonth, 1);
-    form.setValue("dateOfBirth", newDate);
-  };
-
-  const handleYearChange = (newYear: number) => {
-    setYear(newYear);
-    // Create a new date with the updated year but keep the same month
-    const newDate = new Date(newYear, month, 1);
-    form.setValue("dateOfBirth", newDate);
-  };
-
   const onSubmit = async (values: FormSchema) => {
     console.log("Form submitted with values:", values);
   };
 
   return (
-    <div>
+    <div className="w-3/4 mx-auto">
       <div className="flex flex-col items-center my-4">
         {/* Photo area */}
         {/* <PhotoUpload
@@ -156,7 +118,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             <FormInput
               form={form}
               name="firstName"
@@ -210,15 +172,6 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
                         <CustomCalendar
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          month={new Date(year, month, 1)}
-                          onMonthChange={(date) => {
-                            setMonth(date.getMonth());
-                            setYear(date.getFullYear());
-                          }}
-                          initialFocus
                         />
                       </PopoverContent>
                     </Popover>
@@ -271,7 +224,11 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
               label="Phone number"
             />
             <FormInput form={form} name="nationalID" label="Identity number" />
-            <FormInput form={form} name="passportNumber" label="Eligibility" />
+            <EligibilitySelect
+              control={form.control}
+              name="eligibility"
+              label="Eligibility"
+            />
 
             <div>
               <label className="text-sm">Nationality</label>
@@ -293,12 +250,12 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
             </div>
           </div>
 
-          <div className="flex justify-center gap-5 mt-5">
-            <Button className="px-7" type="button">
-              Cancel
-            </Button>
-            <Button className="px-7" type="submit">
-              Save
+          <div className="flex justify-center gap-5 mt-8">
+            <Button
+              type="submit"
+              className="bg-dark-gray flex items-center justify-center gap-x-2 w-full px-8 py-3 hover:text-white hover:bg-second-main transition-colors duration-150"
+            >
+              Create Patient Profile
             </Button>
           </div>
         </form>
@@ -307,4 +264,4 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
   );
 };
 
-export default PersonalInfoDialog;
+export default CreateUnregisteredPCRReport;

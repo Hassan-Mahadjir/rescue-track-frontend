@@ -19,7 +19,7 @@ type PatientCareReport = {
 };
 
 // Profile interface
-type Profile = {
+interface Profile {
   id: number;
   firstName: string;
   middleName: string | null;
@@ -32,10 +32,10 @@ type Profile = {
   dateofBirth: string;
   createdAt: string;
   updatedAt: string;
-};
+}
 
 // User interface (initiatedBy)
-type User = {
+interface User {
   id: number;
   email: string;
   password: string;
@@ -46,10 +46,10 @@ type User = {
   otpCodeExpiry: string | null;
   isVerified: boolean;
   profile: Profile;
-};
+}
 
 // Patient interface
-type Patient = {
+interface Patient {
   id: number;
   nationalID: string;
   firstName: string;
@@ -65,10 +65,10 @@ type Patient = {
   status: string;
   createdAt: string;
   patientCareReport: PatientCareReport[];
-};
+}
 
 // Update Fields interface (part of UpdateHistory)
-type UpdateFields = {
+interface UpdateFields {
   category?: string;
   priority?: string;
   callerPhone?: string;
@@ -77,17 +77,17 @@ type UpdateFields = {
   transportStatus?: string;
   arrivalTimeAtScense?: string;
   arrivalTimeAtPatient?: string;
-};
+}
 
 // Update History interface
-type UpdateHistory = {
+interface UpdateHistory {
   id: number;
   updateFields: UpdateFields;
   updatedAt: string;
-};
+}
 
 // Single Run Report interface
-export type RunReportItem = {
+interface RunReportItem {
   id: number;
   caller: string;
   callerPhone: string;
@@ -105,4 +105,4 @@ export type RunReportItem = {
   initiatedBy: User;
   patient: Patient;
   updateHistory: UpdateHistory[];
-};
+}

@@ -13,7 +13,7 @@ import IncidentTab from "../IncidentTab";
 import CrewTab from "../CrewTab";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { PCR } from "@/types/PCR.type";
+import { PCR } from "@/types/patients.type";
 import { Form } from "@/components/ui/form";
 import { PCRData, PCRSchema } from "@/types/formSchema";
 

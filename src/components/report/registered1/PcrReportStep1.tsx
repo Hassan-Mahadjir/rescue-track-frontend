@@ -9,41 +9,35 @@ import {
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import PatientPersonalInfo from "../PatientPersonalInfo";
-import { PatientInfoSkeleton } from "@/components/loading/PatientInfoSkeleton";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { usePatients } from "@/services/api/patient";
-import { Patient } from "@/types/patient.type";
+import { PCR } from "@/types/patients.type";
+import { usePCRs } from "@/services/api/patients";
 
 export default function PcrReportStep1() {
-  const { patientsData, isPending } = usePatients();
-  const data = patientsData?.data.data;
+  const { patientData, isPending } = usePCRs();
+  const data = patientData?.data.data;
   const { setValue, watch, control } = useFormContext();
   const [search, setSearch] = useState("");
-  const [results, setResults] = useState<Patient[]>([]);
+  const [results, setResults] = useState<PCR[]>([]);
 
   const selectedPatientId = watch("patientId");
 
   useEffect(() => {
     if (!data) return;
-
-    const sorted = [...data].sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-
-    setResults(sorted.slice(0, 5));
+    setResults(data);
   }, [data]);
 
   useEffect(() => {
     if (!data) return;
 
-    const filtered = data.filter((patient) => {
+    const filtered = data.filter((pcr) => {
       const searchLower = search.toLowerCase();
       const patientName =
-        `${patient.firstName} ${patient.lastName}`.toLowerCase();
-      const patientId = patient.nationalID.toLowerCase();
-      const reportId = patient.id.toString();
+        `${pcr.patient.firstName} ${pcr.patient.lastName}`.toLowerCase();
+      const patientId = pcr.patient.nationalID.toLowerCase();
+      const reportId = pcr.id.toString();
 
       return (
         patientName.includes(searchLower) ||
@@ -51,13 +45,16 @@ export default function PcrReportStep1() {
         reportId.includes(searchLower)
       );
     });
-
-    const sorted = [...filtered].sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-
-    setResults(sorted.slice(0, 5));
+    setResults(filtered);
   }, [search, data]);
+
+  if (isPending) {
+    return <div>Loading patients...</div>;
+  }
+
+  if (!data) {
+    return <div>No patient data available</div>;
+  }
 
   return (
     <div className="space-y-4">
@@ -66,7 +63,7 @@ export default function PcrReportStep1() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, or report ID"
+            placeholder="Search by name, national ID, or report ID"
             className="pl-3 pr-3 py-2 h-10 w-full"
           />
         </div>
@@ -81,32 +78,27 @@ export default function PcrReportStep1() {
               <FormControl>
                 <ScrollArea className="h-[300px] md:h-[400px] lg:h-[500px] rounded-md border">
                   <div className="p-4 space-y-4">
-                    {isPending ? (
-                      // Show 5 loading skeletons while fetching
-                      Array.from({ length: 5 }).map((_, index) => (
-                        <PatientInfoSkeleton key={index} />
-                      ))
-                    ) : results.length === 0 ? (
+                    {results.length === 0 ? (
                       <div className="flex items-center justify-center h-full text-gray-500">
                         No patients found
                       </div>
                     ) : (
-                      results.map((patient) => (
+                      results.map((pcr) => (
                         <div
-                          key={patient.id}
+                          key={pcr.id}
                           className={clsx(
                             "cursor-pointer border rounded-lg transition-colors hover:shadow-md",
-                            selectedPatientId === patient.id
+                            selectedPatientId === pcr.patient.nationalID
                               ? "border-gray-900"
                               : "hover:border-gray-400"
                           )}
                           onClick={() =>
-                            setValue("patientId", patient.id, {
+                            setValue("patientId", pcr.patient.nationalID, {
                               shouldValidate: true,
                             })
                           }
                         >
-                          <PatientPersonalInfo patient={patient} />
+                          <PatientPersonalInfo patient={pcr} />
                         </div>
                       ))
                     )}
