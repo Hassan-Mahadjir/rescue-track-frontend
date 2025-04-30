@@ -1,10 +1,9 @@
 "use client";
 
-import PcrActions from "@/components/table/action/PcrActions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RunReportItem } from "@/types/runReport.type";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import RunReportAction from "../action/RunReportAction";
 
 export const RunReportColumns: ColumnDef<RunReportItem>[] = [
   {
@@ -87,7 +86,7 @@ export const RunReportColumns: ColumnDef<RunReportItem>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const id = row.original.id;
-      return <PcrActions id={id} />;
+      return <RunReportAction id={id} />;
     },
   },
 ];

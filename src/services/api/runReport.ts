@@ -21,7 +21,7 @@ export const useRunReports = () => {
   return { runReportsData, ...props };
 };
 
-export const usePCR = (id: number) => {
+export const useRunReport = (id: number) => {
   // const router = useRouter();
   const {
     data: runReportData,
