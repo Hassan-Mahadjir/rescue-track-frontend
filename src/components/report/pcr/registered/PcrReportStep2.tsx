@@ -28,7 +28,7 @@ export default function PcrReportStep2() {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "treatment",
+    name: "treatments",
   });
 
   const defaultTreatment = {
@@ -53,7 +53,7 @@ export default function PcrReportStep2() {
               {/* Treatment Name */}
               <FormField
                 control={control}
-                name={`treatment.${index}.name`} // Changed to match schema
+                name={`treatments.${index}.name`} // Changed to match schema
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Treatment</FormLabel>
@@ -85,13 +85,13 @@ export default function PcrReportStep2() {
               {/* Quantity */}
               <FormField
                 control={control}
-                name={`treatment.${index}.quantity`} // Changed to match schema
+                name={`treatments.${index}.quantity`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Quantity</FormLabel>
                     <FormControl>
                       <Select
-                        value={field.value.toString()}
+                        value={String(field.value ?? "")}
                         onValueChange={(value) => field.onChange(Number(value))}
                       >
                         <SelectTrigger>
@@ -117,7 +117,7 @@ export default function PcrReportStep2() {
               {/* Unit */}
               <FormField
                 control={control}
-                name={`treatment.${index}.unit`} // Changed to match schema
+                name={`treatments.${index}.unit`} // Changed to match schema
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Unit</FormLabel>
@@ -146,7 +146,7 @@ export default function PcrReportStep2() {
               {/* Category */}
               <FormField
                 control={control}
-                name={`treatment.${index}.category`} // Keep name consistent with schema
+                name={`treatments.${index}.category`} // Keep name consistent with schema
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>

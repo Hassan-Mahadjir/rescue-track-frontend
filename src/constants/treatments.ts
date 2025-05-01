@@ -21,7 +21,7 @@ export const TreatmentConfig = {
     { id: 10, name: "anticoagulant" },
     { id: 11, name: "immunosuppressant" },
     { id: 12, name: "hormone" },
-  ],
+  ] as const,
 
   unitOptions: [
     { id: 1, name: "mg" },
@@ -30,9 +30,27 @@ export const TreatmentConfig = {
     { id: 4, name: "l" },
     { id: 5, name: "tablet" },
     { id: 6, name: "dose" },
-  ],
+  ] as const,
 
   quantityOptions: [
     50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000,
-  ],
+  ] as const,
 };
+
+// Extract enums for zod usage
+export const UnitLiterals = TreatmentConfig.unitOptions.map((u) => u.name) as [
+  string,
+  ...string[]
+];
+
+export const CategoryLiterals = TreatmentConfig.categoryOptions.map(
+  (c) => c.name
+) as [string, ...string[]];
+
+export const TreatmentNameLiterals = TreatmentConfig.treatmentOptions.map(
+  (t) => t.name
+) as [string, ...string[]];
+
+export type Unit = (typeof UnitLiterals)[number];
+export type Category = (typeof CategoryLiterals)[number];
+export type TreatmentName = (typeof TreatmentNameLiterals)[number];

@@ -1,57 +1,37 @@
+import {
+  CategoryLiterals,
+  TreatmentNameLiterals,
+  UnitLiterals,
+} from "@/constants/treatments";
 import { z } from "zod";
 
-export const TreatmentsSchema = z.object({
+const singleTreatmentSchema = z.object({
   id: z.number().optional(),
-  name: z
-    .string({
-      required_error: "Treatment name is required",
-      invalid_type_error: "Treatment name must be a string",
-    })
-    .min(2, {
-      message: "Treatment name must be at least 2 characters",
-    })
-    .max(50, {
-      message: "Treatment name must not exceed 50 characters",
-    }),
+  name: z.enum(TreatmentNameLiterals, {
+    errorMap: () => ({ message: "Please select a valid treatment" }),
+  }),
   quantity: z
-    .number({
-      required_error: "Quantity is required",
-      invalid_type_error: "Quantity must be a number",
-    })
-    .positive({
-      message: "Quantity must be a positive number",
-    })
-    .int({
-      message: "Quantity must be an integer",
-    })
-    .max(1000, {
-      message: "Quantity must not exceed 1000",
-    }),
-  unit: z
-    .string({
-      required_error: "Unit is required",
-      invalid_type_error: "Unit must be a string",
-    })
-    .min(1, {
-      message: "Unit must be at least 1 character",
-    })
-    .max(10, {
-      message: "Unit must not exceed 10 characters",
-    }),
-  category: z
-    .string({
-      required_error: "Category is required",
-      invalid_type_error: "Category must be a string",
-    })
-    .min(2, {
-      message: "Category must be at least 2 characters",
-    })
-    .max(30, {
-      message: "Category must not exceed 30 characters",
-    }),
+    .number({ required_error: "Quantity is required" })
+    .int()
+    .positive()
+    .max(1000),
+  unit: z.enum(UnitLiterals, {
+    errorMap: () => ({ message: "Please select a valid unit" }),
+  }),
+  category: z.enum(CategoryLiterals, {
+    errorMap: () => ({ message: "Please select a valid category" }),
+  }),
 });
 
-// Transport
+const treatmentsArraySchema = z.object({
+  treatments: z.array(singleTreatmentSchema),
+});
+
+// PCR metadata
+const patientIdSchema = z.object({
+  runReportId: z.string().min(1, "Please select a patient"),
+});
+
 const transportInfoSchema = z.object({
   transferType: z.string().optional(),
   vehicleId: z.string().optional(),
@@ -60,38 +40,26 @@ const transportInfoSchema = z.object({
   destinationAddress: z.string().optional(),
 });
 
-// Medical history
 const medicalHistorySchema = z.object({
   conditions: z.array(z.string()).optional().default([]),
   allergies: z.array(z.string()).optional().default([]),
   notes: z.string().optional().default(""),
 });
 
-// ✨ Step-wise schemas
+// Final PCR schema
+export const PcrReportFormSchema = patientIdSchema
+  .merge(treatmentsArraySchema)
+  .merge(transportInfoSchema)
+  .merge(medicalHistorySchema);
+
 export const stepSchemas = [
-  z.object({
-    patientId: z.string().min(1, "Please select a patient"),
-  }),
-  z.object({
-    treatment: z.array(TreatmentsSchema),
-  }),
-  z.object({
-    transportInfo: transportInfoSchema,
-  }),
-  z.object({
-    medicalHistory: medicalHistorySchema,
-  }),
+  patientIdSchema, // Step 1: Patient selection
+  treatmentsArraySchema, // Step 2: Medication
+  transportInfoSchema, // Step 3: Crew / Transport
+  medicalHistorySchema, // Step 4: Medical history
 ];
 
-// ✨ Merged full schema
-export const PcrReportFormSchema = stepSchemas.reduce(
-  (acc, curr) => acc.merge(curr),
-  z.object({})
-);
-
 export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
-
-// new
 
 // PCR Schema with validation messages
 export const PCRSchema = z.object({
@@ -167,4 +135,4 @@ export const CombinedSchema = Step1Schema.merge(Step2Schema).merge(Step3Schema);
 
 export type CombinedFormData = z.infer<typeof CombinedSchema>;
 export type PCRData = z.infer<typeof PCRSchema>;
-export type TreatmentsData = z.infer<typeof TreatmentsSchema>;
+export type TreatmentsData = z.infer<typeof singleTreatmentSchema>;

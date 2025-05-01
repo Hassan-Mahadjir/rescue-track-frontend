@@ -47,20 +47,45 @@ export const usePCR = (id: number) => {
 };
 
 export const usePostPCR = () => {
+  const router = useRouter();
+  const { toast } = useToast();
   const {
     mutate: mutatePost,
     isPending,
     ...props
   } = useMutation({
     mutationFn: (data: PcrReportFormValues) => reportsService.postPCR(data),
-    onSuccess: async (response) => {},
-    onError: () => {},
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Created",
+        description:
+          response.data.message || "PCR report submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.push("/report/pcr/create/registered");
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the PCR.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
   });
 
   return { mutatePost, isPending, ...props };
 };
 
 export const useUpdatePCR = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
   const {
     mutate: mutateUpdate,
     isPending,
@@ -68,15 +93,35 @@ export const useUpdatePCR = (id: number) => {
   } = useMutation({
     mutationFn: (data: PcrReportFormValues) =>
       reportsService.updatePCR(data, id),
-    onSuccess: async (response) => {},
-    onError: () => {},
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Updated",
+        description:
+          response.data.message || "PCR report updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.push("/report/pcr/create/registered");
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the PCR.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
   });
 
   return { mutateUpdate, isPending, ...props };
 };
 
 export const useRunReports = () => {
-  // const router = useRouter();
   const {
     data: runReportsData,
     error,

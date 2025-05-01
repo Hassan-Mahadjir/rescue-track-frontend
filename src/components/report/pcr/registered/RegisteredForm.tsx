@@ -3,8 +3,8 @@ import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   PcrReportFormSchema,
-  type PcrReportFormValues,
   stepSchemas,
+  type PcrReportFormValues,
 } from "@/types/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -24,30 +24,27 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { usePostPCR } from "@/services/api/reports";
 
 const RegisteredForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [touchedSteps, setTouchedSteps] = useState<number[]>([]);
   // const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  // const { mutatePost } = usePostPCR();
+  const { mutatePost } = usePostPCR();
 
   const form = useForm<PcrReportFormValues>({
     resolver: zodResolver(PcrReportFormSchema),
     defaultValues: {
-      patientId: undefined,
-      treatment: [],
-      transportInfo: {
-        transferType: "",
-        vehicleId: "",
-        emergencyType: "",
-        pickupAddress: "",
-        destinationAddress: "",
-      },
-      medicalHistory: {
-        conditions: [],
-        allergies: [],
-        notes: "",
-      },
+      runReportId: "",
+      treatments: [],
+      transferType: "",
+      vehicleId: "",
+      emergencyType: "",
+      pickupAddress: "",
+      destinationAddress: "",
+      conditions: [],
+      allergies: [],
+      notes: "",
     },
     mode: "onChange",
   });
@@ -55,7 +52,6 @@ const RegisteredForm = () => {
   const {
     handleSubmit,
     trigger,
-    reset,
     formState: { errors, isValid, isSubmitting },
   } = form;
 
@@ -92,7 +88,7 @@ const RegisteredForm = () => {
       return;
     }
     console.log(data);
-    // mutatePost(data);
+    mutatePost(data);
   };
 
   return (
