@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { CustomCalendar } from "@/components/Custom-calendar";
 
 import { EligibilitySelect } from "./EligibilitySelect";
+import { BloodTypeSelect } from "./BloodTypeSelect";
 
 const eligibilities = [
   { value: "student", label: "Student" },
@@ -63,7 +64,6 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
   const [selectedNationality, setSelectedNationality] = useState<string>("");
   const [month, setMonth] = useState<number>(new Date().getMonth());
   const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [open, setOpen] = useState(false);
 
   const { mutateUpdatePatient } = useUpdatePatient(id);
 
@@ -278,13 +278,11 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
               placeholder="Weight"
               label="Weight"
             />
-            <FormInput
-              form={form}
+            <BloodTypeSelect
+              control={form.control}
               name="bloodType"
-              placeholder="Blood Type"
               label="Blood Type"
             />
-
             <FormInput
               form={form}
               name="height"

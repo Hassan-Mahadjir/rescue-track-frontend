@@ -1,32 +1,34 @@
 "use client";
 
+import { bloodTypes } from "@/constants/bloodTypes";
 import { GenericSelect } from "../ui/GenericSelect";
 import { Control } from "react-hook-form";
-import { eligibilities } from "@/constants/eligibilities";
 
-interface EligibilitySelectProps {
+
+
+interface BloodTypeSelectProps {
   control: Control<any>;
   name: string;
   label?: string;
   className?: string;
 }
 
-export const EligibilitySelect = ({
+export const BloodTypeSelect = ({
   control,
   name,
-  label = "Eligibility",
+  label = "Blood Type",
   className,
-}: EligibilitySelectProps) => {
+}: BloodTypeSelectProps) => {
   return (
     <GenericSelect
       control={control}
       name={name}
-      items={eligibilities}
+      items={bloodTypes}
       label={label}
-      placeholder="Select eligibility"
-      searchPlaceholder="Search eligibility..."
-      emptyMessage="No eligibility found."
+      placeholder="Select blood type"
+      searchPlaceholder="Search blood type..."
+      emptyMessage="No blood type found."
       className={className}
     />
   );
-};
+}; 

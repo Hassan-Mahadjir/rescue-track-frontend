@@ -18,6 +18,14 @@ class PatientService extends BaseService {
     );
     return response;
   }
+
+  async createPatient( data: Patient) {
+    const response = await http.post<AppResponse<Patient>>(
+      `/patient`,
+      data
+    );
+    return response;
+  }
 }
 
 export default new PatientService();

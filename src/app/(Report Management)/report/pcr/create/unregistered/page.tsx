@@ -28,6 +28,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { EligibilitySelect } from "@/components/report/EligibilitySelect";
 import { CustomCalendar } from "@/components/Custom-calendar";
+import { BloodTypeSelect } from "@/components/report/BloodTypeSelect";
+import { useCreatePatient } from "@/services/api/patient";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const eligibilities = [
   { value: "student", label: "Student" },
@@ -41,10 +44,10 @@ const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   middleName: z.string().optional(),
   lastName: z.string().min(1, "Last name is required"),
-  dateOfBirth: z.date({ required_error: "Date of birth is required" }),
+  dateofBirth: z.date({ required_error: "Date of birth is required" }),
   gender: z.enum(["male", "female"], { message: "Gender is required" }),
   email: z.string().email("Invalid email"),
-  phoneNumber: z.string().optional(),
+  phone: z.string().optional(),
   nationality: z.string().min(1, "Nationality is required"),
   passportNumber: z.string().optional(),
   nationalID: z.string().optional(),
@@ -52,16 +55,18 @@ const formSchema = z.object({
     eligibilities.map((item) => item.value) as [string, ...string[]],
     { message: "Eligibility is required" }
   ),
+  weight: z.string().optional(),
+  height: z.string().optional(),
+  bloodType: z.string().optional(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 
 const CreateUnregisteredPCRReport = () => {
+  const { createPatient, isPending } = useCreatePatient();
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedNationality, setSelectedNationality] = useState<string>("");
-  const [month, setMonth] = useState<number>(new Date().getMonth());
-  const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [open, setOpen] = useState(false);
+
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -69,10 +74,10 @@ const CreateUnregisteredPCRReport = () => {
       firstName: "",
       middleName: "",
       lastName: "",
-      dateOfBirth: undefined,
+      dateofBirth: undefined,
       gender: "male",
       email: "",
-      phoneNumber: "",
+      phone: "",
       nationality: "",
       nationalID: "",
     },
@@ -86,7 +91,11 @@ const CreateUnregisteredPCRReport = () => {
   };
 
   const onSubmit = async (values: FormSchema) => {
-    console.log("Form submitted with values:", values);
+    const formattedDateOfBirth = values.dateofBirth
+    ? values.dateofBirth.toISOString().split("T")[0]
+    : null;
+
+    createPatient({...values, dateofBirth: formattedDateOfBirth, status: "active",weight: Number(values.weight),height: Number(values.height)});
   };
 
   return (
@@ -141,7 +150,7 @@ const CreateUnregisteredPCRReport = () => {
             <div className="col-span-2">
               <FormField
                 control={form.control}
-                name="dateOfBirth"
+                name="dateofBirth"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Date of Birth</FormLabel>
@@ -219,10 +228,29 @@ const CreateUnregisteredPCRReport = () => {
 
             <FormInput
               form={form}
-              name="phoneNumber"
+              name="phone"
               placeholder="+05334829810"
               label="Phone number"
             />
+            <FormInput
+              form={form}
+              name="weight"
+              placeholder="Weight"
+              label="Weight"
+            />
+            <BloodTypeSelect
+              control={form.control}
+              name="bloodType"
+              label="Blood Type"
+            />
+
+            <FormInput
+              form={form}
+              name="height"
+              placeholder="Height"
+              label="Height"
+            />
+
             <FormInput form={form} name="nationalID" label="Identity number" />
             <EligibilitySelect
               control={form.control}
@@ -253,9 +281,10 @@ const CreateUnregisteredPCRReport = () => {
           <div className="flex justify-center gap-5 mt-8">
             <Button
               type="submit"
+              disabled={isPending}
               className="bg-dark-gray flex items-center justify-center gap-x-2 w-full px-8 py-3 hover:text-white hover:bg-second-main transition-colors duration-150"
             >
-              Create Patient Profile
+              {isPending ? <LoadingIndicator /> : "Create Patient Profile"}
             </Button>
           </div>
         </form>

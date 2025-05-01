@@ -35,7 +35,7 @@ export const useUpdatePatient = (id: number) => {
     onSuccess: async (response) => {
       toast({
         title: `${response.data.message}`,
-        description: "You can now log in with your new password.",
+        description: "Patient updated successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",
@@ -47,4 +47,26 @@ export const useUpdatePatient = (id: number) => {
   });
 
   return { mutateUpdatePatient, isPending, ...props };
+};
+
+export const useCreatePatient = () => {
+  const { toast } = useToast();
+
+  const { mutate: createPatient, isPending, ...props } = useMutation({
+    mutationFn: (data: Patient) => patientService.createPatient(data),
+    onSuccess: async (response) => {
+      toast({
+        title: `${response.data.message}`,
+        description: "Patient created successfully. you can create Run report for this patient.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+    },
+    onError: () => {
+      // Unsuccessful login toast
+    },
+  });
+
+  return { createPatient, isPending, ...props };
 };
