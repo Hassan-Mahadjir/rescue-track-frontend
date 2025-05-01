@@ -132,6 +132,7 @@ export const PCRSchema = z.object({
 
 //run report schema
 export const Step1Schema = z.object({
+  id: z.number().optional(),
   patientId: z.number().min(1, "Please select a patient"),
 });
 

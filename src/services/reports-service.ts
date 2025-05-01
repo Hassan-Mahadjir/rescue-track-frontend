@@ -55,8 +55,14 @@ class ReportService extends BaseService {
   }
   async updateRunReport(data: CombinedFormData, id: number) {
     const response = await http.patch<AppResponse<CombinedFormData>>(
-      `patient-care-report/${id}`,
+      `run-report/${id}`,
       data
+    );
+    return response;
+  }
+  async deleteRunReport(id: number) {
+    const response = await http.delete<AppResponse<CombinedFormData>>(
+      `run-report/manage/${id}`
     );
     return response;
   }

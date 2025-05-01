@@ -84,7 +84,7 @@ export const useRunReports = () => {
     ...props
   } = useQuery({
     queryFn: () => reportsService.getRunReports(),
-    queryKey: ["Run Report"],
+    queryKey: ["run-report"],
   });
 
   if (isError) {
@@ -103,7 +103,7 @@ export const useRunReport = (id: number) => {
     ...props
   } = useQuery({
     queryFn: () => reportsService.getRunReport(id),
-    queryKey: ["Run Report", id],
+    queryKey: ["run-report", id],
   });
 
   if (isError) {
@@ -149,6 +149,8 @@ export const usePostRunReport = () => {
 };
 
 export const useUpdateRunReport = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
   const {
     mutate: mutateUpdate,
     isPending,
@@ -156,9 +158,61 @@ export const useUpdateRunReport = (id: number) => {
   } = useMutation({
     mutationFn: (data: CombinedFormData) =>
       reportsService.updateRunReport(data, id),
-    onSuccess: async (response) => {},
-    onError: () => {},
+    onSuccess: async (response) => {
+      toast({
+        title: `${response.data.message}`,
+        description: "Run report updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.push(`/report/run-report/${id}`);
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission failed",
+        description: error.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
   });
 
   return { mutateUpdate, isPending, ...props };
+};
+export const useDeleteRunReport = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (id: number) => reportsService.deleteRunReport(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.data.message,
+        description: "Run report deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete failed",
+        description: error.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateDelete, isPending, ...props };
 };

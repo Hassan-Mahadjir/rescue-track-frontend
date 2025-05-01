@@ -1,7 +1,10 @@
 "use client";
 import PCRLoading from "@/components/loading/PCRLoading";
 import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
+import { Button } from "@/components/ui/button";
 import { useRunReport } from "@/services/api/reports";
+import { Edit } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -21,7 +24,7 @@ const RunReportPatientId = () => {
   }
 
   return (
-    <div className="mx-5 my-2">
+    <div className="mx-5 my-2 space-y-4">
       {/* Patient Information */}
       <div>
         <PatientPersonalInfo patient={runReport} />
@@ -29,9 +32,21 @@ const RunReportPatientId = () => {
 
       {/* Report Information */}
       <section className="bg-gray-50 border rounded-xl p-5">
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">
-          Report Details
-        </h2>
+        <div className="flex justify-between">
+          <h2 className="text-lg font-semibold mb-4 text-gray-800">
+            Report Details
+          </h2>
+          <Link href={`${reportId}/edit`}>
+            <Button
+              className="bg-main hover:bg-main/90"
+              size="sm"
+              variant="default"
+            >
+              <Edit className="w-4 h-4 mr-1" />
+              Edit Report
+            </Button>
+          </Link>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InfoItem label="Category" value={runReport.category} />
           <InfoItem label="Priority" value={runReport.priority} />

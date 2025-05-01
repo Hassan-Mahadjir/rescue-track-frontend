@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import RunReportStep1 from "./RunReportStep1";
 import RunReportStep2 from "./RunReportStep2";
 import RunReportStep3 from "./RunReportStep3";
-import { usePostRunReport } from "@/services/api/reports";
+import { usePostRunReport, useUpdateRunReport } from "@/services/api/reports";
 
 const stepSchemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -26,14 +26,25 @@ const steps = [
   { id: "3", label: "Crew Information" },
 ];
 
-const MultiStepForm = () => {
+const MultiStepForm = ({
+  defaultValues,
+  isEdit = false,
+}: {
+  defaultValues?: CombinedFormData;
+  isEdit?: boolean;
+}) => {
   const [step, setStep] = useState(0);
   const [touchedSteps, setTouchedSteps] = useState<number[]>([]);
-  const { mutatePost, isPending: isPosting } = usePostRunReport();
+  const [submitting, setSubmitting] = useState(false);
+
+  const reportId = defaultValues?.id ?? 0;
+  const { mutatePost } = usePostRunReport();
+  const { mutateUpdate } = useUpdateRunReport(reportId);
 
   const form = useForm<CombinedFormData>({
     resolver: zodResolver(CombinedSchema),
     mode: "onTouched",
+    defaultValues, // ✅ handled here
   });
 
   const {
@@ -66,11 +77,18 @@ const MultiStepForm = () => {
   const handleBack = () => {
     setStep((prev) => prev - 1);
   };
-  const onSubmit = (data: CombinedFormData) => {
-    console.log("Final data:", data);
-    mutatePost(data);
-    console.log("isPosting", isPosting);
-    // Removed undefined variable 'isPending'
+
+  const onSubmit = async (data: CombinedFormData) => {
+    setSubmitting(true);
+    if (isEdit) {
+      mutateUpdate(data, {
+        onSettled: () => setSubmitting(false),
+      });
+    } else {
+      mutatePost(data, {
+        onSettled: () => setSubmitting(false),
+      });
+    }
   };
   return (
     <div>
@@ -152,13 +170,15 @@ const MultiStepForm = () => {
                         type="submit"
                         size="lg"
                         className="bg-main hover:bg-main/90"
-                        disabled={isPosting || !isValid}
+                        disabled={submitting || !isValid}
                       >
-                        {isPosting ? (
+                        {submitting ? (
                           <>
                             <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                            Submitting...
+                            {isEdit ? "Updating..." : "Submitting..."}
                           </>
+                        ) : isEdit ? (
+                          "Update Report"
                         ) : (
                           "Submit Report"
                         )}
