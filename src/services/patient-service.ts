@@ -10,6 +10,10 @@ class PatientService extends BaseService {
     );
     return response;
   }
+  async getPatients() {
+    const response = await http.get<AppResponse<Patient[]>>(`/patient/manage`);
+    return response;
+  }
 
   async updatePatient(id: number, data: Patient) {
     const response = await http.patch<AppResponse<Patient>>(
@@ -19,11 +23,8 @@ class PatientService extends BaseService {
     return response;
   }
 
-  async createPatient( data: Patient) {
-    const response = await http.post<AppResponse<Patient>>(
-      `/patient`,
-      data
-    );
+  async createPatient(data: Patient) {
+    const response = await http.post<AppResponse<Patient>>(`/patient`, data);
     return response;
   }
 }

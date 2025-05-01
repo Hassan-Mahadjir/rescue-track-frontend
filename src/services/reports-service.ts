@@ -2,7 +2,7 @@ import { AppResponse } from "@/types/common.type";
 import http from "./api/http";
 import BaseService from "./base-service";
 import { PCR, RunReportItem } from "@/types/report.type";
-import { PcrReportFormValues } from "@/types/formSchema";
+import { PcrReportFormValues } from "@/types/reportFormSchema";
 
 class ReportService extends BaseService {
   async getPCRs() {

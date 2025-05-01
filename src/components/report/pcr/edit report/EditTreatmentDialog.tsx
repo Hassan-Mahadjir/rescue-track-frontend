@@ -23,7 +23,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { TreatmentsData, TreatmentsSchema } from "@/types/formSchema";
+import { TreatmentsData, TreatmentsSchema } from "@/types/reportFormSchema";
 import { Treatment } from "@/types/report.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Pencil } from "lucide-react";

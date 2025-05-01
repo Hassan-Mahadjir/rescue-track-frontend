@@ -1,7 +1,12 @@
+import MultiStepForm from "@/components/report/run report/form/MultiStepForm";
 import React from "react";
 
 const RegisteredPatient = () => {
-  return <div>RegisteredPatient</div>;
+  return (
+    <div>
+      <MultiStepForm />
+    </div>
+  );
 };
 
 export default RegisteredPatient;

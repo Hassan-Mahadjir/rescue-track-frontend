@@ -1,6 +1,6 @@
 "use client";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { PcrReportFormValues } from "@/types/formSchema";
+import { PcrReportFormValues } from "@/types/reportFormSchema";
 import reportsService from "../reports-service";
 
 export const usePCRs = () => {

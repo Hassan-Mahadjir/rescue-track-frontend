@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { PCR } from "@/types/patients.type";
 import { Form } from "@/components/ui/form";
-import { PCRData, PCRSchema } from "@/types/formSchema";
+import { PCRData, PCRSchema } from "@/types/reportFormSchema";
 
 interface EditPCRDialogProp {
   pcr: PCR;

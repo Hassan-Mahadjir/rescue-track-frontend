@@ -21,6 +21,22 @@ export const useGetPatient = (id: number) => {
 
   return { patientData, ...props };
 };
+export const useGetPatients = () => {
+  const {
+    data: patientsData,
+    error,
+    isError,
+    ...props
+  } = useQuery({
+    queryFn: () => patientService.getPatients(),
+    queryKey: ["patient"],
+  });
+  if (isError) {
+    console.error("Failed to fetch patient:", error);
+  }
+
+  return { patientsData, ...props };
+};
 
 export const useUpdatePatient = (id: number) => {
   const router = useRouter();
@@ -52,12 +68,17 @@ export const useUpdatePatient = (id: number) => {
 export const useCreatePatient = () => {
   const { toast } = useToast();
 
-  const { mutate: createPatient, isPending, ...props } = useMutation({
+  const {
+    mutate: createPatient,
+    isPending,
+    ...props
+  } = useMutation({
     mutationFn: (data: Patient) => patientService.createPatient(data),
     onSuccess: async (response) => {
       toast({
         title: `${response.data.message}`,
-        description: "Patient created successfully. you can create Run report for this patient.",
+        description:
+          "Patient created successfully. you can create Run report for this patient.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",

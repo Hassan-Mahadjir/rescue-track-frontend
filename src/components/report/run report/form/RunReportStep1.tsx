@@ -8,13 +8,14 @@ import {
 } from "@/components/ui/form";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import PatientPersonalInfo from "../PatientPersonalInfo";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useGetPatient, useGetPatients } from "@/services/api/patient";
+import { useGetPatients } from "@/services/api/patient";
+import { Patient } from "@/types/patients.type";
+import PatientPersonalInfo from "../../PatientPersonalInfo";
 
-export default function PcrReportStep1() {
+const RunReportStep1 = () => {
   const { patientsData, isPending } = useGetPatients();
   const data = patientsData?.data.data;
   const { setValue, watch, control } = useFormContext();
@@ -31,17 +32,14 @@ export default function PcrReportStep1() {
   useEffect(() => {
     if (!data) return;
 
-    const filtered = data.filter((pcr) => {
+    const filtered = data.filter((patient) => {
       const searchLower = search.toLowerCase();
       const patientName =
-        `${pcr.patient.firstName} ${pcr.patient.lastName}`.toLowerCase();
-      const patientId = pcr.patient.nationalID.toLowerCase();
-      const reportId = pcr.id.toString();
+        `${patient.firstName} ${patient.lastName}`.toLowerCase();
+      const patientId = (patient.id ?? "").toString();
 
       return (
-        patientName.includes(searchLower) ||
-        patientId.includes(searchLower) ||
-        reportId.includes(searchLower)
+        patientName.includes(searchLower) || patientId.includes(searchLower)
       );
     });
     setResults(filtered);
@@ -82,22 +80,22 @@ export default function PcrReportStep1() {
                         No patients found
                       </div>
                     ) : (
-                      results.map((pcr) => (
+                      results.map((patient) => (
                         <div
-                          key={pcr.id}
+                          key={patient.id}
                           className={clsx(
                             "cursor-pointer border rounded-lg transition-colors hover:shadow-md",
-                            selectedPatientId === pcr.patient.nationalID
+                            selectedPatientId === patient.id
                               ? "border-gray-900"
                               : "hover:border-gray-400"
                           )}
                           onClick={() =>
-                            setValue("patientId", pcr.patient.nationalID, {
+                            setValue("patientId", patient.id, {
                               shouldValidate: true,
                             })
                           }
                         >
-                          <PatientPersonalInfo patient={pcr} />
+                          <PatientPersonalInfo patient={patient} />
                         </div>
                       ))
                     )}
@@ -111,4 +109,6 @@ export default function PcrReportStep1() {
       </div>
     </div>
   );
-}
+};
+
+export default RunReportStep1;

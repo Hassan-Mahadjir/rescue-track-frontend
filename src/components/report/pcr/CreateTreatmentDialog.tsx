@@ -23,7 +23,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { TreatmentsData, TreatmentsSchema } from "@/types/formSchema";
+import { TreatmentsData, TreatmentsSchema } from "@/types/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Loader2 } from "lucide-react";
 import React from "react";
@@ -32,7 +32,6 @@ import { TreatmentConfig } from "@/constants/treatments";
 
 const { treatmentOptions, categoryOptions, unitOptions, quantityOptions } =
   TreatmentConfig;
-  
 
 const CreateTreatmentDialog = () => {
   const [isOpen, setIsOpen] = React.useState(false);

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Treatment } from "./report.type";
 
 export const TreatmentsSchema = z.object({
   id: z.number().optional(),
@@ -93,7 +92,6 @@ export const PcrReportFormSchema = stepSchemas.reduce(
 export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
 
 // new
-// Treatments Schema with validation messages
 
 // PCR Schema with validation messages
 export const PCRSchema = z.object({
@@ -132,5 +130,45 @@ export const PCRSchema = z.object({
     .nullable(),
 });
 
+//run report schema
+export const Step1Schema = z.object({
+  patientId: z.number().int().positive(),
+  caller: z.string().min(1, "Caller name is required"),
+  callerPhone: z.string(),
+  relationship: z.string().min(1, "Relationship is required"),
+});
+
+export const Step2Schema = z.object({
+  category: z.string().min(1),
+  priority: z.enum(["low", "medium", "high"]),
+  transportStatus: z.enum(["not transported", "transported", "pending"]),
+  mileage: z.number().nonnegative(),
+});
+
+export const Step3Schema = z.object({
+  responseTime: z
+    .string()
+    .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+  arrivalTimeAtScense: z
+    .string()
+    .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+  arrivalTimeAtPatient: z
+    .string()
+    .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+  departureTime: z
+    .string()
+    .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+});
+
+export const Step4Schema = z.object({
+  notes: z.string().optional(),
+});
+
+// Combine all steps
+export const CombinedSchema = Step1Schema.merge(Step2Schema)
+  .merge(Step3Schema)
+  .merge(Step4Schema);
+
+export type CombinedFormData = z.infer<typeof CombinedSchema>;
 export type PCRData = z.infer<typeof PCRSchema>;
 export type TreatmentsData = z.infer<typeof TreatmentsSchema>;
