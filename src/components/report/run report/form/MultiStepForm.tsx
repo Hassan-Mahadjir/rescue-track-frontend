@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import RunReportStep1 from "./RunReportStep1";
 import RunReportStep2 from "./RunReportStep2";
 import RunReportStep3 from "./RunReportStep3";
+import { usePostRunReport } from "@/services/api/reports";
 
 const stepSchemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -28,6 +29,7 @@ const steps = [
 const MultiStepForm = () => {
   const [step, setStep] = useState(0);
   const [touchedSteps, setTouchedSteps] = useState<number[]>([]);
+  const { mutatePost, isPending: isPosting } = usePostRunReport();
 
   const form = useForm<CombinedFormData>({
     resolver: zodResolver(CombinedSchema),
@@ -35,10 +37,9 @@ const MultiStepForm = () => {
   });
 
   const {
-    register,
     handleSubmit,
     trigger,
-    formState: { isValid, isSubmitting, errors },
+    formState: { isValid, errors },
   } = form;
 
   const hasStepErrors = (stepIndex: number) => {
@@ -67,7 +68,9 @@ const MultiStepForm = () => {
   };
   const onSubmit = (data: CombinedFormData) => {
     console.log("Final data:", data);
-    // send to API or display confirmation
+    mutatePost(data);
+    console.log("isPosting", isPosting);
+    // Removed undefined variable 'isPending'
   };
   return (
     <div>
@@ -89,16 +92,15 @@ const MultiStepForm = () => {
                         value={step.id}
                         onClick={() => goToStep(index)}
                         className={`
-                                          py-3 px-3 sm:px-4 rounded-none font-medium transition-all flex-1 min-w-[80px]
-                                          ${
-                                            hasError
-                                              ? "border-b-2 border-red-500 text-red-600"
-                                              : isCompleted
-                                              ? "border-b-2 border-green-500 text-green-600"
-                                              : "data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary"
-                                          }
-                                          hover:bg-gray-50
-                                        `}
+                            py-3 px-3 sm:px-4 rounded-none font-medium transition-all flex-1 min-w-[80px]
+                            ${
+                              hasError
+                                ? "border-b-2 border-red-500 text-red-600"
+                                : isCompleted
+                                ? "border-b-2 border-green-500 text-green-600"
+                                : "data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary"
+                            }
+                             hover:bg-gray-50`}
                       >
                         <div className="flex items-center justify-center sm:justify-start gap-1 sm:gap-2">
                           {hasError && (
@@ -150,9 +152,9 @@ const MultiStepForm = () => {
                         type="submit"
                         size="lg"
                         className="bg-main hover:bg-main/90"
-                        disabled={isSubmitting || !isValid}
+                        disabled={isPosting || !isValid}
                       >
-                        {isSubmitting ? (
+                        {isPosting ? (
                           <>
                             <Loader2 className="animate-spin mr-2 h-4 w-4" />
                             Submitting...

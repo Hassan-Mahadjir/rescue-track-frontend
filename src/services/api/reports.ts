@@ -1,7 +1,12 @@
 "use client";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { PcrReportFormValues } from "@/types/reportFormSchema";
+import {
+  CombinedFormData,
+  PcrReportFormValues,
+} from "@/types/reportFormSchema";
+import { useToast } from "@/hooks/use-toast";
 import reportsService from "../reports-service";
+import { useRouter } from "next/navigation";
 
 export const usePCRs = () => {
   // const router = useRouter();
@@ -39,6 +44,35 @@ export const usePCR = (id: number) => {
   }
 
   return { PCRData, ...props };
+};
+
+export const usePostPCR = () => {
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: PcrReportFormValues) => reportsService.postPCR(data),
+    onSuccess: async (response) => {},
+    onError: () => {},
+  });
+
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCR = (id: number) => {
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: PcrReportFormValues) =>
+      reportsService.updatePCR(data, id),
+    onSuccess: async (response) => {},
+    onError: () => {},
+  });
+
+  return { mutateUpdate, isPending, ...props };
 };
 
 export const useRunReports = () => {
@@ -79,28 +113,49 @@ export const useRunReport = (id: number) => {
   return { runReportData, ...props };
 };
 
-export const usePostPCR = () => {
+export const usePostRunReport = () => {
+  const router = useRouter();
+  const { toast } = useToast();
   const {
     mutate: mutatePost,
     isPending,
     ...props
   } = useMutation({
-    mutationFn: (data: PcrReportFormValues) => reportsService.postPCR(data),
-    onSuccess: async (response) => {},
-    onError: () => {},
+    mutationFn: (data: CombinedFormData) => reportsService.postRunReport(data),
+    onSuccess: async (response) => {
+      toast({
+        title: `${response.data.message}`,
+        description:
+          "Run report created successfully. you can create PCR for this report now.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.push("/report/pcr/create/registered");
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission failed",
+        description: error.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
   });
 
   return { mutatePost, isPending, ...props };
 };
 
-export const useUpdatePCR = (id: number) => {
+export const useUpdateRunReport = (id: number) => {
   const {
     mutate: mutateUpdate,
     isPending,
     ...props
   } = useMutation({
-    mutationFn: (data: PcrReportFormValues) =>
-      reportsService.updatePCR(data, id),
+    mutationFn: (data: CombinedFormData) =>
+      reportsService.updateRunReport(data, id),
     onSuccess: async (response) => {},
     onError: () => {},
   });
