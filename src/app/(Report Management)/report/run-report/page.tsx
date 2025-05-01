@@ -7,7 +7,6 @@ import React from "react";
 const RunReportPage = () => {
   const { runReportsData, isPending } = useRunReports();
   const data = runReportsData?.data.data;
-  console.log(!data);
 
   return (
     <div className="mt-5 px-5 space-y-3">
@@ -16,7 +15,7 @@ const RunReportPage = () => {
           columns={RunReportColumns}
           data={data ?? []}
           loading={isPending}
-          toolbarType="PCR"
+          toolbarType="runReport"
         />
       </div>
     </div>

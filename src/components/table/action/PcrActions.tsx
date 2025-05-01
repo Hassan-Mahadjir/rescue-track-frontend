@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const PcrActions = ({ id }: { id: number }) => {
   const [open, setOpen] = useState(false);
