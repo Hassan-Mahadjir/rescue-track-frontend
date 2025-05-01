@@ -1,7 +1,7 @@
 "use client";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import reportsService from "../reports-service";
 import { PcrReportFormValues } from "@/types/formSchema";
+import reportsService from "../reports-service";
 
 export const usePCRs = () => {
   // const router = useRouter();
@@ -11,7 +11,7 @@ export const usePCRs = () => {
     isError,
     ...props
   } = useQuery({
-    queryFn: () => reportService.getPCRs(),
+    queryFn: () => reportsService.getPCRs(),
     queryKey: ["PCRS"],
   });
 
@@ -25,12 +25,12 @@ export const usePCRs = () => {
 export const usePCR = (id: number) => {
   // const router = useRouter();
   const {
-    data: patientData,
+    data: PCRData,
     error,
     isError,
     ...props
   } = useQuery({
-    queryFn: () => reportService.getPCR(id),
+    queryFn: () => reportsService.getPCR(id),
     queryKey: ["PCR", id],
   });
 

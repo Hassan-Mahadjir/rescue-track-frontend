@@ -24,11 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { TreatmentsData, TreatmentsSchema } from "@/types/formSchema";
-<<<<<<< HEAD
-import { Treatments } from "@/types/patients.type";
-=======
 import { Treatment } from "@/types/report.type";
->>>>>>> 0e4bdfdea65a54c3ab18d78ab26baad9c35bdfc0
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Pencil } from "lucide-react";
 import React from "react";

@@ -101,8 +101,8 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
         phone: patientInfo.phone || "",
         nationality: patientInfo.nationality || "",
         nationalID: patientInfo.nationalID,
-        weight: patientInfo.weight || 0,
-        height: patientInfo.height || 0,
+        weight: String(patientInfo.weight || 0),
+        height: String(patientInfo.height || 0),
         eligibility: patientInfo.eligibility || "other",
         bloodType: "O+",
       });

@@ -16,8 +16,8 @@ const PatientDetails = () => {
   const params = useParams();
   const patientId = params.patientId;
 
-  const { patientData, isPending } = usePCR(Number(patientId));
-  const patient = patientData?.data.data;
+  const { PCRData, isPending } = usePCR(Number(patientId));
+  const patient = PCRData?.data.data;
 
   if (isPending) {
     return <PCRLoading />;
