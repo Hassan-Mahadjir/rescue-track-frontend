@@ -3,6 +3,9 @@
 import { useFormContext } from "react-hook-form";
 import FormInput from "@/components/FormInput";
 import FormSelect from "@/components/FormSelect";
+import { RunReportConfig } from "@/constants/runReport";
+
+const { incidentOptions, relationshipOptions } = RunReportConfig;
 
 const RunReportStep2 = () => {
   const form = useFormContext();
@@ -22,20 +25,28 @@ const RunReportStep2 = () => {
           label="Caller Phone"
           placeholder="Enter caller phone"
         />
-        <FormInput
+        <FormSelect
           form={form}
           name="relationship"
           label="Relationship"
-          placeholder="e.g., Friend, Parent"
+          placeholder="Select relationship"
+          options={relationshipOptions.map(({ name, value }) => ({
+            label: name,
+            value,
+          }))}
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormInput
+        <FormSelect
           form={form}
           name="category"
           label="Category"
-          placeholder="e.g., Traffic Accident"
+          placeholder="Select category"
+          options={incidentOptions.map(({ name, value }) => ({
+            label: name,
+            value,
+          }))}
         />
         <FormInput
           form={form}
