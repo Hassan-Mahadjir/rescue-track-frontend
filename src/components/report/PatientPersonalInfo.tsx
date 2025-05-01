@@ -11,17 +11,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { PCR } from "@/types/report.type";
 import PersonalInfoDialog from "./PersonalInfoDialog";
+import { Patient } from "@/types/patients.type";
 
 interface PatientPersonalInfoProps {
-  patient: PCR | any;
+  patient: Patient | any;
 }
 
 const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
   patient,
 }) => {
-  const profile = patient.patient;
+  const profile = patient;
 
   // Helper function to calculate age accurately
   const calculateAge = (dateString: string): number => {
@@ -55,7 +55,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
         <h2 className="text-lg font-bold text-gray-800">PATIENT INFORMATION</h2>
         <div className="flex flex-row">
           <Image
-            src={patient.initiatedBy.profile.avatar || "/report/sample.jpg"}
+            src={"/report/sample.jpg"}
             width={80}
             height={80}
             alt="profile Picture"
@@ -63,7 +63,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
           />
           <div className="flex flex-col ml-4">
             <h2 className="text-lg text-gray-800">
-              {profile.firstName} {patient.patient.lastName}
+              {profile.firstName} {patient.lastName}
             </h2>
             <p className="text-gray-600 text-sm">
               <strong>Age:</strong> {calculateAge(profile.dateofBirth)}

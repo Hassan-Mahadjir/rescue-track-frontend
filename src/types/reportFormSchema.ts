@@ -132,17 +132,17 @@ export const PCRSchema = z.object({
 
 //run report schema
 export const Step1Schema = z.object({
-  patientId: z.number().int().positive(),
-  caller: z.string().min(1, "Caller name is required"),
-  callerPhone: z.string(),
-  relationship: z.string().min(1, "Relationship is required"),
+  patientId: z.number().min(1, "Please select a patient"),
 });
 
 export const Step2Schema = z.object({
+  caller: z.string().min(1, "Caller name is required"),
+  callerPhone: z.string(),
+  relationship: z.string().min(1, "Relationship is required"),
   category: z.string().min(1),
   priority: z.enum(["low", "medium", "high"]),
   transportStatus: z.enum(["not transported", "transported", "pending"]),
-  mileage: z.number().nonnegative(),
+  mileage: z.coerce.number().nonnegative(),
 });
 
 export const Step3Schema = z.object({
@@ -158,16 +158,11 @@ export const Step3Schema = z.object({
   departureTime: z
     .string()
     .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
-});
-
-export const Step4Schema = z.object({
   notes: z.string().optional(),
 });
 
 // Combine all steps
-export const CombinedSchema = Step1Schema.merge(Step2Schema)
-  .merge(Step3Schema)
-  .merge(Step4Schema);
+export const CombinedSchema = Step1Schema.merge(Step2Schema).merge(Step3Schema);
 
 export type CombinedFormData = z.infer<typeof CombinedSchema>;
 export type PCRData = z.infer<typeof PCRSchema>;

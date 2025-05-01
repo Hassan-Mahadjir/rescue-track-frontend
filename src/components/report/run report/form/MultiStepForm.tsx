@@ -8,15 +8,16 @@ import {
   Step1Schema,
   Step2Schema,
   Step3Schema,
-  Step4Schema,
 } from "@/types/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import RunReportStep1 from "./RunReportStep1";
+import RunReportStep2 from "./RunReportStep2";
+import RunReportStep3 from "./RunReportStep3";
 
-const stepSchemas = [Step1Schema, Step2Schema, Step3Schema, Step4Schema];
+const stepSchemas = [Step1Schema, Step2Schema, Step3Schema];
 
 const steps = [
   { id: "1", label: "Patient Information" },
@@ -69,102 +70,6 @@ const MultiStepForm = () => {
     // send to API or display confirmation
   };
   return (
-    // <form onSubmit={handleSubmit(onSubmit)}>
-    //   {/* Step 1 */}
-    //   {step === 0 && (
-    //
-    //   )}
-
-    //   {/* Step 2 */}
-    //   {step === 1 && (
-    //     <>
-    //       <input {...register("category")} placeholder="Category" />
-    //       {errors.category && <p>{errors.category.message}</p>}
-
-    //       <select {...register("priority")}>
-    //         <option value="">Select priority</option>
-    //         <option value="low">Low</option>
-    //         <option value="medium">Medium</option>
-    //         <option value="high">High</option>
-    //       </select>
-    //       {errors.priority && <p>{errors.priority.message}</p>}
-
-    //       <select {...register("transportStatus")}>
-    //         <option value="">Transport Status</option>
-    //         <option value="transported">Transported</option>
-    //         <option value="not transported">Not Transported</option>
-    //         <option value="pending">Pending</option>
-    //       </select>
-    //       {errors.transportStatus && <p>{errors.transportStatus.message}</p>}
-
-    //       <input
-    //         {...register("mileage", { valueAsNumber: true })}
-    //         placeholder="Mileage"
-    //       />
-    //       {errors.mileage && <p>{errors.mileage.message}</p>}
-    //     </>
-    //   )}
-
-    //   {/* Step 3 */}
-    //   {step === 2 && (
-    //     <>
-    //       <input
-    //         type="date"
-    //         {...register("responseTime")}
-    //         placeholder="Response Time"
-    //       />
-    //       {errors.responseTime && <p>{errors.responseTime.message}</p>}
-
-    //       <input
-    //         type="date"
-    //         {...register("arrivalTimeAtScense")}
-    //         placeholder="Arrival at Scene"
-    //       />
-    //       {errors.arrivalTimeAtScense && (
-    //         <p>{errors.arrivalTimeAtScense.message}</p>
-    //       )}
-
-    //       <input
-    //         type="date"
-    //         {...register("arrivalTimeAtPatient")}
-    //         placeholder="Arrival at Patient"
-    //       />
-    //       {errors.arrivalTimeAtPatient && (
-    //         <p>{errors.arrivalTimeAtPatient.message}</p>
-    //       )}
-
-    //       <input
-    //         type="date"
-    //         {...register("departureTime")}
-    //         placeholder="Departure Time"
-    //       />
-    //       {errors.departureTime && <p>{errors.departureTime.message}</p>}
-    //     </>
-    //   )}
-
-    //   {/* Step 4 */}
-    //   {step === 3 && (
-    //     <>
-    //       <textarea {...register("notes")} placeholder="Notes" />
-    //       {errors.notes && <p>{errors.notes.message}</p>}
-    //     </>
-    //   )}
-
-    //   {/* Navigation Buttons */}
-    //   <div style={{ marginTop: 20 }}>
-    //     {step > 0 && (
-    //       <button type="button" onClick={handleBack}>
-    //         Back
-    //       </button>
-    //     )}
-    //     {step < 3 && (
-    //       <button type="button" onClick={handleNext}>
-    //         Next
-    //       </button>
-    //     )}
-    //     {step === 3 && <button type="submit">Submit</button>}
-    //   </div>
-    // </form>
     <div>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -215,8 +120,8 @@ const MultiStepForm = () => {
                 <TabsContent key={step.id} value={step.id} className="p-6">
                   <div className="min-h-[300px]">
                     {index === 0 && <RunReportStep1 />}
-                    {index === 1 && <div>1</div>}
-                    {index === 2 && <div>2</div>}
+                    {index === 1 && <RunReportStep2 />}
+                    {index === 2 && <RunReportStep3 />}
                   </div>
                   <div className="flex justify-between items-center mt-8">
                     {index > 0 ? (
@@ -245,9 +150,16 @@ const MultiStepForm = () => {
                         type="submit"
                         size="lg"
                         className="bg-main hover:bg-main/90"
-                        disabled={!isSubmitting || !isValid}
+                        disabled={isSubmitting || !isValid}
                       >
-                        Submit Report
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                            Submitting...
+                          </>
+                        ) : (
+                          "Submit Report"
+                        )}
                       </Button>
                     )}
                   </div>
