@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/form";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import PatientPersonalInfo from "../PatientPersonalInfo";
+import PatientPersonalInfo from "../../PatientPersonalInfo";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";

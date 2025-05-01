@@ -1,4 +1,4 @@
-import RegisteredForm from "@/components/report/registered1/RegisteredForm";
+import RegisteredForm from "@/components/report/pcr/registered/RegisteredForm";
 import React from "react";
 
 const Page = () => {

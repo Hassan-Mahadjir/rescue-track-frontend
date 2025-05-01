@@ -6,7 +6,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ArrowLeft, CheckCircle2, Printer } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import { ReportDocument } from "../template";
+import { ReportDocument } from "../../template";
 import { PCR, Treatments, Patient, InitiatedBy } from "@/types/patients.type";
 
 interface FormSummaryProps {
