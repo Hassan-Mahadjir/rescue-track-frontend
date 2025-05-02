@@ -24,46 +24,43 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import {
-  TreatmentsData,
   singleTreatmentSchema,
+  TreatmentsData,
 } from "@/types/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Loader2 } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { TreatmentConfig } from "@/constants/treatments";
+import { usePostPCRTreatment } from "@/services/api/reports";
 
 const { treatmentOptions, categoryOptions, unitOptions, quantityOptions } =
   TreatmentConfig;
 
-const CreateTreatmentDialog = () => {
+interface CreateTreatmentDialogProps {
+  id: number;
+}
+
+const CreateTreatmentDialog = ({ id }: CreateTreatmentDialogProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const { mutatePost, isPending } = usePostPCRTreatment(id);
 
   const form = useForm<TreatmentsData>({
     resolver: zodResolver(singleTreatmentSchema),
     defaultValues: {
       name: "",
-      quantity: 0,
+      quantity: 50,
       unit: "",
       category: "",
     },
   });
 
   const onSubmit = async (data: TreatmentsData) => {
-    try {
-      setIsLoading(true);
-      // Simulate request
-      await new Promise((res) => setTimeout(res, 1000));
-      console.log(data);
-
-      form.reset();
-      setIsOpen(false);
-    } catch (error) {
-      console.error("Failed to create treatment");
-    } finally {
-      setIsLoading(false);
-    }
+    mutatePost(data, {
+      onSuccess: () => {
+        setIsOpen(false);
+      },
+    });
   };
 
   return (
@@ -199,12 +196,12 @@ const CreateTreatmentDialog = () => {
                 type="button"
                 variant="outline"
                 onClick={() => setIsOpen(false)}
-                disabled={isLoading}
+                disabled={isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? (
+              <Button type="submit" disabled={isPending}>
+                {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Creating...

@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   CombinedFormData,
   PcrReportFormValues,
+  TreatmentsData,
 } from "@/types/reportFormSchema";
 import { useToast } from "@/hooks/use-toast";
 import reportsService from "../reports-service";
@@ -121,6 +122,154 @@ export const useUpdatePCR = (id: number) => {
   return { mutateUpdate, isPending, ...props };
 };
 
+export const useDeletePCR = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: PcrReportFormValues) => reportsService.deletePCR(id),
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Deleted",
+        description:
+          response.data.message || "PCR report deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while deleting the PCR.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateDelete, isPending, ...props };
+};
+
+export const usePostPCRTreatment = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: TreatmentsData) =>
+      reportsService.postPCRTreatment(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Treatment Created",
+        description:
+          response.data.message || "PCR treatment submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the treatment.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCRTreatment = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: TreatmentsData) =>
+      reportsService.updatePCRTreatment(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Treatment Updated",
+        description:
+          response.data.message || "PCR treatment updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the treatment.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateUpdate, isPending, ...props };
+};
+
+export const useDeletePCRTreatment = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (id: number) => reportsService.deletePCRTreatment(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.data.message,
+        description: "Treatment deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete failed",
+        description: error.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateDelete, isPending, ...props };
+};
+
 export const useRunReports = () => {
   const {
     data: runReportsData,
@@ -227,6 +376,7 @@ export const useUpdateRunReport = (id: number) => {
 
   return { mutateUpdate, isPending, ...props };
 };
+
 export const useDeleteRunReport = () => {
   const router = useRouter();
   const { toast } = useToast();

@@ -29,19 +29,24 @@ import {
 } from "@/types/reportFormSchema";
 import { Treatment } from "@/types/report.type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Pencil } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { TreatmentConfig } from "@/constants/treatments";
+import { useUpdatePCRTreatment } from "@/services/api/reports";
 
 const { treatmentOptions, categoryOptions, unitOptions, quantityOptions } =
   TreatmentConfig;
 
 interface TreatmentsProps {
   treatment: Treatment;
+  id: number;
 }
 
-const EditTreatmentDialog = ({ treatment }: TreatmentsProps) => {
+const EditTreatmentDialog = ({ treatment, id }: TreatmentsProps) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const { mutateUpdate, isPending } = useUpdatePCRTreatment(id);
+
   const form = useForm<TreatmentsData>({
     resolver: zodResolver(singleTreatmentSchema),
     defaultValues: {
@@ -54,12 +59,16 @@ const EditTreatmentDialog = ({ treatment }: TreatmentsProps) => {
   });
 
   const onSubmit = (data: TreatmentsData) => {
-    console.log(data);
+    mutateUpdate(data, {
+      onSuccess: () => {
+        setIsOpen(false);
+      },
+    });
   };
 
   return (
     <div>
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
             <Pencil className="h-3.5 w-3.5" />
@@ -192,7 +201,24 @@ const EditTreatmentDialog = ({ treatment }: TreatmentsProps) => {
               </div>
 
               <div className="flex justify-end gap-2 pt-2">
-                <Button type="submit">Save changes</Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsOpen(false)}
+                  disabled={isPending}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    "Save changes"
+                  )}
+                </Button>
               </div>
             </form>
           </Form>

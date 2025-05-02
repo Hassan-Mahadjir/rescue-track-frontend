@@ -5,6 +5,7 @@ import { PCR, RunReportItem } from "@/types/report.type";
 import {
   CombinedFormData,
   PcrReportFormValues,
+  TreatmentsData,
 } from "@/types/reportFormSchema";
 
 class ReportService extends BaseService {
@@ -31,6 +32,32 @@ class ReportService extends BaseService {
     const response = await http.patch<AppResponse<PCR>>(
       `patient-care-report/${id}`,
       data
+    );
+    return response;
+  }
+  async deletePCR(id: number) {
+    const response = await http.delete<AppResponse<PCR>>(
+      `patient-care-report/${id}`
+    );
+    return response;
+  }
+  async postPCRTreatment(data: TreatmentsData, id: number) {
+    const response = await http.post<AppResponse<TreatmentsData>>(
+      `patient-care-report/treatment/${id}`,
+      data
+    );
+    return response;
+  }
+  async updatePCRTreatment(data: TreatmentsData, id: number) {
+    const response = await http.patch<AppResponse<TreatmentsData>>(
+      `patient-care-report/treatment/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRTreatment(id: number) {
+    const response = await http.delete<AppResponse<TreatmentsData>>(
+      `patient-care-report/treatment/${id}`
     );
     return response;
   }
