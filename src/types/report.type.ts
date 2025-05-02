@@ -6,6 +6,16 @@ export type Treatment = {
   category: string;
 };
 
+type MedicalConditions = {
+  id: number;
+  name: string;
+};
+
+export type Allergies = {
+  id: number;
+  name: string;
+};
+
 export type Profile = {
   id: number;
   firstName: string;
@@ -44,6 +54,8 @@ export type PCR = {
   treatments: Treatment[];
   initiatedBy: InitiatedBy;
   patient: Patient;
+  allergies: Allergies[];
+  medicalConditions: MedicalConditions[];
 };
 
 type PatientCareReport = {
