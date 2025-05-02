@@ -22,7 +22,7 @@ const stepSchemas = [Step1Schema, Step2Schema, Step3Schema];
 
 const steps = [
   { id: "1", label: "Patient Information" },
-  { id: "2", label: "Medication information" },
+  { id: "2", label: "Emergency Details" },
   { id: "3", label: "Crew Information" },
 ];
 

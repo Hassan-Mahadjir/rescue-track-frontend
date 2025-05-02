@@ -50,7 +50,7 @@ const PatientDetails = () => {
           </h2>
           <div className="flex flex-row space-x-4">
             <EditPCRDialog pcr={pcr} />
-            <div>
+            {/* <div>
               <PDFDownloadLink
                 document={pcr && <ReportDocument data={pcr} />}
                 fileName={`patient-report-${pcr.id}.pdf`}
@@ -62,7 +62,7 @@ const PatientDetails = () => {
                   </Button>
                 )}
               </PDFDownloadLink>
-            </div>
+            </div> */}
           </div>
         </div>
 

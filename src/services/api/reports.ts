@@ -1,5 +1,5 @@
 "use client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   CombinedFormData,
   PcrReportFormValues,
@@ -125,6 +125,7 @@ export const useUpdatePCR = (id: number) => {
 export const useDeletePCR = (id: number) => {
   const router = useRouter();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const {
     mutate: mutateDelete,
     isPending,
@@ -140,6 +141,7 @@ export const useDeletePCR = (id: number) => {
         duration: 3000,
         progressColor: "bg-green-500",
       });
+      queryClient.invalidateQueries({ queryKey: ["PCRS"] });
       router.refresh();
     },
     onError: (error: APIError) => {
@@ -162,6 +164,7 @@ export const useDeletePCR = (id: number) => {
 export const usePostPCRTreatment = (id: number) => {
   const router = useRouter();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const {
     mutate: mutatePost,
     isPending,
@@ -178,6 +181,7 @@ export const usePostPCRTreatment = (id: number) => {
         duration: 3000,
         progressColor: "bg-green-500",
       });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
       router.refresh();
     },
     onError: (error: APIError) => {
@@ -200,6 +204,7 @@ export const usePostPCRTreatment = (id: number) => {
 export const useUpdatePCRTreatment = (id: number) => {
   const router = useRouter();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const {
     mutate: mutateUpdate,
     isPending,
@@ -216,6 +221,7 @@ export const useUpdatePCRTreatment = (id: number) => {
         duration: 3000,
         progressColor: "bg-green-500",
       });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
       router.refresh();
     },
     onError: (error: APIError) => {
@@ -238,6 +244,7 @@ export const useUpdatePCRTreatment = (id: number) => {
 export const useDeletePCRTreatment = () => {
   const router = useRouter();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const {
     mutate: mutateDelete,
@@ -253,6 +260,7 @@ export const useDeletePCRTreatment = () => {
         duration: 3000,
         progressColor: "bg-green-500",
       });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
       router.refresh();
     },
     onError: (error: APIError) => {
@@ -310,6 +318,7 @@ export const useRunReport = (id: number) => {
 export const usePostRunReport = () => {
   const router = useRouter();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const {
     mutate: mutatePost,
     isPending,
@@ -325,6 +334,7 @@ export const usePostRunReport = () => {
         duration: 3000,
         progressColor: "bg-green-500",
       });
+      queryClient.invalidateQueries({ queryKey: ["run-report"] });
       router.push("/report/pcr/create/registered");
     },
     onError: (error: APIError) => {
@@ -345,6 +355,7 @@ export const usePostRunReport = () => {
 export const useUpdateRunReport = (id: number) => {
   const router = useRouter();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const {
     mutate: mutateUpdate,
     isPending,
@@ -360,6 +371,7 @@ export const useUpdateRunReport = (id: number) => {
         duration: 3000,
         progressColor: "bg-green-500",
       });
+      queryClient.invalidateQueries({ queryKey: ["run-report", id] });
       router.push(`/report/run-report/${id}`);
     },
     onError: (error: APIError) => {
@@ -380,6 +392,7 @@ export const useUpdateRunReport = (id: number) => {
 export const useDeleteRunReport = () => {
   const router = useRouter();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const {
     mutate: mutateDelete,
@@ -395,6 +408,7 @@ export const useDeleteRunReport = () => {
         duration: 3000,
         progressColor: "bg-green-500",
       });
+      queryClient.invalidateQueries({ queryKey: ["run-report"] });
       router.refresh();
     },
     onError: (error: APIError) => {
