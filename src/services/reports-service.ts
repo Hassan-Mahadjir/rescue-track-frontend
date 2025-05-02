@@ -35,6 +35,12 @@ class ReportService extends BaseService {
     );
     return response;
   }
+  async deletePCR(id: number) {
+    const response = await http.delete<AppResponse<PCR>>(
+      `patient-care-report/${id}`
+    );
+    return response;
+  }
   async postPCRTreatment(data: TreatmentsData, id: number) {
     const response = await http.post<AppResponse<TreatmentsData>>(
       `patient-care-report/treatment/${id}`,

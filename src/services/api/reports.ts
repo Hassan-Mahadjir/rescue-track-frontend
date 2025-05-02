@@ -122,6 +122,43 @@ export const useUpdatePCR = (id: number) => {
   return { mutateUpdate, isPending, ...props };
 };
 
+export const useDeletePCR = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: PcrReportFormValues) => reportsService.deletePCR(id),
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Deleted",
+        description:
+          response.data.message || "PCR report deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while deleting the PCR.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateDelete, isPending, ...props };
+};
+
 export const usePostPCRTreatment = (id: number) => {
   const router = useRouter();
   const { toast } = useToast();
