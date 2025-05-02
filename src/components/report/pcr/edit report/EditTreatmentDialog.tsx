@@ -23,7 +23,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { TreatmentsData, TreatmentsSchema } from "@/types/reportFormSchema";
+import {
+  TreatmentsData,
+  singleTreatmentSchema,
+} from "@/types/reportFormSchema";
 import { Treatment } from "@/types/report.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Pencil } from "lucide-react";
@@ -40,7 +43,7 @@ interface TreatmentsProps {
 
 const EditTreatmentDialog = ({ treatment }: TreatmentsProps) => {
   const form = useForm<TreatmentsData>({
-    resolver: zodResolver(TreatmentsSchema),
+    resolver: zodResolver(singleTreatmentSchema),
     defaultValues: {
       id: treatment.id,
       name: treatment.name || "",

@@ -5,7 +5,7 @@ import {
 } from "@/constants/treatments";
 import { z } from "zod";
 
-const singleTreatmentSchema = z.object({
+export const singleTreatmentSchema = z.object({
   id: z.number().optional(),
   name: z.enum(TreatmentNameLiterals, {
     errorMap: () => ({ message: "Please select a valid treatment" }),

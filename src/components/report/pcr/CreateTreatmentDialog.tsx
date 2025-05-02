@@ -23,7 +23,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { TreatmentsData, TreatmentsSchema } from "@/types/reportFormSchema";
+import {
+  TreatmentsData,
+  singleTreatmentSchema,
+} from "@/types/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Loader2 } from "lucide-react";
 import React from "react";
@@ -38,7 +41,7 @@ const CreateTreatmentDialog = () => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const form = useForm<TreatmentsData>({
-    resolver: zodResolver(TreatmentsSchema),
+    resolver: zodResolver(singleTreatmentSchema),
     defaultValues: {
       name: "",
       quantity: 0,
