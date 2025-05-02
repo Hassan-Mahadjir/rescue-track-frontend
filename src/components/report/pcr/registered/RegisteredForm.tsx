@@ -68,15 +68,17 @@ const RegisteredForm = () => {
     const fieldsToValidate = Object.keys(
       currentSchema.shape
     ) as (keyof PcrReportFormValues)[];
+
     const isValid = await trigger(fieldsToValidate);
 
+    // Mark current step as touched regardless of direction
+    setTouchedSteps((prev) => [...new Set([...prev, currentStep])]);
+
     if (step > currentStep && !isValid) {
-      setTouchedSteps((prev) => [...new Set([...prev, currentStep])]);
       return;
     }
 
     setCurrentStep(step);
-    setTouchedSteps((prev) => [...new Set([...prev, step])]);
   };
 
   const onSubmit = async (data: PcrReportFormValues) => {

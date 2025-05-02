@@ -11,6 +11,15 @@ import CreateTreatmentDialog from "@/components/report/pcr/CreateTreatmentDialog
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ReportDocument } from "@/components/report/template";
 import PCRLoading from "@/components/loading/PCRLoading";
+import AllergyList from "@/components/report/pcr/AllergyList";
+
+const drugAllergies = [
+  "Penicillin",
+  "Aspirin",
+  "Ibuprofen",
+  "Amoxicillin",
+  "Sulfa drugs",
+];
 
 const PatientDetails = () => {
   const params = useParams();
@@ -43,7 +52,7 @@ const PatientDetails = () => {
             <EditPCRDialog pcr={pcr} />
             <div>
               <PDFDownloadLink
-                document={<ReportDocument data={pcr} />}
+                document={pcr && <ReportDocument data={pcr} />}
                 fileName={`patient-report-${pcr.id}.pdf`}
               >
                 {({ loading }) => (
@@ -82,6 +91,23 @@ const PatientDetails = () => {
             <p className="font-medium text-gray-800">Primary Symptoms:</p>
             {pcr.primarySymptoms ?? "No Primary Symptoms"}
           </div>
+        </div>
+
+        <div className="my-6 space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold mb-2">Allergies</h3>
+            {/* Optional: Add dialog to add new allergy */}
+          </div>
+
+          {(drugAllergies.length > 0 && (
+            <AllergyList allergies={drugAllergies} />
+          )) || (
+            <div className="flex items-center justify-center m-6 p-4">
+              <h1 className="text-base font-semibold">
+                Report has no allergies!
+              </h1>
+            </div>
+          )}
         </div>
 
         <div className="my-6 space-y-4 ">
