@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -12,39 +13,23 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash } from "lucide-react";
 import React from "react";
+import { useDeletePCRTreatment } from "@/services/api/reports";
 import { useRouter } from "next/navigation";
 
 interface TreatmentIdProps {
   id: number;
-  onDelete?: (id: number) => Promise<void> | void;
 }
 
-const DeleteTreatment = ({ id, onDelete }: TreatmentIdProps) => {
+const DeleteTreatment = ({ id }: TreatmentIdProps) => {
+  const { mutateDelete, isPending } = useDeletePCRTreatment();
   const router = useRouter();
-  const [isDeleting, setIsDeleting] = React.useState(false);
 
   const handleDelete = async () => {
-    try {
-      setIsDeleting(true);
-
-      // Default delete implementation if no onDelete prop provided
-      // Replace this with your actual API call
-      // Example
-      // const response = await fetch(`/api/treatments/${id}`, {
-      //   method: "DELETE",
-      // });
-      // if (!response.ok) {
-      //   throw new Error("Failed to delete treatment");
-      // }
-
-      // send success message
-
-      router.refresh();
-    } catch (error) {
-      // send error message
-    } finally {
-      setIsDeleting(false);
-    }
+    mutateDelete(id, {
+      onSuccess: () => {
+        router.refresh();
+      },
+    });
   };
 
   return (
@@ -54,7 +39,7 @@ const DeleteTreatment = ({ id, onDelete }: TreatmentIdProps) => {
           variant="ghost"
           size="sm"
           className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-          disabled={isDeleting}
+          disabled={isPending}
         >
           <Trash className="h-3.5 w-3.5" />
           <span className="sr-only">Delete treatment</span>
@@ -71,13 +56,13 @@ const DeleteTreatment = ({ id, onDelete }: TreatmentIdProps) => {
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
-            disabled={isDeleting}
+            disabled={isPending}
             className="bg-destructive hover:bg-destructive/90"
           >
-            {isDeleting ? "Deleting..." : "Delete"}
+            {isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

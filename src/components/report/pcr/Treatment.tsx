@@ -5,9 +5,10 @@ import EditTreatmentDialog from "./edit report/EditTreatmentDialog";
 
 interface TreatmentProps {
   treatments: Treatments[];
+  id: number;
 }
 
-const Treatment = ({ treatments }: TreatmentProps) => {
+const Treatment = ({ treatments, id }: TreatmentProps) => {
   if (!treatments || treatments.length === 0) {
     return (
       <div className="flex items-center justify-center p-8 text-muted-foreground">
@@ -32,7 +33,7 @@ const Treatment = ({ treatments }: TreatmentProps) => {
               </div>
 
               <div className="flex gap-1">
-                <EditTreatmentDialog treatment={treat} />
+                <EditTreatmentDialog treatment={treat} id={id} />
                 <DeleteTreatment id={treat.id} />
               </div>
             </div>

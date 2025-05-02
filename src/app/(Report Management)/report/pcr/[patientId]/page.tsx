@@ -14,23 +14,23 @@ import PCRLoading from "@/components/loading/PCRLoading";
 
 const PatientDetails = () => {
   const params = useParams();
-  const patientId = params.patientId;
+  const reportId = params.patientId;
 
-  const { PCRData, isPending } = usePCR(Number(patientId));
-  const patient = PCRData?.data.data;
+  const { PCRData, isPending } = usePCR(Number(reportId));
+  const pcr = PCRData?.data.data;
 
   if (isPending) {
     return <PCRLoading />;
   }
 
-  if (!patient) {
-    return <div className="mx-5 my-2">No patient found</div>;
+  if (!pcr) {
+    return <div className="mx-5 my-2">No pcr found</div>;
   }
 
   return (
     <div className="mx-5 my-2">
       <div>
-        <PatientPersonalInfo patient={patient} />
+        <PatientPersonalInfo patient={pcr} />
       </div>
 
       {/* preview */}
@@ -40,11 +40,11 @@ const PatientDetails = () => {
             Patient Information
           </h2>
           <div className="flex flex-row space-x-4">
-            <EditPCRDialog pcr={patient} />
+            <EditPCRDialog pcr={pcr} />
             <div>
               <PDFDownloadLink
-                document={<ReportDocument data={patient} />}
-                fileName={`patient-report-${patient.id}.pdf`}
+                document={<ReportDocument data={pcr} />}
+                fileName={`patient-report-${pcr.id}.pdf`}
               >
                 {({ loading }) => (
                   <Button className="bg-main" size="sm" disabled={loading}>
@@ -60,39 +60,39 @@ const PatientDetails = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700">
           <div>
             <p className="font-medium text-gray-800">Date Of Incident:</p>
-            {patient.createdAt}
+            {pcr.createdAt}
           </div>
           <div>
             <p className="font-medium text-gray-800">Report ID:</p>
-            {patient.id}
+            {pcr.id}
           </div>
           <div>
             <p className="font-medium text-gray-800">Initial Condition:</p>
-            {patient.initialCondition ?? "No Initial Condition"}
+            {pcr.initialCondition ?? "No Initial Condition"}
           </div>
           <div>
             <p className="font-medium text-gray-800">Notes:</p>
-            {patient.notes ?? "No Notes"}
+            {pcr.notes ?? "No Notes"}
           </div>
           <div>
             <p className="font-medium text-gray-800">Patient Condition:</p>
-            {patient.patientCondition ?? "No Patient Condition"}
+            {pcr.patientCondition ?? "No Patient Condition"}
           </div>
           <div>
             <p className="font-medium text-gray-800">Primary Symptoms:</p>
-            {patient.primarySymptoms ?? "No Primary Symptoms"}
+            {pcr.primarySymptoms ?? "No Primary Symptoms"}
           </div>
         </div>
 
         <div className="my-6 space-y-4 ">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold mb-2">Treatments</h3>
-            <CreateTreatmentDialog />
+            <CreateTreatmentDialog id={pcr.id} />
           </div>
 
-          {(patient.treatments.length > 0 && (
+          {(pcr.treatments.length > 0 && (
             <div>
-              <Treatment treatments={patient.treatments} />
+              <Treatment treatments={pcr.treatments} id={pcr.id} />
             </div>
           )) || (
             <div className="flex items-center justify-center m-6 p-4">
