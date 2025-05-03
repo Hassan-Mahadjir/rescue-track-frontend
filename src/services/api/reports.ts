@@ -133,7 +133,7 @@ export const useDeletePCR = (id: number) => {
     isPending,
     ...props
   } = useMutation({
-    mutationFn: (data: PcrReportFormValues) => reportsService.deletePCR(id),
+    mutationFn: () => reportsService.deletePCR(id),
     onSuccess: (response) => {
       toast({
         title: "PCR Deleted",
