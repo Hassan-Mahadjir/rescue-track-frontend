@@ -18,7 +18,7 @@ import { FieldValues, Path, PathValue, UseFormReturn } from "react-hook-form";
 
 interface Option {
   label: string;
-  value: string;
+  value: string | number;
 }
 
 interface FormSelectProps<T extends FieldValues> {
@@ -39,37 +39,43 @@ const FormSelect = <T extends FieldValues>({
   className = "",
 }: FormSelectProps<T>) => {
   const {
-    control,
     formState: { errors },
   } = form;
 
   const error = errors[name];
+
+  const currentValue = form.getValues(name);
 
   return (
     <FormItem className={className}>
       {label && <FormLabel>{label}</FormLabel>}
       <FormControl>
         <Select
-          onValueChange={(value) =>
-            form.setValue(name, value as PathValue<T, Path<T>>, {
+          onValueChange={(value) => {
+            // Convert to number if all options are numeric
+            const allNumeric = options.every(
+              (opt) => typeof opt.value === "number"
+            );
+            const parsed = allNumeric ? Number(value) : value;
+            form.setValue(name, parsed as PathValue<T, Path<T>>, {
               shouldValidate: true,
-            })
-          }
-          defaultValue={form.getValues(name)}
+            });
+          }}
+          defaultValue={String(currentValue)}
         >
           <SelectTrigger>
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>
             {options.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
+              <SelectItem key={String(opt.value)} value={String(opt.value)}>
                 {opt.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </FormControl>
-      {error && <FormMessage>{String(error.message)}</FormMessage>}
+      <FormMessage />
     </FormItem>
   );
 };

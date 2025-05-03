@@ -5,6 +5,31 @@ import {
 } from "@/constants/treatments";
 import { z } from "zod";
 
+// Step 1: Run report ID
+export const runReportSchema = z.object({
+  runReportId: z.number({
+    required_error: "Please select a patient",
+    invalid_type_error: "Invalid runReportId format",
+  }),
+});
+
+// Step 2: Assessments
+export const assessmentsSchema = z.object({
+  patientCondition: z.string().min(1, "Patient condition is required"),
+  primaryAssessment: z.string().min(1, "Primary assessment is required"),
+  secondaryAssessment: z.string().min(1, "Secondary assessment is required"),
+});
+
+// Step 3: Transport Info
+export const transportInfoSchema = z.object({
+  transferType: z.string().optional(),
+  vehicleId: z.string().optional(),
+  emergencyType: z.string().optional(),
+  pickupAddress: z.string().optional(),
+  destinationAddress: z.string().optional(),
+});
+
+// Step 4: Treatments, Medical History, Allergies
 export const singleTreatmentSchema = z.object({
   id: z.number().optional(),
   name: z.enum(TreatmentNameLiterals, {
@@ -23,48 +48,33 @@ export const singleTreatmentSchema = z.object({
   }),
 });
 
-const treatmentsArraySchema = z.object({
+export const allergyItemSchema = z.object({
+  name: z.string().min(1),
+});
+
+export const conditionItemSchema = z.object({
+  name: z.string().min(1),
+});
+
+export const finalStepSchema = z.object({
   treatments: z.array(singleTreatmentSchema),
-});
-
-// PCR metadata
-const patientIdSchema = z.object({
-  runReportId: z.string().min(1, "Please select a patient"),
-});
-
-const transportInfoSchema = z.object({
-  transferType: z.string().optional(),
-  vehicleId: z.string().optional(),
-  emergencyType: z.string().optional(),
-  pickupAddress: z.string().optional(),
-  destinationAddress: z.string().optional(),
-});
-
-export const allergiesSchema = z.object({
-  name: z.string(),
-});
-
-export const conditionsSchema = z.object({
-  name: z.string(),
-});
-
-const medicalHistorySchema = z.object({
-  conditions: z.array(z.string()).optional().default([]),
-  allergies: z.array(z.string()).optional().default([]),
+  medicalConditions: z.array(conditionItemSchema).optional().default([]),
+  allergies: z.array(allergyItemSchema).optional().default([]),
   notes: z.string().optional().default(""),
 });
 
-// Final PCR schema
-export const PcrReportFormSchema = patientIdSchema
-  .merge(treatmentsArraySchema)
+// Full schema (merged)
+export const PcrReportFormSchema = runReportSchema
+  .merge(assessmentsSchema)
   .merge(transportInfoSchema)
-  .merge(medicalHistorySchema);
+  .merge(finalStepSchema);
 
+// Step schemas for wizard forms
 export const stepSchemas = [
-  patientIdSchema, // Step 1: Patient selection
-  treatmentsArraySchema, // Step 2: Medication
-  transportInfoSchema, // Step 3: Crew / Transport
-  medicalHistorySchema, // Step 4: Medical history
+  runReportSchema, // Step 1
+  assessmentsSchema, // Step 2
+  transportInfoSchema, // Step 3
+  finalStepSchema, // Step 4
 ];
 
 export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
@@ -144,5 +154,5 @@ export const CombinedSchema = Step1Schema.merge(Step2Schema).merge(Step3Schema);
 export type CombinedFormData = z.infer<typeof CombinedSchema>;
 export type PCRData = z.infer<typeof PCRSchema>;
 export type TreatmentsData = z.infer<typeof singleTreatmentSchema>;
-export type AllergyData = z.infer<typeof allergiesSchema>;
-export type ConditionData = z.infer<typeof conditionsSchema>;
+export type AllergyData = z.infer<typeof allergyItemSchema>;
+export type ConditionData = z.infer<typeof conditionItemSchema>;
