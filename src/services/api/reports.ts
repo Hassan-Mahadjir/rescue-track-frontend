@@ -4,6 +4,7 @@ import {
   AllergyData,
   CombinedFormData,
   ConditionData,
+  PCRData,
   PcrReportFormValues,
   TreatmentsData,
 } from "@/types/reportFormSchema";
@@ -87,15 +88,14 @@ export const usePostPCR = () => {
 };
 
 export const useUpdatePCR = (id: number) => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const {
     mutate: mutateUpdate,
     isPending,
     ...props
   } = useMutation({
-    mutationFn: (data: PcrReportFormValues) =>
-      reportsService.updatePCR(data, id),
+    mutationFn: (data: PCRData) => reportsService.updatePCR(data, id),
     onSuccess: (response) => {
       toast({
         title: "PCR Updated",
@@ -105,7 +105,7 @@ export const useUpdatePCR = (id: number) => {
         duration: 3000,
         progressColor: "bg-green-500",
       });
-      router.push("/report/pcr/create/registered");
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
     },
     onError: (error: APIError) => {
       console.error(error);

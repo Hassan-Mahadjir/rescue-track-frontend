@@ -6,6 +6,7 @@ import {
   AllergyData,
   CombinedFormData,
   ConditionData,
+  PCRData,
   PcrReportFormValues,
   TreatmentsData,
 } from "@/types/reportFormSchema";
@@ -30,7 +31,7 @@ class ReportService extends BaseService {
     );
     return response;
   }
-  async updatePCR(data: PcrReportFormValues, id: number) {
+  async updatePCR(data: PCRData, id: number) {
     const response = await http.patch<AppResponse<PCR>>(
       `patient-care-report/${id}`,
       data

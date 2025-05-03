@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { PCR } from "@/types/patients.type";
 import { Form } from "@/components/ui/form";
 import { PCRData, PCRSchema } from "@/types/reportFormSchema";
+import { useUpdatePCR } from "@/services/api/reports";
 
 interface EditPCRDialogProp {
   pcr: PCR;
@@ -23,8 +24,8 @@ interface EditPCRDialogProp {
 
 const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState("incident");
+  const { mutateUpdate, isPending } = useUpdatePCR(pcr.id);
 
   const form = useForm<PCRData>({
     resolver: zodResolver(PCRSchema),
@@ -38,30 +39,13 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
   });
 
   const onSubmit = async (data: PCRData) => {
-    try {
-      setIsLoading(true);
-      // Replace with your actual API call
-      //example
-      // const response = await fetch(`/api/pcr/${pcr.id}`, {
-      //   method: "PUT",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(data),
-      // });
+    console.log("data", data);
 
-      // if (!response.ok) {
-      //   throw new Error("Failed to update PCR");
-      // }
-
-      // Toast success message
-
-      setIsOpen(false);
-    } catch (error) {
-      // Toast Error message
-    } finally {
-      setIsLoading(false);
-    }
+    mutateUpdate(data, {
+      onSuccess: () => {
+        setIsOpen(false);
+      },
+    });
   };
 
   return (
@@ -94,14 +78,14 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
                   <TabsTrigger
                     value="incident"
                     className="data-[state=active]:bg-white px-4 py-2 rounded-md"
-                    disabled={isLoading}
+                    disabled={isPending}
                   >
                     Incident Details
                   </TabsTrigger>
                   <TabsTrigger
                     value="crew"
                     className="data-[state=active]:bg-white px-4 py-2 rounded-md"
-                    disabled={isLoading}
+                    disabled={isPending}
                   >
                     Crew Information
                   </TabsTrigger>
@@ -120,12 +104,12 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
                     type="button"
                     variant="outline"
                     onClick={() => setIsOpen(false)}
-                    disabled={isLoading}
+                    disabled={isPending}
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={isLoading}>
-                    {isLoading ? (
+                  <Button type="submit" disabled={isPending}>
+                    {isPending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Saving...
