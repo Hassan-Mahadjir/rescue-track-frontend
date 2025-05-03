@@ -3,7 +3,9 @@ import http from "./api/http";
 import BaseService from "./base-service";
 import { PCR, RunReportItem } from "@/types/report.type";
 import {
+  AllergyData,
   CombinedFormData,
+  ConditionData,
   PcrReportFormValues,
   TreatmentsData,
 } from "@/types/reportFormSchema";
@@ -58,6 +60,32 @@ class ReportService extends BaseService {
   async deletePCRTreatment(id: number) {
     const response = await http.delete<AppResponse<TreatmentsData>>(
       `patient-care-report/treatment/${id}`
+    );
+    return response;
+  }
+  async postPCRAllergy(data: AllergyData, id: number) {
+    const response = await http.post<AppResponse<AllergyData>>(
+      `patient-care-report/allergy/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRAllergy(id: number) {
+    const response = await http.delete<AppResponse<AllergyData>>(
+      `patient-care-report/allergy/${id}`
+    );
+    return response;
+  }
+  async postPCRCondition(data: ConditionData, id: number) {
+    const response = await http.post<AppResponse<ConditionData>>(
+      `patient-care-report/medical-condition/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRCondition(id: number) {
+    const response = await http.delete<AppResponse<ConditionData>>(
+      `patient-care-report/medical-condition/${id}`
     );
     return response;
   }

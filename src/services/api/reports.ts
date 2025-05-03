@@ -1,7 +1,9 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  AllergyData,
   CombinedFormData,
+  ConditionData,
   PcrReportFormValues,
   TreatmentsData,
 } from "@/types/reportFormSchema";
@@ -256,6 +258,159 @@ export const useDeletePCRTreatment = () => {
       toast({
         title: response.data.message,
         description: "Treatment deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete failed",
+        description: error.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateDelete, isPending, ...props };
+};
+
+export const usePostPCRAllergy = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: allergyMutatePost,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: AllergyData) => reportsService.postPCRAllergy(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Allergies Created",
+        description:
+          response.data.message || "PCR Allergies submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the Allergies.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { allergyMutatePost, isPending, ...props };
+};
+
+export const useDeletePCRAllergy = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (id: number) => reportsService.deletePCRAllergy(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.data.message,
+        description: "Allergy deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete failed",
+        description: error.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateDelete, isPending, ...props };
+};
+
+export const usePostPCRCondition = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: conditionMutatePost,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (data: ConditionData) =>
+      reportsService.postPCRCondition(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Conditions Created",
+        description:
+          response.data.message || "PCR conditions submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the conditions.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { conditionMutatePost, isPending, ...props };
+};
+
+export const useDeletePCRCondition = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useMutation({
+    mutationFn: (id: number) => reportsService.deletePCRCondition(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.data.message,
+        description: "Condition deleted successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",

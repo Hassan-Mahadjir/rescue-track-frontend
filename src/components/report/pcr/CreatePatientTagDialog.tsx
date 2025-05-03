@@ -24,6 +24,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { usePostPCRAllergy, usePostPCRCondition } from "@/services/api/reports";
 
 const tagSchema = z.object({
   tags: z.array(z.string()).optional().default([]),
@@ -43,8 +44,11 @@ const CreatePatientTagDialog = ({
   predefinedOptions,
 }: CreatePatientTagDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isPending, setIsPending] = useState(false);
   const [customTag, setCustomTag] = useState("");
+  const { allergyMutatePost, isPending: isAllergyPending } =
+    usePostPCRAllergy(id);
+  const { conditionMutatePost, isPending: isConditionPending } =
+    usePostPCRCondition(id);
 
   const form = useForm<TagFormValues>({
     resolver: zodResolver(tagSchema),
@@ -56,14 +60,33 @@ const CreatePatientTagDialog = ({
   const title = type === "allergy" ? "Allergy" : "Medical Condition";
 
   const handleSubmit = async (data: TagFormValues) => {
-    console.log("data", data);
-    // if (type === "allergy") {
-    //   // call your allergy API
-    //   await reportsService.addPCRAllergies(id, selectedTags);
-    // } else if (type === "condition") {
-    //   // call your condition API
-    //   await reportsService.addPCRConditions(id, selectedTags);
-    // }
+    const tags = data.tags || [];
+
+    for (const tag of tags) {
+      if (type === "allergy") {
+        allergyMutatePost(
+          { name: tag },
+          {
+            onSuccess: () => {
+              setIsOpen(false);
+              form.reset();
+              setCustomTag("");
+            },
+          }
+        );
+      } else {
+        conditionMutatePost(
+          { name: tag },
+          {
+            onSuccess: () => {
+              setIsOpen(false);
+              form.reset();
+              setCustomTag("");
+            },
+          }
+        );
+      }
+    }
   };
 
   const addCustomTag = (
@@ -190,8 +213,11 @@ const CreatePatientTagDialog = ({
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? (
+              <Button
+                type="submit"
+                disabled={isAllergyPending || isConditionPending}
+              >
+                {isAllergyPending || isConditionPending ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin mr-1" />
                     Saving...

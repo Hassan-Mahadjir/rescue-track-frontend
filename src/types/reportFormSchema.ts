@@ -40,6 +40,14 @@ const transportInfoSchema = z.object({
   destinationAddress: z.string().optional(),
 });
 
+export const allergiesSchema = z.object({
+  name: z.string(),
+});
+
+export const conditionsSchema = z.object({
+  name: z.string(),
+});
+
 const medicalHistorySchema = z.object({
   conditions: z.array(z.string()).optional().default([]),
   allergies: z.array(z.string()).optional().default([]),
@@ -136,3 +144,5 @@ export const CombinedSchema = Step1Schema.merge(Step2Schema).merge(Step3Schema);
 export type CombinedFormData = z.infer<typeof CombinedSchema>;
 export type PCRData = z.infer<typeof PCRSchema>;
 export type TreatmentsData = z.infer<typeof singleTreatmentSchema>;
+export type AllergyData = z.infer<typeof allergiesSchema>;
+export type ConditionData = z.infer<typeof conditionsSchema>;

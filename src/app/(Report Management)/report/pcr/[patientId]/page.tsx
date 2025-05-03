@@ -31,7 +31,7 @@ const PatientDetails = () => {
       <PatientPersonalInfo patient={pcr} />
 
       {/* preview */}
-      <div className="bg-gray-100 shadow-lg rounded-xl my-6 px-6 py-4">
+      <div className="my-6 px-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-900">
             Patient Information
@@ -53,10 +53,11 @@ const PatientDetails = () => {
             </div> */}
           </div>
         </div>
+      </div>
 
       {/* Section 1: General Info */}
-      <Card className="bg-gray-100 shadow-lg my-6 px-6">
-        <CardHeader>
+      <Card className="bg-gray-100 shadow-md my-6 px-6">
+        <CardHeader className="py-3 px-0">
           <CardTitle className="text-lg font-semibold mb-2">
             General Information
           </CardTitle>
@@ -90,9 +91,9 @@ const PatientDetails = () => {
       </Card>
 
       {/* Section 2: Allergies & Medical Conditions*/}
-      <Card className="bg-gray-100 shadow-lg my-6 px-6">
+      <Card className="bg-gray-100 shadow-md my-6 px-6">
         {/* Allergies Section */}
-        <CardHeader className="flex flex-row justify-between items-center">
+        <CardHeader className="py-3 px-0 flex flex-row justify-between items-center">
           <CardTitle className="text-lg font-semibold mb-2">
             Allergies
           </CardTitle>
@@ -117,7 +118,7 @@ const PatientDetails = () => {
         </CardContent>
 
         {/* Medical Conditions Section */}
-        <CardHeader className="flex flex-row justify-between items-center">
+        <CardHeader className="py-3 px-0 flex flex-row justify-between items-center">
           <CardTitle className="text-lg font-semibold mb-2">
             Medical Conditions
           </CardTitle>
@@ -143,8 +144,8 @@ const PatientDetails = () => {
       </Card>
 
       {/* Section 3: Treatments */}
-      <Card className="bg-gray-100 shadow-lg my-6 px-6">
-        <CardHeader className="flex flex-row justify-between items-center">
+      <Card className="bg-gray-100 shadow-md my-6 px-6">
+        <CardHeader className="py-3 px-0 flex flex-row justify-between items-center">
           <CardTitle className="text-lg font-semibold mb-2">
             Treatments
           </CardTitle>
