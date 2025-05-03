@@ -3,18 +3,15 @@ import React from "react";
 import PatientPersonalInfo from "@/components/report/PatientPersonalInfo";
 import { useParams } from "next/navigation";
 import { usePCR } from "@/services/api/reports";
-import { Printer } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import EditPCRDialog from "@/components/report/pcr/edit report/EditPCRDialog";
 import Treatment from "@/components/report/pcr/Treatment";
 import CreateTreatmentDialog from "@/components/report/pcr/CreateTreatmentDialog";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ReportDocument } from "@/components/report/template";
 import PCRLoading from "@/components/loading/PCRLoading";
-import AllergyList from "@/components/report/pcr/AllergyList";
-import CreateAllergyDialog from "@/components/report/pcr/CreatePatientTagDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CreatePatientTagDialog from "@/components/report/pcr/CreatePatientTagDialog";
+import TagList from "@/components/report/pcr/TagList";
 
 const PatientDetails = () => {
   const params = useParams();
@@ -108,13 +105,7 @@ const PatientDetails = () => {
           />
         </CardHeader>
         <CardContent>
-          {pcr.allergies.length > 0 ? (
-            <AllergyList allergies={pcr.allergies} />
-          ) : (
-            <div className="text-center text-muted-foreground py-4">
-              Report has no allergies.
-            </div>
-          )}
+          <TagList tags={pcr.allergies} type="allergy" />
         </CardContent>
 
         {/* Medical Conditions Section */}
@@ -133,13 +124,7 @@ const PatientDetails = () => {
           />
         </CardHeader>
         <CardContent>
-          {pcr.medicalConditions?.length > 0 ? (
-            <AllergyList allergies={pcr.medicalConditions} />
-          ) : (
-            <div className="text-center text-muted-foreground py-4">
-              No medical conditions listed.
-            </div>
-          )}
+          <TagList tags={pcr.medicalConditions} type="condition" />
         </CardContent>
       </Card>
 
