@@ -304,8 +304,8 @@ export default function PcrReportStep4() {
                     label="Quantity"
                     placeholder="Select quantity"
                     options={quantityOptions.map((q) => ({
-                      label: q.toString(), // label shown to the user
-                      value: q, // actual value is a number
+                      label: q.toString(),
+                      value: q,
                     }))}
                   />
                 )}

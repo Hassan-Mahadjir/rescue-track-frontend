@@ -18,4 +18,11 @@ export const RunReportConfig = {
     { id: 7, value: "coworker", name: "Coworker" },
     { id: 8, value: "other", name: "Other" },
   ],
+
+  patientCondition: [
+    { id: 1, value: "critical", name: "Critical" },
+    { id: 1, value: "stable", name: "Stable" },
+    { id: 1, value: "serious", name: "Serious" },
+    { id: 1, value: "good", name: "Good" },
+  ],
 };
