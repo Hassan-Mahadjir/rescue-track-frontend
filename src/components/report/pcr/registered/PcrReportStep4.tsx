@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash } from "lucide-react";
 import FormSelect from "@/components/FormSelect";
 import { TreatmentConfig } from "@/constants/treatments";
+import SearchableFormSelect from "@/components/FormSelectSearchable";
 
 const { treatmentOptions, categoryOptions, unitOptions, quantityOptions } =
   TreatmentConfig;
@@ -277,72 +278,48 @@ export default function PcrReportStep4() {
               key={field.id}
               className="grid grid-cols-1 md:grid-cols-4 gap-4 border rounded-md p-4 bg-gray-50"
             >
-              <FormField
-                control={control}
+              <SearchableFormSelect
+                form={form}
                 name={`treatments.${index}.name`}
-                render={() => (
-                  <FormSelect
-                    form={form}
-                    name={`treatments.${index}.name`}
-                    label="Treatment"
-                    placeholder="Select treatment"
-                    options={treatmentOptions.map((t) => ({
-                      label: t.name,
-                      value: t.name,
-                    }))}
-                  />
-                )}
+                label="Treatment"
+                placeholder="Select treatment"
+                options={treatmentOptions.map((t) => ({
+                  label: t.name,
+                  value: t.name,
+                }))}
               />
 
-              <FormField
-                control={control}
+              <FormSelect
+                form={form}
                 name={`treatments.${index}.quantity`}
-                render={() => (
-                  <FormSelect
-                    form={form}
-                    name={`treatments.${index}.quantity`}
-                    label="Quantity"
-                    placeholder="Select quantity"
-                    options={quantityOptions.map((q) => ({
-                      label: q.toString(),
-                      value: q,
-                    }))}
-                  />
-                )}
+                label="Quantity"
+                placeholder="Select quantity"
+                options={quantityOptions.map((q) => ({
+                  label: q.toString(),
+                  value: q,
+                }))}
               />
 
-              <FormField
-                control={control}
+              <FormSelect
+                form={form}
                 name={`treatments.${index}.unit`}
-                render={() => (
-                  <FormSelect
-                    form={form}
-                    name={`treatments.${index}.unit`}
-                    label="Unit"
-                    placeholder="Select unit"
-                    options={unitOptions.map((u) => ({
-                      label: u.name,
-                      value: u.name,
-                    }))}
-                  />
-                )}
+                label="Unit"
+                placeholder="Select unit"
+                options={unitOptions.map((u) => ({
+                  label: u.name,
+                  value: u.name,
+                }))}
               />
 
-              <FormField
-                control={control}
+              <SearchableFormSelect
+                form={form}
                 name={`treatments.${index}.category`}
-                render={() => (
-                  <FormSelect
-                    form={form}
-                    name={`treatments.${index}.category`}
-                    label="Category"
-                    placeholder="Select category"
-                    options={categoryOptions.map((c) => ({
-                      label: c.name,
-                      value: c.name,
-                    }))}
-                  />
-                )}
+                label="Category"
+                placeholder="Select category"
+                options={categoryOptions.map((c) => ({
+                  label: c.name,
+                  value: c.name,
+                }))}
               />
 
               <div className="flex items-end justify-end md:col-span-4">
