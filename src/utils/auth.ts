@@ -90,35 +90,54 @@ export const hasPermission = (
 };
 
 // Helper function to check if a user can access a specific endpoint
-export const canAccessEndpoint = (
-  role: userRole,
-  endpoint: string
-): boolean => {
-  // Check public endpoints first
-  if (
-    roleBasedEndpoints.public.some((publicEndpoint) =>
-      endpoint.startsWith(publicEndpoint)
-    )
-  ) {
-    return true;
+// export const canAccessEndpoint = (
+//   role: userRole,
+//   endpoint: string
+// ): boolean => {
+//   // Check public endpoints first
+//   if (
+//     roleBasedEndpoints.public.some((publicEndpoint) =>
+//       endpoint.startsWith(publicEndpoint)
+//     )
+//   ) {
+//     return true;
+//   }
+
+//   // If user is ADMIN, they can access everything
+//   if (role === Role.ADMIN) {
+//     return true;
+//   }
+
+//   // For EMPLOYEE, check their specific endpoints
+//   const employeeEndpoints = roleBasedEndpoints[Role.EMPLOYEE];
+//   if (!employeeEndpoints) return false;
+
+//   // Check if endpoint matches any of the employee's allowed patterns
+//   return Object.values(employeeEndpoints).some((endpointGroup) =>
+//     endpointGroup.some((allowedEndpoint) => {
+//       // Convert endpoint pattern to regex to handle dynamic parameters
+//       const pattern = allowedEndpoint.replace(/:id/g, "[^/]+");
+//       const regex = new RegExp(`^${pattern}$`);
+//       return regex.test(endpoint);
+//     })
+//   );
+// };
+
+// Function to get role from JWT token
+export const getRoleFromToken = (token: string): userRole | null => {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    const { role } = JSON.parse(jsonPayload);
+    return role as userRole;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return null;
   }
-
-  // If user is ADMIN, they can access everything
-  if (role === Role.ADMIN) {
-    return true;
-  }
-
-  // For EMPLOYEE, check their specific endpoints
-  const employeeEndpoints = roleBasedEndpoints[Role.EMPLOYEE];
-  if (!employeeEndpoints) return false;
-
-  // Check if endpoint matches any of the employee's allowed patterns
-  return Object.values(employeeEndpoints).some((endpointGroup) =>
-    endpointGroup.some((allowedEndpoint) => {
-      // Convert endpoint pattern to regex to handle dynamic parameters
-      const pattern = allowedEndpoint.replace(/:id/g, "[^/]+");
-      const regex = new RegExp(`^${pattern}$`);
-      return regex.test(endpoint);
-    })
-  );
 };
