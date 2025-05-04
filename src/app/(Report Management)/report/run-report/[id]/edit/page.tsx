@@ -1,4 +1,5 @@
 "use client";
+import RunReportSkeleton from "@/components/loading/RunReportSkeleton";
 import MultiStepForm from "@/components/report/run report/form/MultiStepForm";
 import { useRunReport } from "@/services/api/reports";
 import { CombinedFormData } from "@/types/reportFormSchema";
@@ -11,12 +12,12 @@ const EditRunReportPage = () => {
   const runReport = runReportData?.data.data;
 
   if (isPending || !runReport) {
-    return <div>Loading...</div>;
+    return <RunReportSkeleton />;
   }
 
   const mappedValues: CombinedFormData = {
     id: runReport.id,
-    patientId: runReport.patient.id, // ✅ extract patient ID
+    patientId: runReport.patient.id,
     caller: runReport.caller,
     callerPhone: runReport.callerPhone,
     relationship: runReport.relationship,
@@ -36,8 +37,7 @@ const EditRunReportPage = () => {
 
   return (
     <div>
-      <MultiStepForm defaultValues={mappedValues} isEdit />{" "}
-      {/* ✅ pass the props */}
+      <MultiStepForm defaultValues={mappedValues} isEdit />
     </div>
   );
 };
