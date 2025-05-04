@@ -46,7 +46,7 @@ const RunReportAction = ({ id }: { id: number }) => {
         <DropdownMenuContent align="end" className="w-40">
           <DropdownMenuItem asChild>
             <Link
-              href={`/run-report/${id}/edit`}
+              href={`run-report/${id}/edit`}
               className="flex items-center gap-2"
             >
               <Pencil className="w-4 h-4" />
@@ -55,10 +55,7 @@ const RunReportAction = ({ id }: { id: number }) => {
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
-            <Link
-              href={`/run-report/${id}`}
-              className="flex items-center gap-2"
-            >
+            <Link href={`run-report/${id}`} className="flex items-center gap-2">
               <Eye className="w-4 h-4" />
               Open
             </Link>

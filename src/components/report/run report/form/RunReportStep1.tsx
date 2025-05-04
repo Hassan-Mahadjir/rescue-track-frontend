@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useGetPatients } from "@/services/api/patient";
 import { Patient } from "@/types/patients.type";
 import PatientPersonalInfo from "../../PatientPersonalInfo";
+import { PatientInfoSkeleton } from "@/components/loading/PatientInfoSkeleton";
 
 const RunReportStep1 = () => {
   const { patientsData, isPending } = useGetPatients();
@@ -46,7 +47,25 @@ const RunReportStep1 = () => {
   }, [search, data]);
 
   if (isPending) {
-    return <div>Loading patients...</div>;
+    return (
+      <div className="space-y-2">
+        <div className="w-full max-w-3xl mx-auto px-4">
+          <div className="relative">
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by name, national ID, or report ID"
+              className="pl-3 pr-3 py-2 h-10 w-full"
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          {[...Array(3)].map((_, index) => (
+            <PatientInfoSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (!data) {
