@@ -2,8 +2,7 @@ import axios from "axios";
 import { getItem, removeItem, setItem } from "@/utils/storage";
 import Cookies from "js-cookie";
 import { AuthDataType } from "@/types/common.type";
-
-const baseurl = "http://192.168.152.175:3000";
+const baseurl = "http://192.168.31.234:3000";
 
 const http = axios.create({
   baseURL: baseurl,
@@ -82,6 +81,13 @@ http.interceptors.response.use(
         Cookies.remove("token");
         return Promise.reject(refreshError);
       }
+    }
+
+    if (error.response?.status === 403) {
+      const errorMessage = "You don't have permission to access this resource";
+      console.error("Access forbidden:", error.response.data);
+      window.location.href = "/unauthorized";
+      return Promise.reject(new Error(errorMessage));
     }
 
     return Promise.reject(error);

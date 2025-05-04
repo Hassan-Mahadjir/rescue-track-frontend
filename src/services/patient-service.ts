@@ -10,6 +10,7 @@ class PatientService extends BaseService {
     );
     return response;
   }
+
   async getPatients() {
     const response = await http.get<AppResponse<Patient[]>>(`/patient/manage`);
     return response;

@@ -1,13 +1,17 @@
 import React from "react";
 import RecentCard from "@/components/dashboard/Recent-Card";
 import InformationGrid from "@/components/dashboard/Information-Grid";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { Role } from "@/utils/auth";
 
 const Dashboard = () => {
   return (
-    <div className="mx-3 space-y-3">
-      <RecentCard />
-      <InformationGrid />
-    </div>
+    <ProtectedRoute allowedRoles={[Role.ADMIN, Role.EMPLOYEE]}>
+      <div className="mx-3 space-y-3">
+        <RecentCard />
+        <InformationGrid />
+      </div>
+    </ProtectedRoute>
   );
 };
 
