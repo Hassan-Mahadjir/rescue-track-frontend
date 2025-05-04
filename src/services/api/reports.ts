@@ -1,10 +1,5 @@
 "use client";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AllergyData,
   CombinedFormData,
@@ -16,31 +11,23 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import reportsService from "../reports-service";
 import { useRouter } from "next/navigation";
+import { useRoleBasedQuery } from "@/hooks/useRoleBasedQuery";
+import { PCR } from "@/types/report.type";
 
 export const usePCRs = () => {
-  const { toast } = useToast();
-  const {
-    data: PCRsData,
-    error,
-    isError,
-    ...props
-  } = useQuery({
-    queryFn: () => reportsService.getPCRs(),
+  const { data: PCRsData, ...props } = useRoleBasedQuery<PCR[]>({
     queryKey: ["PCRS"],
-    onError: (error: any) => {
-      console.error("Failed to fetch PCRs:", error);
-      toast({
-        title: "Access Denied",
-        description:
-          error.message || "You don't have permission to access this resource",
-        variant: "destructive",
-        duration: 5000,
-        progressColor: "bg-red-500",
-      });
+    adminQueryFn: async () => {
+      const response = await reportsService.getPCRsAdmin();
+      return response.data.data;
     },
-  } as UseQueryOptions);
+    employeeQueryFn: async () => {
+      const response = await reportsService.getPCRs();
+      return response.data.data;
+    },
+  });
 
-  return { PCRsData, error, isError, ...props };
+  return { PCRsData, ...props };
 };
 
 export const usePCR = (id: number) => {

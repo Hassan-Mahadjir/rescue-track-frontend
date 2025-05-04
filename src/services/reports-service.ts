@@ -12,13 +12,13 @@ import {
 } from "@/types/reportFormSchema";
 
 class ReportService extends BaseService {
-  async getPCRs() {
+  async getPCRsAdmin() {
     const response = await http.get<AppResponse<PCR[]>>(
       "/patient-care-report/manage"
     );
     return response;
   }
-  async getPCR(id: number) {
+  async getPCRAdmin(id: number) {
     const response = await http.get<AppResponse<PCR>>(
       `patient-care-report/manage/${id}`
     );
@@ -119,6 +119,18 @@ class ReportService extends BaseService {
   async deleteRunReport(id: number) {
     const response = await http.delete<AppResponse<CombinedFormData>>(
       `run-report/manage/${id}`
+    );
+    return response;
+  }
+
+  // PCR Staff/Employee
+  async getPCRs() {
+    const response = await http.get<AppResponse<PCR[]>>("patient-care-report");
+    return response;
+  }
+  async getPCR(id: number) {
+    const response = await http.get<AppResponse<PCR>>(
+      `patient-care-report/${id}`
     );
     return response;
   }

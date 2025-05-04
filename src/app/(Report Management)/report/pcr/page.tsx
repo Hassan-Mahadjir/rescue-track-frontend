@@ -4,12 +4,14 @@ import ReportSummaryCard from "@/components/report/ReportSummaryCard";
 import { usePCRs } from "@/services/api/reports";
 import { Siren, Users, FileText } from "lucide-react";
 import React from "react";
+import { PCR } from "@/types/report.type";
+import { AppResponse } from "@/types/common.type";
 
 const PcrPage = () => {
   const { PCRsData, isPending } = usePCRs();
-  const data = PCRsData?.data.data;
+  const data = (PCRsData as AppResponse<PCR[]> | undefined)?.data;
 
-  const totalReports = data?.reduce((count, patient) => {
+  const totalReports = data?.reduce((count: number, patient: PCR) => {
     return (
       count +
       (Array.isArray(patient.treatments) ? patient.treatments.length : 0)
