@@ -1,4 +1,4 @@
-type APIError = Error & {
+export type APIError = Error & {
   response?: {
     data?: {
       message?: string;

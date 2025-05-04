@@ -11,8 +11,12 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import reportsService from "../reports-service";
 import { useRouter } from "next/navigation";
-import { useRoleBasedQuery } from "@/hooks/useRoleBasedQuery";
-import { PCR } from "@/types/report.type";
+import {
+  useRoleBasedQuery,
+  useRoleBasedMutation,
+} from "@/hooks/useRoleBasedQuery";
+import { PCR, RunReportItem } from "@/types/report.type";
+import { APIError } from "@/types/error.type";
 
 export const usePCRs = () => {
   const { data: PCRsData, ...props } = useRoleBasedQuery<PCR[]>({
@@ -31,20 +35,17 @@ export const usePCRs = () => {
 };
 
 export const usePCR = (id: number) => {
-  // const router = useRouter();
-  const {
-    data: PCRData,
-    error,
-    isError,
-    ...props
-  } = useQuery({
-    queryFn: () => reportsService.getPCR(id),
+  const { data: PCRData, ...props } = useRoleBasedQuery<PCR>({
     queryKey: ["PCR", id],
+    adminQueryFn: async () => {
+      const response = await reportsService.getPCRAdmin(id);
+      return response.data.data;
+    },
+    employeeQueryFn: async () => {
+      const response = await reportsService.getPCR(id);
+      return response.data.data;
+    },
   });
-
-  if (isError) {
-    console.error("Failed to fetch patient:", error);
-  }
 
   return { PCRData, ...props };
 };
@@ -56,13 +57,13 @@ export const usePostPCR = () => {
     mutate: mutatePost,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: PcrReportFormValues) => reportsService.postPCR(data),
+  } = useRoleBasedMutation<PCR, PcrReportFormValues>({
+    adminMutationFn: (data) => reportsService.postPCR(data),
+    employeeMutationFn: (data) => reportsService.postPCR(data),
     onSuccess: (response) => {
       toast({
         title: "PCR Created",
-        description:
-          response.data.message || "PCR report submitted successfully.",
+        description: response.message || "PCR report submitted successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",
@@ -93,13 +94,13 @@ export const useUpdatePCR = (id: number) => {
     mutate: mutateUpdate,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: PCRData) => reportsService.updatePCR(data, id),
+  } = useRoleBasedMutation<PCR, PCRData>({
+    adminMutationFn: (data) => reportsService.updatePCR(data, id),
+    employeeMutationFn: (data) => reportsService.updatePCR(data, id),
     onSuccess: (response) => {
       toast({
         title: "PCR Updated",
-        description:
-          response.data.message || "PCR report updated successfully.",
+        description: response.message || "PCR report updated successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",
@@ -131,13 +132,13 @@ export const useDeletePCR = (id: number) => {
     mutate: mutateDelete,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: () => reportsService.deletePCR(id),
+  } = useRoleBasedMutation<PCR, void>({
+    adminMutationFn: () => reportsService.deletePCRAdmin(id),
+    employeeMutationFn: () => reportsService.deletePCRAdmin(id),
     onSuccess: (response) => {
       toast({
         title: "PCR Deleted",
-        description:
-          response.data.message || "PCR report deleted successfully.",
+        description: response.message || "PCR report deleted successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",
@@ -170,14 +171,14 @@ export const usePostPCRTreatment = (id: number) => {
     mutate: mutatePost,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: TreatmentsData) =>
-      reportsService.postPCRTreatment(data, id),
+  } = useRoleBasedMutation<TreatmentsData, TreatmentsData>({
+    adminMutationFn: (data) => reportsService.postPCRTreatment(data, id),
+    employeeMutationFn: (data) => reportsService.postPCRTreatment(data, id),
     onSuccess: (response) => {
       toast({
         title: "PCR Treatment Created",
         description:
-          response.data.message || "PCR treatment submitted successfully.",
+          response.message || "PCR treatment submitted successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",
@@ -210,14 +211,13 @@ export const useUpdatePCRTreatment = (id: number) => {
     mutate: mutateUpdate,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: TreatmentsData) =>
-      reportsService.updatePCRTreatment(data, id),
+  } = useRoleBasedMutation<TreatmentsData, TreatmentsData>({
+    adminMutationFn: (data) => reportsService.updatePCRTreatment(data, id),
+    employeeMutationFn: (data) => reportsService.updatePCRTreatment(data, id),
     onSuccess: (response) => {
       toast({
         title: "PCR Treatment Updated",
-        description:
-          response.data.message || "PCR treatment updated successfully.",
+        description: response.message || "PCR treatment updated successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",
@@ -251,11 +251,12 @@ export const useDeletePCRTreatment = () => {
     mutate: mutateDelete,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (id: number) => reportsService.deletePCRTreatment(id),
+  } = useRoleBasedMutation<TreatmentsData, number>({
+    adminMutationFn: (id) => reportsService.deletePCRTreatment(id),
+    employeeMutationFn: (id) => reportsService.deletePCRTreatment(id),
     onSuccess: (response) => {
       toast({
-        title: response.data.message,
+        title: response.message,
         description: "Treatment deleted successfully.",
         variant: "default",
         duration: 3000,
@@ -287,13 +288,14 @@ export const usePostPCRAllergy = (id: number) => {
     mutate: allergyMutatePost,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: AllergyData) => reportsService.postPCRAllergy(data, id),
+  } = useRoleBasedMutation<AllergyData, AllergyData>({
+    adminMutationFn: (data) => reportsService.postPCRAllergy(data, id),
+    employeeMutationFn: (data) => reportsService.postPCRAllergy(data, id),
     onSuccess: (response) => {
       toast({
         title: "PCR Allergies Created",
         description:
-          response.data.message || "PCR Allergies submitted successfully.",
+          response.message || "PCR Allergies submitted successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",
@@ -327,11 +329,12 @@ export const useDeletePCRAllergy = () => {
     mutate: mutateDelete,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (id: number) => reportsService.deletePCRAllergy(id),
+  } = useRoleBasedMutation<AllergyData, number>({
+    adminMutationFn: (id) => reportsService.deletePCRAllergy(id),
+    employeeMutationFn: (id) => reportsService.deletePCRAllergy(id),
     onSuccess: (response) => {
       toast({
-        title: response.data.message,
+        title: response.message,
         description: "Allergy deleted successfully.",
         variant: "default",
         duration: 3000,
@@ -363,14 +366,14 @@ export const usePostPCRCondition = (id: number) => {
     mutate: conditionMutatePost,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: ConditionData) =>
-      reportsService.postPCRCondition(data, id),
+  } = useRoleBasedMutation<ConditionData, ConditionData>({
+    adminMutationFn: (data) => reportsService.postPCRCondition(data, id),
+    employeeMutationFn: (data) => reportsService.postPCRCondition(data, id),
     onSuccess: (response) => {
       toast({
         title: "PCR Conditions Created",
         description:
-          response.data.message || "PCR conditions submitted successfully.",
+          response.message || "PCR conditions submitted successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",
@@ -404,11 +407,12 @@ export const useDeletePCRCondition = () => {
     mutate: mutateDelete,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (id: number) => reportsService.deletePCRCondition(id),
+  } = useRoleBasedMutation<ConditionData, number>({
+    adminMutationFn: (id) => reportsService.deletePCRCondition(id),
+    employeeMutationFn: (id) => reportsService.deletePCRCondition(id),
     onSuccess: (response) => {
       toast({
-        title: response.data.message,
+        title: response.message,
         description: "Condition deleted successfully.",
         variant: "default",
         duration: 3000,
@@ -433,38 +437,35 @@ export const useDeletePCRCondition = () => {
 };
 
 export const useRunReports = () => {
-  const {
-    data: runReportsData,
-    error,
-    isError,
-    ...props
-  } = useQuery({
-    queryFn: () => reportsService.getRunReports(),
-    queryKey: ["run-report"],
-  });
-
-  if (isError) {
-    console.error("Failed to fetch Run Reports:", error);
-  }
+  const { data: runReportsData, ...props } = useRoleBasedQuery<RunReportItem[]>(
+    {
+      queryKey: ["run-report"],
+      adminQueryFn: async () => {
+        const response = await reportsService.getRunReportsAdmin();
+        return response.data.data;
+      },
+      employeeQueryFn: async () => {
+        const response = await reportsService.getRunReports();
+        return response.data.data;
+      },
+    }
+  );
 
   return { runReportsData, ...props };
 };
 
 export const useRunReport = (id: number) => {
-  // const router = useRouter();
-  const {
-    data: runReportData,
-    error,
-    isError,
-    ...props
-  } = useQuery({
-    queryFn: () => reportsService.getRunReport(id),
+  const { data: runReportData, ...props } = useRoleBasedQuery<RunReportItem>({
     queryKey: ["run-report", id],
+    adminQueryFn: async () => {
+      const response = await reportsService.getRunReportAdmin(id);
+      return response.data.data;
+    },
+    employeeQueryFn: async () => {
+      const response = await reportsService.getRunReport(id);
+      return response.data.data;
+    },
   });
-
-  if (isError) {
-    console.error("Failed to fetch Run Report:", error);
-  }
 
   return { runReportData, ...props };
 };
@@ -477,11 +478,12 @@ export const usePostRunReport = () => {
     mutate: mutatePost,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: CombinedFormData) => reportsService.postRunReport(data),
+  } = useRoleBasedMutation<CombinedFormData, CombinedFormData>({
+    adminMutationFn: (data) => reportsService.postRunReport(data),
+    employeeMutationFn: (data) => reportsService.postRunReport(data),
     onSuccess: async (response) => {
       toast({
-        title: `${response.data.message}`,
+        title: response.message,
         description:
           "Run report created successfully. you can create PCR for this report now.",
         variant: "default",
@@ -495,7 +497,9 @@ export const usePostRunReport = () => {
       console.error(error);
       toast({
         title: "Submission failed",
-        description: error.response?.data?.message || "Something went wrong.",
+        description:
+          error.response?.data?.message ||
+          "An error occurred while subitting the run report",
         variant: "destructive",
         duration: 5000,
         progressColor: "bg-red-500",
@@ -514,12 +518,12 @@ export const useUpdateRunReport = (id: number) => {
     mutate: mutateUpdate,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: CombinedFormData) =>
-      reportsService.updateRunReport(data, id),
+  } = useRoleBasedMutation<CombinedFormData, CombinedFormData>({
+    adminMutationFn: (data) => reportsService.updateRunReport(data, id),
+    employeeMutationFn: (data) => reportsService.updateRunReport(data, id),
     onSuccess: async (response) => {
       toast({
-        title: `${response.data.message}`,
+        title: response.message,
         description: "Run report updated successfully.",
         variant: "default",
         duration: 3000,
@@ -532,7 +536,9 @@ export const useUpdateRunReport = (id: number) => {
       console.error(error);
       toast({
         title: "Submission failed",
-        description: error.response?.data?.message || "Something went wrong.",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the run report",
         variant: "destructive",
         duration: 5000,
         progressColor: "bg-red-500",
@@ -552,11 +558,12 @@ export const useDeleteRunReport = () => {
     mutate: mutateDelete,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (id: number) => reportsService.deleteRunReport(id),
+  } = useRoleBasedMutation<CombinedFormData, number>({
+    adminMutationFn: (id) => reportsService.deleteRunReportAdmin(id),
+    employeeMutationFn: (id) => reportsService.deleteRunReportAdmin(id),
     onSuccess: (response) => {
       toast({
-        title: response.data.message,
+        title: response.message,
         description: "Run report deleted successfully.",
         variant: "default",
         duration: 3000,
@@ -569,7 +576,9 @@ export const useDeleteRunReport = () => {
       console.error(error);
       toast({
         title: "Delete failed",
-        description: error.response?.data?.message || "Something went wrong.",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while deleting the run report",
         variant: "destructive",
         duration: 5000,
         progressColor: "bg-red-500",

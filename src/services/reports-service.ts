@@ -38,12 +38,14 @@ class ReportService extends BaseService {
     );
     return response;
   }
-  async deletePCR(id: number) {
+  async deletePCRAdmin(id: number) {
     const response = await http.delete<AppResponse<PCR>>(
-      `patient-care-report/${id}`
+      `patient-care-report/manage/${id}`
     );
     return response;
   }
+
+  // PCR Staff/Employee
   async postPCRTreatment(data: TreatmentsData, id: number) {
     const response = await http.post<AppResponse<TreatmentsData>>(
       `patient-care-report/treatment/${id}`,
@@ -90,13 +92,15 @@ class ReportService extends BaseService {
     );
     return response;
   }
-  async getRunReports() {
+
+  // Run Report Admin
+  async getRunReportsAdmin() {
     const response = await http.get<AppResponse<RunReportItem[]>>(
       "run-report/manage"
     );
     return response;
   }
-  async getRunReport(id: number) {
+  async getRunReportAdmin(id: number) {
     const response = await http.get<AppResponse<RunReportItem>>(
       `/run-report/manage/${id}`
     );
@@ -116,7 +120,7 @@ class ReportService extends BaseService {
     );
     return response;
   }
-  async deleteRunReport(id: number) {
+  async deleteRunReportAdmin(id: number) {
     const response = await http.delete<AppResponse<CombinedFormData>>(
       `run-report/manage/${id}`
     );
@@ -131,6 +135,18 @@ class ReportService extends BaseService {
   async getPCR(id: number) {
     const response = await http.get<AppResponse<PCR>>(
       `patient-care-report/${id}`
+    );
+    return response;
+  }
+
+  // Run Report Staff/Employee
+  async getRunReports() {
+    const response = await http.get<AppResponse<RunReportItem[]>>("run-report");
+    return response;
+  }
+  async getRunReport(id: number) {
+    const response = await http.get<AppResponse<RunReportItem>>(
+      `/run-report/${id}`
     );
     return response;
   }
