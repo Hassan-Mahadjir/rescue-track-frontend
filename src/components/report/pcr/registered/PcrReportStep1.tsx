@@ -16,7 +16,7 @@ import { useRunReports } from "@/services/api/reports";
 
 export default function PcrReportStep1() {
   const { runReportsData, isPending } = useRunReports();
-  const data = runReportsData?.data?.data;
+  const data = runReportsData;
   const { setValue, watch, control } = useFormContext();
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<RunReportItem[]>([]);

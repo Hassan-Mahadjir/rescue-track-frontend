@@ -9,7 +9,7 @@ import React from "react";
 const EditRunReportPage = () => {
   const { id } = useParams();
   const { runReportData, isPending } = useRunReport(Number(id));
-  const runReport = runReportData?.data.data;
+  const runReport = runReportData;
 
   if (isPending || !runReport) {
     return <RunReportSkeleton />;

@@ -6,7 +6,7 @@ import React from "react";
 
 const RunReportPage = () => {
   const { runReportsData, isPending } = useRunReports();
-  const data = runReportsData?.data.data;
+  const data = runReportsData;
 
   return (
     <div className="mt-5 px-5 space-y-3">

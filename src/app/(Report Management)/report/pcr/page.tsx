@@ -5,11 +5,10 @@ import { usePCRs } from "@/services/api/reports";
 import { Siren, Users, FileText } from "lucide-react";
 import React from "react";
 import { PCR } from "@/types/report.type";
-import { AppResponse } from "@/types/common.type";
 
 const PcrPage = () => {
   const { PCRsData, isPending } = usePCRs();
-  const data = (PCRsData as AppResponse<PCR[]> | undefined)?.data;
+  const data = PCRsData;
 
   const totalReports = data?.reduce((count: number, patient: PCR) => {
     return (

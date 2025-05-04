@@ -18,14 +18,14 @@ const PatientDetails = () => {
   const reportId = params.patientId;
 
   const { PCRData, isPending } = usePCR(Number(reportId));
-  const pcr = PCRData?.data.data;
+  const pcr = PCRData;
 
   if (isPending) return <PCRLoading />;
   if (!pcr) return <div className="mx-5 my-2">No PCR found</div>;
 
   return (
     <div className="mx-5 my-2 space-y-6">
-      <PatientPersonalInfo patient={pcr} />
+      <PatientPersonalInfo patient={pcr.patient} />
 
       {/* preview */}
       <div className="my-6 px-6">

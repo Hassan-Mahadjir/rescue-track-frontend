@@ -13,7 +13,7 @@ const RunReportPatientId = () => {
   const reportId = params.id;
 
   const { runReportData, isPending } = useRunReport(Number(reportId));
-  const runReport = runReportData?.data.data;
+  const runReport = runReportData;
 
   if (isPending) {
     return <PCRLoading />;

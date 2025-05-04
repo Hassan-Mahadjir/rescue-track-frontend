@@ -34,10 +34,11 @@ export const useRoleBasedQuery = <T>({
   ...options
 }: RoleBasedQueryOptions<T>) => {
   const { toast } = useToast();
-  const { isAdmin, isEmployee } = useAuth();
+  const { isAdmin, isEmployee, isLoading: isAuthLoading } = useAuth();
 
   return useQuery<T, Error, T, any[]>({
     ...options,
+    enabled: !isAuthLoading,
     queryFn: async () => {
       try {
         if (isAdmin()) {
@@ -70,12 +71,16 @@ export const useRoleBasedMutation = <TData, TVariables>({
   ...options
 }: RoleBasedMutationOptions<TData, TVariables>) => {
   const { toast } = useToast();
-  const { isAdmin, isEmployee } = useAuth();
+  const { isAdmin, isEmployee, isLoading: isAuthLoading } = useAuth();
 
   return useMutation<AppResponse<TData>, Error, TVariables>({
     ...options,
     mutationFn: async (variables) => {
       try {
+        if (isAuthLoading) {
+          throw new Error("Authentication state is still loading");
+        }
+
         let response: { data: AppResponse<TData> };
         if (isAdmin()) {
           response = await adminMutationFn(variables);
