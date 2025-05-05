@@ -27,7 +27,7 @@ const RunReportPatientId = () => {
     <div className="mx-5 my-2 space-y-4">
       {/* Patient Information */}
       <div>
-        <PatientPersonalInfo patient={runReport} />
+        <PatientPersonalInfo patient={runReport.patient} />
       </div>
 
       {/* Report Information */}
