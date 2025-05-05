@@ -81,7 +81,7 @@ export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
 
 // PCR Schema with validation messages
 export const PCRSchema = z.object({
-  id: z.number().optional(),
+  runReportId: z.number().optional(),
   patientCondition: z
     .string({
       invalid_type_error: "Patient condition must be a string",
@@ -90,7 +90,7 @@ export const PCRSchema = z.object({
       message: "Patient condition must not exceed 500 characters",
     })
     .nullable(),
-  initialCondition: z
+  primaryAssessment: z
     .string({
       invalid_type_error: "Initial condition must be a string",
     })
@@ -98,7 +98,7 @@ export const PCRSchema = z.object({
       message: "Initial condition must not exceed 500 characters",
     })
     .nullable(),
-  primarySymptoms: z
+  secondaryAssessment: z
     .string({
       invalid_type_error: "Primary symptoms must be a string",
     })

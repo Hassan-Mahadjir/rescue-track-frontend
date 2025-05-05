@@ -54,8 +54,8 @@ export type Patient = {
 export type PCR = {
   id: number;
   patientCondition: string | null;
-  initialCondition: string | null;
-  primarySymptoms: string | null;
+  primaryAssessment: string | null;
+  secondaryAssessment: string | null;
   notes: string | null;
   createdAt: string;
   treatments: Treatments[];
