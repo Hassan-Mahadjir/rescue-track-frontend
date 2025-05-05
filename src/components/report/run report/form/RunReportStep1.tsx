@@ -18,7 +18,7 @@ import { PatientInfoSkeleton } from "@/components/loading/PatientInfoSkeleton";
 
 const RunReportStep1 = () => {
   const { patientsData, isPending } = useGetPatients();
-  const data = patientsData?.data.data;
+  const data = patientsData;
   const { setValue, watch, control } = useFormContext();
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<Patient[]>([]);

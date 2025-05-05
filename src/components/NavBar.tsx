@@ -9,7 +9,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import useprofile from "@/services/api/profile";
+import { useProfile } from "@/services/api/profile";
 
 const navItems = [
   {
@@ -47,9 +47,9 @@ function NavBar() {
   const pathName = usePathname();
   const currentPath = pathName.split("/").pop();
   const [currentItem, setCurrentItem] = useState(0);
-  const { profileData, isPending } = useprofile();
+  const { profileData, isPending } = useProfile();
   const profileImage =
-    profileData?.data.data.avatar ||
+    profileData?.avatar ||
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
   useEffect(() => {

@@ -1,39 +1,41 @@
 "use client";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import patientService from "../patient-service";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { Patient } from "@/types/patients.type";
+import patientService from "../patient-service";
+import {
+  useRoleBasedQuery,
+  useRoleBasedMutation,
+} from "@/hooks/useRoleBasedQuery";
 
 export const useGetPatient = (id: number) => {
-  const {
-    data: patientData,
-    error,
-    isError,
-    ...props
-  } = useQuery({
-    queryFn: () => patientService.getPatient(id),
+  const { data: patientData, ...props } = useRoleBasedQuery<Patient>({
     queryKey: ["patient", id],
+    adminQueryFn: async () => {
+      const response = await patientService.getPatient(id);
+      return response.data.data;
+    },
+    employeeQueryFn: async () => {
+      const response = await patientService.getPatient(id);
+      return response.data.data;
+    },
   });
-  if (isError) {
-    console.error("Failed to fetch patient:", error);
-  }
 
   return { patientData, ...props };
 };
+
 export const useGetPatients = () => {
-  const {
-    data: patientsData,
-    error,
-    isError,
-    ...props
-  } = useQuery({
-    queryFn: () => patientService.getPatients(),
+  const { data: patientsData, ...props } = useRoleBasedQuery<Patient[]>({
     queryKey: ["patient"],
+    adminQueryFn: async () => {
+      const response = await patientService.getPatients();
+      return response.data.data;
+    },
+    employeeQueryFn: async () => {
+      const response = await patientService.getPatients();
+      return response.data.data;
+    },
   });
-  if (isError) {
-    console.error("Failed to fetch patient:", error);
-  }
 
   return { patientsData, ...props };
 };
@@ -46,19 +48,26 @@ export const useUpdatePatient = (id: number) => {
     mutate: mutateUpdatePatient,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: Patient) => patientService.updatePatient(id, data),
-    onSuccess: async (response) => {
+  } = useRoleBasedMutation<Patient, Patient>({
+    adminMutationFn: (data) => patientService.updatePatient(id, data),
+    employeeMutationFn: (data) => patientService.updatePatient(id, data),
+    onSuccess: (response) => {
       toast({
-        title: `${response.data.message}`,
+        title: response.message,
         description: "Patient updated successfully.",
         variant: "default",
         duration: 3000,
         progressColor: "bg-green-500",
       });
     },
-    onError: () => {
-      // Unsuccessful login toast
+    onError: (error) => {
+      toast({
+        title: "Update Failed",
+        description: error.message || "Failed to update patient",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
     },
   });
 
@@ -72,11 +81,12 @@ export const useCreatePatient = () => {
     mutate: createPatient,
     isPending,
     ...props
-  } = useMutation({
-    mutationFn: (data: Patient) => patientService.createPatient(data),
-    onSuccess: async (response) => {
+  } = useRoleBasedMutation<Patient, Patient>({
+    adminMutationFn: (data) => patientService.createPatient(data),
+    employeeMutationFn: (data) => patientService.createPatient(data),
+    onSuccess: (response) => {
       toast({
-        title: `${response.data.message}`,
+        title: response.message,
         description:
           "Patient created successfully. you can create Run report for this patient.",
         variant: "default",
@@ -84,8 +94,14 @@ export const useCreatePatient = () => {
         progressColor: "bg-green-500",
       });
     },
-    onError: () => {
-      // Unsuccessful login toast
+    onError: (error) => {
+      toast({
+        title: "Creation Failed",
+        description: error.message || "Failed to create patient",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
     },
   });
 

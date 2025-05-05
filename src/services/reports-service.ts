@@ -150,6 +150,13 @@ class ReportService extends BaseService {
     );
     return response;
   }
+
+  async getUniqueRecentRunReports() {
+    const response = await http.get<AppResponse<RunReportItem[]>>(
+      "/run-report/unique-recent"
+    );
+    return response;
+  }
 }
 
 export default new ReportService();

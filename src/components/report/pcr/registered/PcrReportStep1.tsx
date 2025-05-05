@@ -12,11 +12,14 @@ import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RunReportItem } from "@/types/report.type";
-import { useRunReports } from "@/services/api/reports";
+import {
+  useRunReports,
+  useUniqueRecentRunReports,
+} from "@/services/api/reports";
 
 export default function PcrReportStep1() {
-  const { runReportsData, isPending } = useRunReports();
-  const data = runReportsData;
+  const { uniqueRecentRunReportsData: data, isPending } =
+    useUniqueRecentRunReports();
   const { setValue, watch, control } = useFormContext();
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<RunReportItem[]>([]);

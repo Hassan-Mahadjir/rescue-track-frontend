@@ -1,24 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import ProfileService from "../profile-service";
+import { useRoleBasedQuery } from "@/hooks/useRoleBasedQuery";
+import profileService from "../profile-service";
 
-const useprofile = () => {
-  // const router = useRouter();
-  const {
-    data: profileData,
-    error,
-    isError,
-    ...props
-  } = useQuery({
-    queryFn: () => ProfileService.getProfile(),
+export const useProfile = () => {
+  const { data: profileData, ...props } = useRoleBasedQuery({
     queryKey: ["profile"],
+    adminQueryFn: async () => {
+      const response = await ProfileService.getProfile();
+      return response.data.data;
+    },
+    employeeQueryFn: async () => {
+      const respone = await profileService.getProfile();
+      return respone.data.data;
+    },
   });
 
-  if (isError) {
-    console.error("Failed to fetch profile:", error);
-  }
-
-  return { profileData, isError, ...props };
+  return { profileData, ...props };
 };
-
-export default useprofile;

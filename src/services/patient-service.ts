@@ -4,14 +4,14 @@ import BaseService from "./base-service";
 import { Patient, PCR } from "@/types/patients.type";
 
 class PatientService extends BaseService {
-  async getPatient(id: number) {
+  async getPatientAdmin(id: number) {
     const response = await http.get<AppResponse<Patient>>(
       `/patient/manage/${id}`
     );
     return response;
   }
 
-  async getPatients() {
+  async getPatientsAdmin() {
     const response = await http.get<AppResponse<Patient[]>>(`/patient/manage`);
     return response;
   }
@@ -26,6 +26,16 @@ class PatientService extends BaseService {
 
   async createPatient(data: Patient) {
     const response = await http.post<AppResponse<Patient>>(`/patient`, data);
+    return response;
+  }
+
+  async getPatient(id: number) {
+    const response = await http.get<AppResponse<Patient>>(`/patient/${id}`);
+    return response;
+  }
+
+  async getPatients() {
+    const response = await http.get<AppResponse<Patient[]>>(`/patient`);
     return response;
   }
 }

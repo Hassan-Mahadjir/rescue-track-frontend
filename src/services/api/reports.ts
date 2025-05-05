@@ -588,3 +588,21 @@ export const useDeleteRunReport = () => {
 
   return { mutateDelete, isPending, ...props };
 };
+
+export const useUniqueRecentRunReports = () => {
+  const { data: uniqueRecentRunReportsData, ...props } = useRoleBasedQuery<
+    RunReportItem[]
+  >({
+    queryKey: ["unique-recent-run-reports"],
+    adminQueryFn: async () => {
+      const response = await reportsService.getUniqueRecentRunReports();
+      return response.data.data;
+    },
+    employeeQueryFn: async () => {
+      const response = await reportsService.getUniqueRecentRunReports();
+      return response.data.data;
+    },
+  });
+
+  return { uniqueRecentRunReportsData, ...props };
+};
