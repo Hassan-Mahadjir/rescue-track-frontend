@@ -69,8 +69,8 @@ const PatientDetails = () => {
             {pcr.id}
           </div>
           <div>
-            <p className="font-medium text-gray-800">Initial Condition:</p>
-            {pcr.initialCondition ?? "No Initial Condition"}
+            <p className="font-medium text-gray-800">Primary Assessment:</p>
+            {pcr.primaryAssessment ?? "No Initial Condition"}
           </div>
           <div>
             <p className="font-medium text-gray-800">Notes:</p>
@@ -81,8 +81,8 @@ const PatientDetails = () => {
             {pcr.patientCondition ?? "No Patient Condition"}
           </div>
           <div>
-            <p className="font-medium text-gray-800">Primary Symptoms:</p>
-            {pcr.primarySymptoms ?? "No Primary Symptoms"}
+            <p className="font-medium text-gray-800">Secondary Assessment:</p>
+            {pcr.secondaryAssessment ?? "No Primary Symptoms"}
           </div>
         </CardContent>
       </Card>

@@ -13,10 +13,10 @@ import IncidentTab from "../IncidentTab";
 import CrewTab from "../CrewTab";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { PCR } from "@/types/patients.type";
 import { Form } from "@/components/ui/form";
 import { PCRData, PCRSchema } from "@/types/reportFormSchema";
 import { useUpdatePCR } from "@/services/api/reports";
+import { PCR } from "@/types/report.type";
 
 interface EditPCRDialogProp {
   pcr: PCR;
@@ -27,13 +27,19 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
   const [activeTab, setActiveTab] = React.useState("incident");
   const { mutateUpdate, isPending } = useUpdatePCR(pcr.id);
 
+  // "runReportId":18,
+  //   "patientCondition":"critical",
+  //   "primaryAssessment":"test primary Assessment",
+  //   "secondaryAssessment":"test Secondary Assessment",
+  //   "notes":"Additional notes",
+
   const form = useForm<PCRData>({
     resolver: zodResolver(PCRSchema),
     defaultValues: {
-      id: pcr.id,
+      runReportId: pcr.id,
       patientCondition: pcr.patientCondition ?? "",
-      initialCondition: pcr.initialCondition ?? "",
-      primarySymptoms: pcr.primarySymptoms ?? "",
+      primaryAssessment: pcr.primaryAssessment ?? "",
+      secondaryAssessment: pcr.secondaryAssessment ?? "",
       notes: pcr.notes ?? "",
     },
   });
