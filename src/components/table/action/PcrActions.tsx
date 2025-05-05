@@ -18,6 +18,7 @@ import { useDeletePCR } from "@/services/api/reports";
 import { Ellipsis, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const PcrActions = ({ id }: { id: number }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -79,7 +80,7 @@ const PcrActions = ({ id }: { id: number }) => {
               onClick={handleConfirmDelete}
               disabled={isPending}
             >
-              {isPending ? "Deleting..." : "Delete"}
+              {isPending ? <LoadingIndicator /> : "Delete"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -19,6 +19,7 @@ import {
   useDeletePCRAllergy,
   useDeletePCRCondition,
 } from "@/services/api/reports";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 interface DeleteTagDialogProps {
   id: number;
@@ -76,7 +77,7 @@ const DeleteTagDialog = ({ id, type }: DeleteTagDialogProps) => {
             disabled={isPending}
             className="bg-destructive hover:bg-destructive/90"
           >
-            {isPending ? "Deleting..." : "Delete"}
+            {isPending ? <LoadingIndicator /> : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

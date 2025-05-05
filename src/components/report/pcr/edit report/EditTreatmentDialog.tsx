@@ -34,6 +34,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { TreatmentConfig } from "@/constants/treatments";
 import { useUpdatePCRTreatment } from "@/services/api/reports";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const { treatmentOptions, categoryOptions, unitOptions, quantityOptions } =
   TreatmentConfig;
@@ -212,8 +213,7 @@ const EditTreatmentDialog = ({ treatment, id }: TreatmentsProps) => {
                 <Button type="submit" disabled={isPending}>
                   {isPending ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Uploading...
+                      <LoadingIndicator />
                     </>
                   ) : (
                     "Save changes"

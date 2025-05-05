@@ -18,6 +18,7 @@ import { PCRData, PCRSchema } from "@/types/reportFormSchema";
 import { useUpdatePCR } from "@/services/api/reports";
 import { PCR } from "@/types/report.type";
 import { formatDateOnly } from "@/utils/extra";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 interface EditPCRDialogProp {
   pcr: PCR;
@@ -117,8 +118,7 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
                   >
                     {isPending ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Saving...
+                        <LoadingIndicator />
                       </>
                     ) : (
                       "Save Changes"
