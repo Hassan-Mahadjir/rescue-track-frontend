@@ -114,6 +114,7 @@ export const PCRSchema = z.object({
       message: "Notes must not exceed 1000 characters",
     })
     .nullable(),
+  createdAt: z.string().optional(),
 });
 
 //run report schema

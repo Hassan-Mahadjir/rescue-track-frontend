@@ -12,6 +12,7 @@ import PCRLoading from "@/components/loading/PCRLoading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CreatePatientTagDialog from "@/components/report/pcr/CreatePatientTagDialog";
 import TagList from "@/components/report/pcr/TagList";
+import { formatDate } from "@/utils/extra";
 
 const PatientDetails = () => {
   const params = useParams();
@@ -62,27 +63,30 @@ const PatientDetails = () => {
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700">
           <div>
             <p className="font-medium text-gray-800">Date Of Incident:</p>
-            {pcr.createdAt}
+            {formatDate(pcr.createdAt)}
           </div>
           <div>
             <p className="font-medium text-gray-800">Report ID:</p>
             {pcr.id}
           </div>
           <div>
-            <p className="font-medium text-gray-800">Primary Assessment:</p>
-            {pcr.primaryAssessment ?? "No Initial Condition"}
-          </div>
-          <div>
-            <p className="font-medium text-gray-800">Notes:</p>
-            {pcr.notes ?? "No Notes"}
-          </div>
-          <div>
             <p className="font-medium text-gray-800">Patient Condition:</p>
             {pcr.patientCondition ?? "No Patient Condition"}
           </div>
-          <div>
-            <p className="font-medium text-gray-800">Secondary Assessment:</p>
-            {pcr.secondaryAssessment ?? "No Primary Symptoms"}
+          <div className="space-y-4">
+            <div>
+              <p className="font-medium text-gray-800">Primary Assessment:</p>
+              {pcr.primaryAssessment ?? "No Initial Condition"}
+            </div>
+
+            <div>
+              <p className="font-medium text-gray-800">Secondary Assessment:</p>
+              {pcr.secondaryAssessment ?? "No Primary Symptoms"}
+            </div>
+            <div>
+              <p className="font-medium text-gray-800">Notes:</p>
+              {pcr.notes ?? "No Notes"}
+            </div>
           </div>
         </CardContent>
       </Card>
