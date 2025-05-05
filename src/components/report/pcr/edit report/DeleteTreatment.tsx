@@ -15,6 +15,7 @@ import { Trash } from "lucide-react";
 import React from "react";
 import { useDeletePCRTreatment } from "@/services/api/reports";
 import { useRouter } from "next/navigation";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 interface TreatmentIdProps {
   id: number;
@@ -62,7 +63,7 @@ const DeleteTreatment = ({ id }: TreatmentIdProps) => {
             disabled={isPending}
             className="bg-destructive hover:bg-destructive/90"
           >
-            {isPending ? "Deleting..." : "Delete"}
+            {isPending ? <LoadingIndicator /> : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

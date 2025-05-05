@@ -18,6 +18,7 @@ import { useDeleteRunReport } from "@/services/api/reports";
 import { Pencil, Eye, Trash2, Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const RunReportAction = ({ id }: { id: number }) => {
   const [open, setOpen] = useState(false);
@@ -94,7 +95,7 @@ const RunReportAction = ({ id }: { id: number }) => {
               onClick={handleConfirmDelete}
               disabled={isPending}
             >
-              {isPending ? "Deleting..." : "Delete"}
+              {isPending ? <LoadingIndicator /> : "Delete"}
             </Button>
           </DialogFooter>
         </DialogContent>

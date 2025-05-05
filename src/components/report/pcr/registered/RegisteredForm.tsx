@@ -25,12 +25,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { usePostPCR } from "@/services/api/reports";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const RegisteredForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [touchedSteps, setTouchedSteps] = useState<number[]>([]);
   // const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const { mutatePost } = usePostPCR();
+  const { mutatePost, isPending } = usePostPCR();
 
   const form = useForm<PcrReportFormValues>({
     resolver: zodResolver(PcrReportFormSchema),
@@ -92,7 +93,6 @@ const RegisteredForm = () => {
       setTouchedSteps(allSteps);
       return;
     }
-    console.log(data);
     mutatePost(data);
   };
 
@@ -177,10 +177,16 @@ const RegisteredForm = () => {
                       <Button
                         type="submit"
                         size="lg"
-                        className="bg-main hover:bg-main/90"
+                        className="bg-main hover:bg-main/90 flex items-center gap-2"
                         disabled={isSubmitting || !isValid}
                       >
-                        Submit Report
+                        {isSubmitting ? (
+                          <>
+                            <LoadingIndicator />
+                          </>
+                        ) : (
+                          "Submit Report"
+                        )}
                       </Button>
                     )}
                   </div>

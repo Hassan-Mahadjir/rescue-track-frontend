@@ -3,6 +3,7 @@ import RunReportSkeleton from "@/components/loading/RunReportSkeleton";
 import MultiStepForm from "@/components/report/run report/form/MultiStepForm";
 import { useRunReport } from "@/services/api/reports";
 import { CombinedFormData } from "@/types/reportFormSchema";
+import { formatDateTime } from "@/utils/extra";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -28,10 +29,10 @@ const EditRunReportPage = () => {
       | "not transported"
       | "pending",
     mileage: runReport.mileage,
-    responseTime: runReport.responseTime,
-    arrivalTimeAtScense: runReport.arrivalTimeAtScense,
-    arrivalTimeAtPatient: runReport.arrivalTimeAtPatient,
-    departureTime: runReport.departureTime,
+    responseTime: formatDateTime(runReport.responseTime),
+    arrivalTimeAtScense: formatDateTime(runReport.arrivalTimeAtScense),
+    arrivalTimeAtPatient: formatDateTime(runReport.arrivalTimeAtPatient),
+    departureTime: formatDateTime(runReport.departureTime),
     notes: runReport.notes ?? "",
   };
 

@@ -17,6 +17,8 @@ import { Form } from "@/components/ui/form";
 import { PCRData, PCRSchema } from "@/types/reportFormSchema";
 import { useUpdatePCR } from "@/services/api/reports";
 import { PCR } from "@/types/report.type";
+import { formatDateOnly } from "@/utils/extra";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 interface EditPCRDialogProp {
   pcr: PCR;
@@ -27,12 +29,6 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
   const [activeTab, setActiveTab] = React.useState("incident");
   const { mutateUpdate, isPending } = useUpdatePCR(pcr.id);
 
-  // "runReportId":18,
-  //   "patientCondition":"critical",
-  //   "primaryAssessment":"test primary Assessment",
-  //   "secondaryAssessment":"test Secondary Assessment",
-  //   "notes":"Additional notes",
-
   const form = useForm<PCRData>({
     resolver: zodResolver(PCRSchema),
     defaultValues: {
@@ -41,6 +37,7 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
       primaryAssessment: pcr.primaryAssessment ?? "",
       secondaryAssessment: pcr.secondaryAssessment ?? "",
       notes: pcr.notes ?? "",
+      createdAt: formatDateOnly(pcr.createdAt),
     },
   });
 
@@ -80,17 +77,17 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
                 onValueChange={setActiveTab}
                 className="space-y-4"
               >
-                <TabsList className="w-full bg-gray-200 p-1 rounded-lg">
+                <TabsList className="w-full bg-gray-50 p-1 rounded-lg justify-center">
                   <TabsTrigger
                     value="incident"
-                    className="data-[state=active]:bg-white px-4 py-2 rounded-md"
+                    className="data-[state=active]:bg-white px-4 py-2 w-full rounded-md"
                     disabled={isPending}
                   >
                     Incident Details
                   </TabsTrigger>
                   <TabsTrigger
                     value="crew"
-                    className="data-[state=active]:bg-white px-4 py-2 rounded-md"
+                    className="data-[state=active]:bg-white px-4 py-2 w-full rounded-md"
                     disabled={isPending}
                   >
                     Crew Information
@@ -105,7 +102,7 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
                   <CrewTab />
                 </TabsContent>
 
-                <div className="flex justify-end gap-2 pt-4 border-t">
+                <div className="flex justify-center gap-2 pt-4 border-t">
                   <Button
                     type="button"
                     variant="outline"
@@ -114,11 +111,14 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={isPending}>
+                  <Button
+                    type="submit"
+                    disabled={isPending}
+                    className="bg-main"
+                  >
                     {isPending ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Saving...
+                        <LoadingIndicator />
                       </>
                     ) : (
                       "Save Changes"

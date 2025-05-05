@@ -13,6 +13,7 @@ import {
 } from "../ui/dialog";
 import PersonalInfoDialog from "./PersonalInfoDialog";
 import { Patient } from "@/types/patients.type";
+import { formatDate } from "@/utils/extra";
 
 interface PatientPersonalInfoProps {
   patient: Patient | any;
@@ -39,15 +40,6 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
     return age;
   };
 
-  // Format date to readable format (e.g., "May 17, 1999")
-  const formatDate = (dateString: string): string => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
   return (
     <div className="bg-gray-100 shadow-md rounded-lg p-4 flex flex-col md:flex-row justify-center md:items-start gap-6">
       {/* Patient Info Section */}
@@ -66,13 +58,14 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
               {profile.firstName} {patient.lastName}
             </h2>
             <p className="text-gray-600 text-sm">
-              <strong>Age:</strong> {calculateAge(profile.dateofBirth)}
+              <strong>Age:</strong>{" "}
+              {calculateAge(profile.dateofBirth) || "Unknown"}
             </p>
             <p className="text-gray-600 text-sm">
-              <strong>Phone:</strong> {profile.phone}
+              <strong>Phone:</strong> {profile.phone || "Unknown"}
             </p>
             <p className="text-gray-600 text-sm">
-              <strong>Email:</strong> {profile.email}
+              <strong>Email:</strong> {profile.email || "Unknown"}
             </p>
           </div>
         </div>
@@ -82,13 +75,27 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
       <div className="grid grid-cols-4 grid-rows-3 gap-4 px-4 text-gray-700 w-full xmd:flex-1 md:border-l">
         {[
           { label: "Identify Number", value: profile.id },
-          { label: "Date of Birth", value: formatDate(profile.dateofBirth) },
-          { label: "Nationality", value: profile.nationality },
-          { label: "Address", value: "addres not found in db" },
-          { label: "Sex", value: profile.gender },
-          { label: "Height", value: `${profile.height} CM` },
-          { label: "Weight", value: `${profile.weight} KG` },
-          { label: "Blood Type", value: "not found under patient" },
+          {
+            label: "Date of Birth",
+            value: profile.dateofBirth
+              ? formatDate(profile.dateofBirth)
+              : "Unknown",
+          },
+          {
+            label: "Nationality",
+            value: profile.nationality ? profile.nationality : "Unknown",
+          },
+          { label: "Address", value: "Unknown" },
+          { label: "Sex", value: profile.gender ? profile.gender : "Unknown" },
+          {
+            label: "Height",
+            value: profile.height ? `${profile.height} CM` : "Unknown",
+          },
+          {
+            label: "Weight",
+            value: profile.weight ? `${profile.weight} KG` : "Unknown",
+          },
+          { label: "Blood Type", value: "Unknown" },
         ].map((item, index) => (
           <div key={index} className={index >= 4 ? "row-start-2" : ""}>
             <p className="text-xs text-gray-500">{item.label}</p>

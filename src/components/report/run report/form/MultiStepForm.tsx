@@ -17,6 +17,7 @@ import RunReportStep1 from "./RunReportStep1";
 import RunReportStep2 from "./RunReportStep2";
 import RunReportStep3 from "./RunReportStep3";
 import { usePostRunReport, useUpdateRunReport } from "@/services/api/reports";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const stepSchemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -175,7 +176,11 @@ const MultiStepForm = ({
                         {submitting ? (
                           <>
                             <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                            {isEdit ? "Updating..." : "Submitting..."}
+                            {isEdit ? (
+                              <LoadingIndicator />
+                            ) : (
+                              <LoadingIndicator />
+                            )}
                           </>
                         ) : isEdit ? (
                           "Update Report"
