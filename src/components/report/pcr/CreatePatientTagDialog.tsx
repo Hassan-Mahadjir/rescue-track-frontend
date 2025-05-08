@@ -25,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { usePostPCRAllergy, usePostPCRCondition } from "@/services/api/reports";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const tagSchema = z.object({
   tags: z.array(z.string()).optional().default([]),
@@ -198,7 +199,6 @@ const CreatePatientTagDialog = ({
                       ))}
                     </div>
                   )}
-
                   <FormMessage />
                 </div>
               )}
@@ -219,7 +219,7 @@ const CreatePatientTagDialog = ({
               >
                 {isAllergyPending || isConditionPending ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                    <LoadingIndicator />
                     Saving...
                   </>
                 ) : (

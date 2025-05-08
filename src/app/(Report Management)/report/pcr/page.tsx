@@ -9,7 +9,6 @@ import { PCR } from "@/types/report.type";
 const PcrPage = () => {
   const { PCRsData, isPending } = usePCRs();
   const data = PCRsData;
-  console.log(data);
 
   const totalReports = data?.reduce((count: number, patient: PCR) => {
     return (

@@ -33,6 +33,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { TreatmentConfig } from "@/constants/treatments";
 import { usePostPCRTreatment } from "@/services/api/reports";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const { treatmentOptions, categoryOptions, unitOptions, quantityOptions } =
   TreatmentConfig;
@@ -200,10 +201,10 @@ const CreateTreatmentDialog = ({ id }: CreateTreatmentDialogProps) => {
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" className="bg:main" disabled={isPending}>
                 {isPending ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <LoadingIndicator />
                     Creating...
                   </>
                 ) : (

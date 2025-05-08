@@ -155,7 +155,7 @@ const inventoryData: InventoryManagement[] = [
 
 const InventoryManagementList = () => {
   return (
-    <div className="mb-5">
+    <div className="mb-10">
       <DataTable
         columns={InventoryColumns}
         data={inventoryData}

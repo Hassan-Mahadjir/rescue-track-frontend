@@ -1,5 +1,6 @@
 "use client";
 
+import StatusBadge from "@/components/StatusBadge";
 import PcrActions from "@/components/table/action/PcrActions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PCR } from "@/types/patients.type";
@@ -111,20 +112,7 @@ export const PcrColumns: ColumnDef<PCR>[] = [
     ),
     cell: ({ row: { original: data } }) => {
       const status = data.patient.status;
-      return (
-        <div
-          className={`rounded-lg text-sm ${
-            status === "Open"
-              ? "bg-green-100 text-green-800"
-              : status === "Closed"
-              ? "bg-red-100 text-red-800"
-              : "bg-yellow-100 text-yellow-800"
-          }`}
-          style={{ minWidth: "80px", textAlign: "center" }}
-        >
-          {status as string}
-        </div>
-      );
+      return <StatusBadge status={status} />;
     },
     enableSorting: true,
     enableColumnFilter: true,

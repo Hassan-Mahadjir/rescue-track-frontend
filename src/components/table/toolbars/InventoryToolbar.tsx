@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
 import { TooltipButton } from "@/components/report/TooltipButton";
 import { exportSelectedRows } from "@/utils/exportUtils";
+import CreateMedicationDialog from "@/components/inventory/create/CreateMedicationDialog";
 
 interface PcrToolbarProps<TData> {
   table: Table<TData>;
@@ -36,6 +37,11 @@ const InventoryToolbar = <TData,>({ table }: PcrToolbarProps<TData>) => {
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
             </div>
+          </div>
+
+          {/* Additional Content */}
+          <div className="space-x-4">
+            <CreateMedicationDialog />
 
             {/* Dropdown Menu for Column Visibility */}
             <DropdownMenu>
@@ -67,16 +73,7 @@ const InventoryToolbar = <TData,>({ table }: PcrToolbarProps<TData>) => {
                   ))}
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
 
-          {/* Additional Content */}
-          <div className="space-x-4">
-            <TooltipButton
-              tooltipText="Add New Report"
-              className="rounded-full hover:bg-main hover:text-white"
-            >
-              <Plus />
-            </TooltipButton>
             <TooltipButton
               tooltipText="Export Data"
               className="rounded-full hover:bg-main hover:text-white font-semibold"
