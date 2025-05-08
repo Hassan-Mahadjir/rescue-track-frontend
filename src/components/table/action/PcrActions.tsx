@@ -19,11 +19,13 @@ import { Ellipsis, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import LoadingIndicator from "@/components/Loading-Indicator";
+import { useAuth } from "@/hooks/useAuth";
 
 const PcrActions = ({ id }: { id: number }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { mutateDelete, isPending } = useDeletePCR(id);
+  const { isAdmin } = useAuth();
 
   const handleConfirmDelete = () => {
     mutateDelete();
@@ -47,44 +49,51 @@ const PcrActions = ({ id }: { id: number }) => {
               <Pencil className="w-4 h-4" /> Edit
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setDialogOpen(true)}
-            className="text-red-600 hover:bg-red-50 dark:hover:bg-red-600/10 flex items-center gap-2"
-          >
-            <Trash2 className="w-4 h-4" />
-            Delete
-          </DropdownMenuItem>
+
+          {/* Only show Delete option if user is an admin */}
+          {isAdmin() && (
+            <DropdownMenuItem
+              onClick={() => setDialogOpen(true)}
+              className="text-red-600 hover:bg-red-50 dark:hover:bg-red-600/10 flex items-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Confirm Deletion</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-gray-600">
-            Are you sure you want to delete this report? This action cannot be
-            undone.
-          </p>
-          <DialogFooter className="flex justify-end gap-2 mt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleConfirmDelete}
-              disabled={isPending}
-            >
-              {isPending ? <LoadingIndicator /> : "Delete"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Confirm dialog only opens if Delete was shown */}
+      {isAdmin() && (
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Confirm Deletion</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-gray-600">
+              Are you sure you want to delete this report? This action cannot be
+              undone.
+            </p>
+            <DialogFooter className="flex justify-end gap-2 mt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleConfirmDelete}
+                disabled={isPending}
+              >
+                {isPending ? <LoadingIndicator /> : "Delete"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

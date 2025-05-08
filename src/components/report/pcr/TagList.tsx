@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
 import DeleteTagDialog from "./edit report/DeleteTagDialog";
+import { useAuth } from "@/hooks/useAuth";
 
 interface TagItem {
   id: number;
@@ -14,6 +13,7 @@ interface TagListProps {
 }
 
 const TagList = ({ tags, type }: TagListProps) => {
+  const { isAdmin } = useAuth();
   if (!tags || tags.length === 0) {
     return (
       <div className="flex items-center justify-center p-4 text-muted-foreground text-sm">
@@ -33,7 +33,7 @@ const TagList = ({ tags, type }: TagListProps) => {
             <span className="truncate capitalize font-semibold">
               {tag.name}
             </span>
-            <DeleteTagDialog id={tag.id} type={type} />
+            {isAdmin() ? <DeleteTagDialog id={tag.id} type={type} /> : null}
           </CardContent>
         </Card>
       ))}

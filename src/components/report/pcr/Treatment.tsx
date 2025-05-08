@@ -2,6 +2,7 @@ import { Treatments } from "@/types/patients.type";
 import { Card, CardContent } from "@/components/ui/card";
 import DeleteTreatment from "./edit report/DeleteTreatment";
 import EditTreatmentDialog from "./edit report/EditTreatmentDialog";
+import { useAuth } from "@/hooks/useAuth";
 
 interface TreatmentProps {
   treatments: Treatments[];
@@ -9,6 +10,7 @@ interface TreatmentProps {
 }
 
 const Treatment = ({ treatments, id }: TreatmentProps) => {
+  const { isAdmin } = useAuth();
   if (!treatments || treatments.length === 0) {
     return (
       <div className="flex items-center justify-center p-8 text-muted-foreground">
@@ -34,7 +36,7 @@ const Treatment = ({ treatments, id }: TreatmentProps) => {
 
               <div className="flex gap-1">
                 <EditTreatmentDialog treatment={treat} id={id} />
-                <DeleteTreatment id={treat.id} />
+                {isAdmin() && <DeleteTreatment id={treat.id} />}
               </div>
             </div>
           </CardContent>
