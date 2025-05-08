@@ -19,14 +19,6 @@ import RunReportStep3 from "./RunReportStep3";
 import { usePostRunReport, useUpdateRunReport } from "@/services/api/reports";
 import LoadingIndicator from "@/components/Loading-Indicator";
 
-const stepSchemas = [Step1Schema, Step2Schema, Step3Schema];
-
-const steps = [
-  { id: "1", label: "Patient Information" },
-  { id: "2", label: "Emergency Details" },
-  { id: "3", label: "Crew Information" },
-];
-
 const MultiStepForm = ({
   defaultValues,
   isEdit = false,
@@ -34,6 +26,16 @@ const MultiStepForm = ({
   defaultValues?: CombinedFormData;
   isEdit?: boolean;
 }) => {
+  const allSteps = [
+    { id: "1", label: "Patient Information" },
+    { id: "2", label: "Emergency Details" },
+    { id: "3", label: "Crew Information" },
+  ];
+  const allSchemas = [Step1Schema, Step2Schema, Step3Schema];
+
+  const steps = isEdit ? allSteps.slice(1) : allSteps;
+  const stepSchemas = isEdit ? allSchemas.slice(1) : allSchemas;
+
   const [step, setStep] = useState(0);
   const [touchedSteps, setTouchedSteps] = useState<number[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -45,7 +47,7 @@ const MultiStepForm = ({
   const form = useForm<CombinedFormData>({
     resolver: zodResolver(CombinedSchema),
     mode: "onTouched",
-    defaultValues, // ✅ handled here
+    defaultValues,
   });
 
   const {
@@ -75,6 +77,7 @@ const MultiStepForm = ({
       setStep((prev) => prev + 1);
     }
   };
+
   const handleBack = () => {
     setStep((prev) => prev - 1);
   };
@@ -91,6 +94,7 @@ const MultiStepForm = ({
       });
     }
   };
+
   return (
     <div>
       <Form {...form}>
@@ -99,7 +103,7 @@ const MultiStepForm = ({
             <Tabs value={steps[step].id} className="space-y-6 w-full">
               <div className="overflow-x-auto pb-1 -mb-1">
                 <TabsList className="flex min-w-max border-b rounded-none bg-transparent p-0 h-auto">
-                  {steps.map((step, index) => {
+                  {steps.map((stepItem, index) => {
                     const hasError =
                       touchedSteps.includes(index) && hasStepErrors(index);
                     const isCompleted =
@@ -107,19 +111,16 @@ const MultiStepForm = ({
 
                     return (
                       <TabsTrigger
-                        key={step.id}
-                        value={step.id}
+                        key={stepItem.id}
+                        value={stepItem.id}
                         onClick={() => goToStep(index)}
-                        className={`
-                            py-3 px-3 sm:px-4 rounded-none font-medium transition-all flex-1 min-w-[80px]
-                            ${
-                              hasError
-                                ? "border-b-2 border-red-500 text-red-600"
-                                : isCompleted
-                                ? "border-b-2 border-green-500 text-green-600"
-                                : "data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary"
-                            }
-                             hover:bg-gray-50`}
+                        className={`py-3 px-3 sm:px-4 rounded-none font-medium transition-all flex-1 min-w-[80px] ${
+                          hasError
+                            ? "border-b-2 border-red-500 text-red-600"
+                            : isCompleted
+                            ? "border-b-2 border-green-500 text-green-600"
+                            : "data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary"
+                        } hover:bg-gray-50`}
                       >
                         <div className="flex items-center justify-center sm:justify-start gap-1 sm:gap-2">
                           {hasError && (
@@ -129,7 +130,7 @@ const MultiStepForm = ({
                             <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
                           )}
                           <span className="text-xs sm:text-sm">
-                            {step.label}
+                            {stepItem.label}
                           </span>
                         </div>
                       </TabsTrigger>
@@ -137,13 +138,23 @@ const MultiStepForm = ({
                   })}
                 </TabsList>
               </div>
-              {steps.map((step, index) => (
-                <TabsContent key={step.id} value={step.id} className="p-6">
+
+              {steps.map((stepItem, index) => (
+                <TabsContent
+                  key={stepItem.id}
+                  value={stepItem.id}
+                  className="p-6"
+                >
                   <div className="min-h-[300px]">
-                    {index === 0 && <RunReportStep1 />}
-                    {index === 1 && <RunReportStep2 />}
-                    {index === 2 && <RunReportStep3 />}
+                    {!isEdit && index === 0 && <RunReportStep1 />}
+                    {(!isEdit && index === 1) || (isEdit && index === 0) ? (
+                      <RunReportStep2 />
+                    ) : null}
+                    {(!isEdit && index === 2) || (isEdit && index === 1) ? (
+                      <RunReportStep3 />
+                    ) : null}
                   </div>
+
                   <div className="flex justify-between items-center mt-8">
                     {index > 0 ? (
                       <Button
@@ -176,11 +187,7 @@ const MultiStepForm = ({
                         {submitting ? (
                           <>
                             <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                            {isEdit ? (
-                              <LoadingIndicator />
-                            ) : (
-                              <LoadingIndicator />
-                            )}
+                            <LoadingIndicator />
                           </>
                         ) : isEdit ? (
                           "Update Report"
