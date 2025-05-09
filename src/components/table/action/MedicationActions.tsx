@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import copy from "copy-to-clipboard";
 import { MoreHorizontal } from "lucide-react";
 import React from "react";
 
@@ -21,9 +22,7 @@ const MedicationActions = ({ batchNumber }: { batchNumber: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(batchNumber)}
-        >
+        <DropdownMenuItem onClick={() => copy(batchNumber)}>
           Copy Batch Number ID
         </DropdownMenuItem>
         <DropdownMenuSeparator />

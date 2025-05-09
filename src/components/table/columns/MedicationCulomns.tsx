@@ -2,19 +2,10 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { calculateStockLevel } from "@/utils/inventoryUtils";
 import { format } from "date-fns";
 import MedicationActions from "../action/MedicationActions";
+import StockLevelBadge from "@/components/badge/StockLevelBadge";
 
 export const InventoryMedicationColumns: ColumnDef<InventoryMedication>[] = [
   {
@@ -84,21 +75,7 @@ export const InventoryMedicationColumns: ColumnDef<InventoryMedication>[] = [
     cell: ({ row }) => {
       const quantity = row.getValue("quantity") as number;
       const stock = calculateStockLevel(quantity); // Calculate stock dynamically
-      return (
-        <div
-          className={`rounded-lg text-sm p-1 flex justify-center items-center ${
-            stock === "Full"
-              ? "bg-green-100 text-green-800"
-              : stock === "Empty"
-              ? "bg-red-100 text-red-800"
-              : stock === "Re-order"
-              ? "bg-yellow-100 text-yellow-800"
-              : "bg-blue-100 text-blue-800"
-          }`}
-        >
-          {stock}
-        </div>
-      );
+      return <StockLevelBadge level={stock} />;
     },
 
     enableSorting: false,
@@ -110,7 +87,6 @@ export const InventoryMedicationColumns: ColumnDef<InventoryMedication>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const batchNumber = row.original.batchNumber;
-
       return <MedicationActions batchNumber={batchNumber} />;
     },
   },

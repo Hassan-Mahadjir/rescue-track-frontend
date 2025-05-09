@@ -1,6 +1,6 @@
 "use client";
 
-import StatusBadge from "@/components/StatusBadge";
+import StatusBadge from "@/components/badge/StatusBadge";
 import PcrActions from "@/components/table/action/PcrActions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PCR } from "@/types/patients.type";
