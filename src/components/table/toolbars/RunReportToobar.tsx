@@ -1,5 +1,4 @@
 import { CardHeader } from "@/components/ui/card";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
@@ -14,7 +13,6 @@ import { Plus, Search, SlidersHorizontal, Upload } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { TooltipButton } from "@/components/report/TooltipButton";
-import FilterDialog from "@/components/report/FilterDialog";
 
 interface RunReportToolbarProps<TData> {
   table: Table<TData>;

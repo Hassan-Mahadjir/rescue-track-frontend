@@ -45,7 +45,7 @@ const page = () => {
         { label: "Create new", onClick: () => console.log("Create new") },
         {
           label: "View all",
-          onClick: () => router.push("/inventory/management"),
+          onClick: () => router.push("/inventory/supplier-vendor"),
         },
       ],
     },

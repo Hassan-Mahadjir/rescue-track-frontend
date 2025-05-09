@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Plus, Camera, CalendarIcon } from "lucide-react";
+import { Plus, CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -38,7 +38,7 @@ import {
 } from "@/types/inventoryFormSchema";
 import Image from "next/image";
 
-const { categoryOptions, unitOptions, quantityOptions } = TreatmentConfig;
+const { categoryOptions, unitOptions } = TreatmentConfig;
 
 const CreateMedicationDialog = () => {
   const [isOpen, setIsOpen] = useState(false);

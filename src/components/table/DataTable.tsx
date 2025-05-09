@@ -37,6 +37,7 @@ import RunReportToobar from "./toolbars/RunReportToobar";
 import InventoryToolbar from "./toolbars/InventoryToolbar";
 import MedicationToolbar from "./toolbars/MedicationToolbar";
 import DefultToolbar from "./toolbars/DefultToolbar";
+import SupplierVendorToolbar from "./toolbars/SupplierVendorToolbar";
 
 // Define toolbar types
 export type ToolbarType =
@@ -44,6 +45,7 @@ export type ToolbarType =
   | "runReport"
   | "inventory"
   | "medication"
+  | "supply"
   | "default";
 
 // Toolbar props type
@@ -60,6 +62,7 @@ const toolbarComponents: Record<
   runReport: RunReportToobar, // placeholder
   inventory: InventoryToolbar, // placeholder
   medication: MedicationToolbar, // placeholder
+  supply: SupplierVendorToolbar,
   default: DefultToolbar,
 };
 
@@ -95,6 +98,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
       pagination,
       rowSelection,
+      columnVisibility,
     },
     initialState: {
       columnVisibility: initialColumnVisibility,
