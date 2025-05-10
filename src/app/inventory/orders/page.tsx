@@ -1,9 +1,11 @@
+"use client";
 import { Calendar } from "@/components/inventory/orders/Calendar";
 import { CalendarHeader } from "@/components/inventory/orders/CalendarHeader";
 import { CalendarLegend } from "@/components/inventory/orders/CalendarLegend";
-import React from "react";
+import { useState } from "react";
 
 const ReorderManagementPage = () => {
+  const [currentDate, setCurrentDate] = useState(new Date());
   return (
     <div className="m-5">
       <div className="space-y-2 mb-6">
@@ -14,9 +16,12 @@ const ReorderManagementPage = () => {
       </div>
 
       <div className="bg-slate-50 rounded-lg p-4 shadow-sm">
-        <CalendarHeader />
+        <CalendarHeader
+          currentDate={currentDate}
+          onDateChange={setCurrentDate}
+        />
         <CalendarLegend />
-        <Calendar />
+        <Calendar currentDate={currentDate} />
       </div>
     </div>
   );

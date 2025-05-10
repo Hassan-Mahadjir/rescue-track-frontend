@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Plus } from "lucide-react";
 import {
@@ -11,10 +11,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { OrderDialog } from "./OrderDialog";
 
-export function CalendarHeader() {
-  const [month, setMonth] = useState("Sep");
-  const [year, setYear] = useState("2023");
-
+export function CalendarHeader({
+  currentDate,
+  onDateChange,
+}: {
+  currentDate: Date;
+  onDateChange: (date: Date) => void;
+}) {
   const months = [
     "Jan",
     "Feb",
@@ -29,12 +32,54 @@ export function CalendarHeader() {
     "Nov",
     "Dec",
   ];
-  const years = ["2023", "2024", "2025", "2026"];
+
+  // Generate years from current year - 1 to current year + 5
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 7 }, (_, i) =>
+    (currentYear - 1 + i).toString()
+  );
+
+  // Get current month and year from the currentDate prop
+  const [month, setMonth] = useState(months[currentDate.getMonth()]);
+  const [year, setYear] = useState(currentDate.getFullYear().toString());
+
+  // Update the parent component when month or year changes
+  const handleMonthChange = (newMonth: string) => {
+    setMonth(newMonth);
+    const newDate = new Date(currentDate);
+    newDate.setMonth(months.indexOf(newMonth));
+    onDateChange(newDate);
+  };
+
+  const handleYearChange = (newYear: string) => {
+    setYear(newYear);
+    const newDate = new Date(currentDate);
+    newDate.setFullYear(Number.parseInt(newYear));
+    onDateChange(newDate);
+  };
+
+  // Handle "Today" button click
+  const goToToday = () => {
+    const today = new Date();
+    setMonth(months[today.getMonth()]);
+    setYear(today.getFullYear().toString());
+    onDateChange(today);
+  };
+
+  // Update local state when currentDate changes from parent
+  useEffect(() => {
+    setMonth(months[currentDate.getMonth()]);
+    setYear(currentDate.getFullYear().toString());
+  }, [currentDate, months]);
 
   return (
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
       <div className="flex gap-2">
-        <Button variant="default" className="bg-green-800 hover:bg-green-700">
+        <Button
+          variant="default"
+          className="bg-green-800 hover:bg-green-700"
+          onClick={goToToday}
+        >
           Today
         </Button>
 
@@ -47,7 +92,7 @@ export function CalendarHeader() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {months.map((m) => (
-              <DropdownMenuItem key={m} onClick={() => setMonth(m)}>
+              <DropdownMenuItem key={m} onClick={() => handleMonthChange(m)}>
                 {m}
               </DropdownMenuItem>
             ))}
@@ -63,7 +108,7 @@ export function CalendarHeader() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {years.map((y) => (
-              <DropdownMenuItem key={y} onClick={() => setYear(y)}>
+              <DropdownMenuItem key={y} onClick={() => handleYearChange(y)}>
                 {y}
               </DropdownMenuItem>
             ))}
@@ -71,9 +116,11 @@ export function CalendarHeader() {
         </DropdownMenu>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 w-full sm:w-auto">
         <OrderDialog />
-        <Button variant="outline">Change Schedule</Button>
+        <Button variant="outline" className="flex-1 sm:flex-initial">
+          Change Schedule
+        </Button>
       </div>
     </div>
   );
