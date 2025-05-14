@@ -6,8 +6,6 @@ import { usePCR } from "@/services/api/reports";
 import EditPCRDialog from "@/components/report/pcr/edit report/EditPCRDialog";
 import Treatment from "@/components/report/pcr/Treatment";
 import CreateTreatmentDialog from "@/components/report/pcr/CreateTreatmentDialog";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import { ReportDocument } from "@/components/report/template";
 import PCRLoading from "@/components/loading/PCRLoading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CreatePatientTagDialog from "@/components/report/pcr/CreatePatientTagDialog";

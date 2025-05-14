@@ -12,6 +12,7 @@ import { useNewUserFormContext } from "@/hooks/userFormContext";
 import { useRouter } from "next/navigation";
 import { useSignup } from "@/services/api/auth";
 import { SignupFormValues } from "@/types/signup.type";
+import LoadingIndicator from "@/components/Loading-Indicator";
 
 const formSchema = z
   .object({
@@ -27,7 +28,6 @@ type FormSchema = z.infer<typeof formSchema>;
 
 const StepThreeForm = () => {
   const formContext = useNewUserFormContext();
-  const router = useRouter();
 
   const { mutateSingup, isPending } = useSignup();
 
@@ -82,7 +82,7 @@ const StepThreeForm = () => {
               type="submit"
               className="bg-dark-gray mt-4 hover:bg-second-main w-full rounded-2xl"
             >
-              {t("signup")}
+              {isPending ? <LoadingIndicator /> : t("signup")}
             </Button>
           </form>
         </Form>

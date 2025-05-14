@@ -11,7 +11,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Edit } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

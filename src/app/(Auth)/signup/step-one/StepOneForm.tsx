@@ -11,7 +11,6 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useNewUserFormContext } from "@/hooks/userFormContext";
 import { useRouter } from "next/navigation";
-import { setItem } from "@/utils/storage";
 import { handleGoogleLogin, handleMicrosoftLogin } from "../../login/page";
 
 const formSchema = z.object({
