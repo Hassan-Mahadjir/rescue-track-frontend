@@ -105,66 +105,11 @@ const labReagents: InventoryMedication[] = [
 const page = () => {
   return (
     <div className="w-full p-4">
-      <Tabs defaultValue="medication" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 border-b rounded-none bg-transparent p-0">
-          <TabsTrigger
-            value="medication"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
-          >
-            Medication
-          </TabsTrigger>
-          <TabsTrigger
-            value="vaccine"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
-          >
-            Vaccine
-          </TabsTrigger>
-          <TabsTrigger
-            value="syringe"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
-          >
-            Syringe
-          </TabsTrigger>
-          <TabsTrigger
-            value="lab"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none font-medium hover:text-gray-950"
-          >
-            Lab Reagents
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="medication">
-          <DataTable
-            columns={InventoryMedicationColumns}
-            data={inventoryMedication}
-            toolbarType="medication"
-          />
-        </TabsContent>
-
-        <TabsContent value="vaccine">
-          <DataTable
-            columns={InventoryMedicationColumns}
-            data={vaccines}
-            toolbarType="medication"
-          />
-        </TabsContent>
-
-        <TabsContent value="syringe">
-          <DataTable
-            columns={InventoryMedicationColumns}
-            data={syringes}
-            toolbarType="medication"
-          />
-        </TabsContent>
-
-        <TabsContent value="lab">
-          <DataTable
-            columns={InventoryMedicationColumns}
-            data={labReagents}
-            toolbarType="medication"
-          />
-        </TabsContent>
-      </Tabs>
+      <DataTable
+        columns={InventoryMedicationColumns}
+        data={inventoryMedication}
+        toolbarType="medication"
+      />
     </div>
   );
 };

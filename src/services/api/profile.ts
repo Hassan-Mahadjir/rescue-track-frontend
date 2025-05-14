@@ -6,7 +6,6 @@ import {
 import profileService from "../profile-service";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { profile, UserProfile } from "@/types/profile.type";
 import { UserFormValues } from "@/types/schema/profileFormSchema";
 import { APIError } from "@/types/error.type";
 
