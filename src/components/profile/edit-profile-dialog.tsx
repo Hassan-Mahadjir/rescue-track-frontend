@@ -1,7 +1,6 @@
 "use client";
-import { useState } from "react";
-import type React from "react";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,64 +8,63 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Edit } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "../ui/form";
 
-interface UserProfile {
-  id: number;
-  firstName: string;
-  middleName: string | null;
-  lastName: string;
-  address: string | null;
-  phone: string;
-  avatar: string | null;
-  gender: string | null;
-  nationality: string | null;
-  dateofBirth: string | null;
-  createdAt: string;
-  updatedAt: string;
-  user: {
-    id: number;
-    email: string;
-    role: string;
-    createdAt: string;
-    isVerified: boolean;
-  };
-}
+import { UserFormValues, userSchema } from "@/types/schema/profileFormSchema";
+import { UserProfile } from "@/types/profile.type";
+import { formatDateOnly } from "@/utils/extra";
+import FormInput from "@/components/FormInput";
+import FormSelect from "../FormSelect";
+import { useUpdateProfile } from "@/services/api/profile";
+import LoadingIndicator from "../Loading-Indicator";
 
 interface EditProfileDialogProps {
   profile: UserProfile;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSave: (updatedProfile: UserProfile) => void;
 }
 
-export const EditProfileDialog = ({
-  profile,
-  isOpen,
-  onOpenChange,
-  onSave,
-}: EditProfileDialogProps) => {
-  const [formData, setFormData] = useState(profile);
+export const EditProfileDialog = ({ profile }: EditProfileDialogProps) => {
+  const [isOpen, setOpen] = useState(false);
+  const { mutateUpdate, isPending } = useUpdateProfile();
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const form = useForm<UserFormValues>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      phone: profile.phone,
+      nationality: profile.nationality ?? "",
+      gender:
+        profile.gender === "male" || profile.gender === "female"
+          ? profile.gender
+          : undefined,
+      dateofBirth: formatDateOnly(profile.dateofBirth ?? undefined),
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave(formData);
-    onOpenChange(false);
+  const onSubmit = (data: UserFormValues) => {
+    mutateUpdate(data, {
+      onSuccess: () => {
+        setOpen(false);
+      },
+    });
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
+      <DialogTrigger>
+        <Button variant="outline" size="icon">
+          <Edit className="h-4 w-4" />
+          <span className="sr-only">Edit Profile</span>
+        </Button>
+      </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
@@ -74,81 +72,41 @@ export const EditProfileDialog = ({
             Make changes to your profile information here.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="firstName">First Name</Label>
-                <Input
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.user.email}
-                disabled
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="phone">Phone</Label>
-              <Input
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="address">Address</Label>
-              <Textarea
-                id="address"
-                name="address"
-                value={formData.address || ""}
-                onChange={handleInputChange}
-              />
+              <FormInput form={form} name="firstName" label="First Name" />
+              <FormInput form={form} name="lastName" label="Last Name" />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="gender">Gender</Label>
-                <Input
-                  id="gender"
-                  name="gender"
-                  value={formData.gender || ""}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="nationality">Nationality</Label>
-                <Input
-                  id="nationality"
-                  name="nationality"
-                  value={formData.nationality || ""}
-                  onChange={handleInputChange}
-                />
-              </div>
+              <FormSelect
+                form={form}
+                name="gender"
+                label="Gender"
+                placeholder="Select gender"
+                options={[
+                  { label: "Male", value: "male" },
+                  { label: "Female", value: "female" },
+                ]}
+              />
+              <FormInput form={form} name="nationality" label="Nationality" />
             </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit">Save Changes</Button>
-          </DialogFooter>
-        </form>
+            <FormInput form={form} name="phone" label="Phone" />
+            <FormInput
+              form={form}
+              name="dateofBirth"
+              label="Date of Birth"
+              type="date"
+            />
+
+            <DialogFooter>
+              <Button type="submit" disabled={isPending} className="bg-main">
+                {isPending ? <LoadingIndicator /> : "Save Changes"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

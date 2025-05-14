@@ -5,7 +5,7 @@ import {
   PcrReportFormSchema,
   stepSchemas,
   type PcrReportFormValues,
-} from "@/types/reportFormSchema";
+} from "@/types/schema/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

@@ -35,7 +35,7 @@ import LoadingIndicator from "@/components/Loading-Indicator";
 import {
   MedicationFormData,
   medicationSchema,
-} from "@/types/inventoryFormSchema";
+} from "@/types/schema/inventoryFormSchema";
 import Image from "next/image";
 
 const { categoryOptions, unitOptions } = TreatmentConfig;

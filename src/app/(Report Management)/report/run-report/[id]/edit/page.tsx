@@ -2,7 +2,7 @@
 import RunReportSkeleton from "@/components/loading/RunReportSkeleton";
 import MultiStepForm from "@/components/report/run report/form/MultiStepForm";
 import { useRunReport } from "@/services/api/reports";
-import { CombinedFormData } from "@/types/reportFormSchema";
+import { CombinedFormData } from "@/types/schema/reportFormSchema";
 import { formatDateTime } from "@/utils/extra";
 import { useParams } from "next/navigation";
 import React from "react";

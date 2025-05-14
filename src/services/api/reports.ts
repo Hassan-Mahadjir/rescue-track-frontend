@@ -7,7 +7,7 @@ import {
   PCRData,
   PcrReportFormValues,
   TreatmentsData,
-} from "@/types/reportFormSchema";
+} from "@/types/schema/reportFormSchema";
 import { useToast } from "@/hooks/use-toast";
 import reportsService from "../reports-service";
 import { useRouter } from "next/navigation";

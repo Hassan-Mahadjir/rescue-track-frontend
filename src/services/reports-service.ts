@@ -9,7 +9,7 @@ import {
   PCRData,
   PcrReportFormValues,
   TreatmentsData,
-} from "@/types/reportFormSchema";
+} from "@/types/schema/reportFormSchema";
 
 class ReportService extends BaseService {
   async getPCRsAdmin() {

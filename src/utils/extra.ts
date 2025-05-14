@@ -18,3 +18,18 @@ export function formatDateTime(input?: string | Date): string {
   const date = new Date(input);
   return date.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM
 }
+
+export const getAccountAge = (createdAt: string) => {
+  const created = new Date(createdAt);
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - created.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 30) {
+    return `${diffDays} days`;
+  } else if (diffDays < 365) {
+    return `${Math.floor(diffDays / 30)} months`;
+  } else {
+    return `${Math.floor(diffDays / 365)} years`;
+  }
+};

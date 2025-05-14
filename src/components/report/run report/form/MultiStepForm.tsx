@@ -8,7 +8,7 @@ import {
   Step1Schema,
   Step2Schema,
   Step3Schema,
-} from "@/types/reportFormSchema";
+} from "@/types/schema/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useState } from "react";
