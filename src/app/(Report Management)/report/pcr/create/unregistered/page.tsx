@@ -31,6 +31,8 @@ import { CustomCalendar } from "@/components/Custom-calendar";
 import { BloodTypeSelect } from "@/components/report/BloodTypeSelect";
 import { useCreatePatient } from "@/services/api/patient";
 import LoadingIndicator from "@/components/Loading-Indicator";
+import { useRouter } from "next/navigation";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 const eligibilities = [
   { value: "student", label: "Student" },
@@ -64,9 +66,9 @@ type FormSchema = z.infer<typeof formSchema>;
 
 const CreateUnregisteredPCRReport = () => {
   const { createPatient, isPending } = useCreatePatient();
+  const router = useRouter();
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -92,10 +94,17 @@ const CreateUnregisteredPCRReport = () => {
 
   const onSubmit = async (values: FormSchema) => {
     const formattedDateOfBirth = values.dateofBirth
-    ? values.dateofBirth.toISOString().split("T")[0]
-    : null;
+      ? values.dateofBirth.toISOString().split("T")[0]
+      : null;
 
-    createPatient({...values, dateofBirth: formattedDateOfBirth, status: "active",weight: Number(values.weight),height: Number(values.height)});
+    await createPatient({
+      ...values,
+      dateofBirth: formattedDateOfBirth,
+      status: "active",
+      weight: Number(values.weight),
+      height: Number(values.height),
+    });
+    router.replace("/report/run-report/create/registered");
   };
 
   return (
@@ -226,11 +235,23 @@ const CreateUnregisteredPCRReport = () => {
               />
             </div>
 
-            <FormInput
-              form={form}
+            <FormField
+              control={form.control}
               name="phone"
-              placeholder="+05334829810"
-              label="Phone number"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-start">
+                  <FormLabel>Phone number</FormLabel>
+                  <FormControl className="w-full">
+                    <PhoneInput
+                      placeholder="Enter a phone number"
+                      {...field}
+                      defaultCountry="SA"
+                      className="rounded-2xl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
             <FormInput
               form={form}

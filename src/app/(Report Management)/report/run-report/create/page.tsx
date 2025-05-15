@@ -24,7 +24,7 @@ const CreateRunReport = () => {
       buttons: [
         {
           label: "New patient",
-          href: "create/unregistered",
+          href: "/report/pcr/create/unregistered",
         },
       ],
     },

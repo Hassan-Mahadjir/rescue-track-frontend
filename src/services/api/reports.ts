@@ -68,7 +68,7 @@ export const usePostPCR = () => {
         duration: 3000,
         progressColor: "bg-green-500",
       });
-      router.push("/report/pcr/create/registered");
+      router.push("/report/pcr");
     },
     onError: (error: APIError) => {
       console.error(error);

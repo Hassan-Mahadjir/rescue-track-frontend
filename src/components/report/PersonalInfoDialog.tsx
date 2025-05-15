@@ -27,6 +27,7 @@ import { CustomCalendar } from "@/components/Custom-calendar";
 
 import { EligibilitySelect } from "./EligibilitySelect";
 import { BloodTypeSelect } from "./BloodTypeSelect";
+import { PhoneInput } from "../ui/phone-input";
 
 const eligibilities = [
   { value: "student", label: "Student" },
@@ -266,12 +267,25 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
               />
             </div>
 
-            <FormInput
-              form={form}
+            <FormField
+              control={form.control}
               name="phone"
-              placeholder="+05334829810"
-              label="Phone number"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-start">
+                  <FormLabel>Phone nubmer</FormLabel>
+                  <FormControl className="w-full">
+                    <PhoneInput
+                      placeholder="Enter a phone number"
+                      {...field}
+                      defaultCountry="SA"
+                      className="rounded-2xl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
+
             <FormInput
               form={form}
               name="weight"
