@@ -1,7 +1,7 @@
 import { AppResponse } from "@/types/common.type";
 import http from "./api/http";
 import BaseService from "./base-service";
-import { PCR, RunReportItem } from "@/types/report.type";
+import { PCR, ReportStat, RunReportItem } from "@/types/report.type";
 import {
   AllergyData,
   CombinedFormData,
@@ -154,6 +154,13 @@ class ReportService extends BaseService {
   async getUniqueRecentRunReports() {
     const response = await http.get<AppResponse<RunReportItem[]>>(
       "/run-report/unique-recent"
+    );
+    return response;
+  }
+
+  async getStats() {
+    const response = await http.get<AppResponse<ReportStat[]>>(
+      "/patient-care-report/manage/stats"
     );
     return response;
   }

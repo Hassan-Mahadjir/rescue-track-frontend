@@ -15,7 +15,7 @@ import {
   useRoleBasedQuery,
   useRoleBasedMutation,
 } from "@/hooks/useRoleBasedQuery";
-import { PCR, RunReportItem } from "@/types/report.type";
+import { PCR, ReportStat, RunReportItem } from "@/types/report.type";
 import { APIError } from "@/types/error.type";
 
 export const usePCRs = () => {
@@ -605,4 +605,20 @@ export const useUniqueRecentRunReports = () => {
   });
 
   return { uniqueRecentRunReportsData, ...props };
+};
+
+export const useStats = () => {
+  const { data: StatsData, ...props } = useRoleBasedQuery<ReportStat[]>({
+    queryKey: ["Stats"],
+    adminQueryFn: async () => {
+      const response = await reportsService.getStats();
+      return response.data.data;
+    },
+    employeeQueryFn: async () => {
+      const response = await reportsService.getStats();
+      return response.data.data;
+    },
+  });
+
+  return { StatsData, ...props };
 };

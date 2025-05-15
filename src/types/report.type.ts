@@ -116,3 +116,15 @@ type Hospital = {
   isActive: boolean;
   createAt: Date;
 };
+
+export type ReportStat = {
+  date: string; // ISO date string like "2025-05-14T00:00:00.000Z"
+  type: "PCR" | "Run report";
+  low?: number;
+  medium?: number;
+  high?: number;
+  critical?: number;
+  stable?: number;
+  serious?: number;
+  good?: number;
+};

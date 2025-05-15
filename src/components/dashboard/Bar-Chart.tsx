@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { getXAxisFormatter } from "@/functions/getXAxisDateFormatter";
+import { useStats } from "@/services/api/reports";
 
 const chartConfig = {
   desktop: {
@@ -36,7 +37,7 @@ const chartConfig = {
 
 const reportTypes = [
   { id: 1, title: "PCR" },
-  { id: 2, title: "Employee Care Report" },
+  { id: 2, title: "run report" },
 ];
 
 const durations = [
@@ -49,76 +50,55 @@ const rawData = [
   {
     date: "2025-03-26T10:00:00",
     type: "PCR",
-    urgent: 186,
-    reviewed: 80,
-    progress: 20,
+    low: 186,
+    high: 80,
+    medium: 20,
+    critical: 10,
   },
   {
     date: "2025-03-26T12:00:00",
-    type: "Employee Care Report",
-    urgent: 305,
-    reviewed: 200,
-    progress: 20,
-  },
-  {
-    date: "2025-03-20T00:00:00",
-    type: "PCR",
-    urgent: 237,
-    reviewed: 120,
-    progress: 20,
-  },
-  {
-    date: "2025-03-21T00:00:00",
-    type: "Employee Care Report",
-    urgent: 73,
-    reviewed: 190,
-    progress: 20,
-  },
-  {
-    date: "2025-03-19T00:00:00",
-    type: "PCR",
-    urgent: 209,
-    reviewed: 130,
-    progress: 20,
-  },
-  {
-    date: "2025-03-01T00:00:00",
-    type: "Employee Care Report",
-    urgent: 209,
-    reviewed: 130,
-    progress: 20,
+    type: "Run report",
+    stable: 305,
+    serious: 200,
+    good: 20,
+    critical: 30,
   },
 ];
 
 const Barchart = () => {
+  const { StatsData, isPending } = useStats();
+
   const [activeTitle, setActiveTitle] = useState<string>(reportTypes[0].title);
   const [activeDuration, setActiveDuration] = useState<string>(
     durations[0].duration
   );
 
   const filteredData = useMemo(() => {
+    if (!StatsData) return [];
     const now = new Date();
-    return rawData
-      .filter((item) => item.type === activeTitle)
-      .filter((item) => {
+    return StatsData.filter((item) => item.type === activeTitle).filter(
+      (item) => {
         const itemDate = new Date(item.date);
         if (activeDuration === "Today") {
           return itemDate.toDateString() === now.toDateString();
         } else if (activeDuration === "This Week") {
           const weekStart = new Date(now);
-          weekStart.setDate(now.getDate() - now.getDay()); // Start of the week (Sunday)
+          weekStart.setDate(now.getDate() - now.getDay());
           return itemDate >= weekStart;
         } else if (activeDuration === "This Month") {
           return itemDate.getMonth() === now.getMonth();
         }
         return true;
-      });
-  }, [activeTitle, activeDuration]);
+      }
+    );
+  }, [StatsData, activeTitle, activeDuration]);
 
   const xAxisFormatter = useMemo(
     () => getXAxisFormatter(activeDuration),
     [activeDuration]
   );
+
+  if (!StatsData) return null;
 
   return (
     <Card className="w-full h-full flex flex-col">
@@ -178,9 +158,12 @@ const Barchart = () => {
               cursor={false}
               content={<ChartTooltipContent indicator="dashed" />}
             />
-            <Bar dataKey="urgent" fill="var(--color-desktop)" radius={4} />
-            <Bar dataKey="reviewed" fill="var(--color-mobile)" radius={4} />
-            <Bar dataKey="progress" fill="var(--main)" radius={4} />
+            <Bar dataKey="low" fill="var(--color-desktop)" radius={4} />
+            <Bar dataKey="medium" fill="var(--color-mobile)" radius={4} />
+            <Bar dataKey="high" fill="var(--main)" radius={4} />
+            <Bar dataKey="critical" fill="var(--darkGray)" radius={4} />
+            <Bar dataKey="serious" fill="var(--readMain)" radius={4} />
+            <Bar dataKey="good" fill="var(--linearGreen)" radius={4} />
           </BarChart>
         </ChartContainer>
       </CardContent>
