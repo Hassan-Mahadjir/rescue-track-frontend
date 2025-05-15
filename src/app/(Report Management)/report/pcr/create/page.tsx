@@ -13,7 +13,7 @@ const CreateReport = () => {
       buttons: [
         {
           label: "Existing patient",
-          onClick: () => router.push("create/registered"),
+          href: "create/registered",
         },
       ],
     },
@@ -21,9 +21,7 @@ const CreateReport = () => {
       title: "Unregistered patient",
       imageSrc: "/report/new-account.png",
       text: "create new patient profile, and report",
-      buttons: [
-        { label: "New patient", onClick: () => router.push("create/unregistered") },
-      ],
+      buttons: [{ label: "New patient", href: "create/unregistered" }],
     },
   ];
   return (

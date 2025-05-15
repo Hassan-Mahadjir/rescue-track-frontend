@@ -39,6 +39,7 @@ export const getRoleFromToken = (token: string): userRole | null => {
         .join("")
     );
     const { role } = JSON.parse(jsonPayload);
+    console.log(role);
     return role as userRole;
   } catch (error) {
     console.error("Error decoding token:", error);

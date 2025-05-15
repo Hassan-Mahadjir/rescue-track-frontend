@@ -7,14 +7,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Edit, Loader2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import React from "react";
 import IncidentTab from "../IncidentTab";
 import CrewTab from "../CrewTab";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { PCRData, PCRSchema } from "@/types/reportFormSchema";
+import { PCRData, PCRSchema } from "@/types/schema/reportFormSchema";
 import { useUpdatePCR } from "@/services/api/reports";
 import { PCR } from "@/types/report.type";
 import { formatDateOnly } from "@/utils/extra";

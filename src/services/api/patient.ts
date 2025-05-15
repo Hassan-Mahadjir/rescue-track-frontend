@@ -7,12 +7,13 @@ import {
   useRoleBasedQuery,
   useRoleBasedMutation,
 } from "@/hooks/useRoleBasedQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useGetPatient = (id: number) => {
   const { data: patientData, ...props } = useRoleBasedQuery<Patient>({
     queryKey: ["patient", id],
     adminQueryFn: async () => {
-      const response = await patientService.getPatient(id);
+      const response = await patientService.getPatientAdmin(id);
       return response.data.data;
     },
     employeeQueryFn: async () => {
@@ -28,7 +29,7 @@ export const useGetPatients = () => {
   const { data: patientsData, ...props } = useRoleBasedQuery<Patient[]>({
     queryKey: ["patient"],
     adminQueryFn: async () => {
-      const response = await patientService.getPatients();
+      const response = await patientService.getPatientsAdmin();
       return response.data.data;
     },
     employeeQueryFn: async () => {
@@ -41,7 +42,8 @@ export const useGetPatients = () => {
 };
 
 export const useUpdatePatient = (id: number) => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
+
   const { toast } = useToast();
 
   const {
@@ -52,6 +54,8 @@ export const useUpdatePatient = (id: number) => {
     adminMutationFn: (data) => patientService.updatePatient(id, data),
     employeeMutationFn: (data) => patientService.updatePatient(id, data),
     onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["patient", id] });
+
       toast({
         title: response.message,
         description: "Patient updated successfully.",

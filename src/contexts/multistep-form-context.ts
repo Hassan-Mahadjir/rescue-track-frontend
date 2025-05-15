@@ -8,6 +8,7 @@ export type User = {
   confirm: string;
   firstName: string;
   lastName: string;
+  hospitalID: string;
 };
 
 export interface UserContextProps {

@@ -16,13 +16,13 @@ import { Patient } from "@/types/patients.type";
 import { formatDate } from "@/utils/extra";
 
 interface PatientPersonalInfoProps {
-  patient: Patient | any;
+  patient: Patient;
 }
 
 const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
   patient,
 }) => {
-  const profile = patient;
+  const patientProfile = patient;
 
   // Helper function to calculate age accurately
   const calculateAge = (dateString: string): number => {
@@ -47,25 +47,28 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
         <h2 className="text-lg font-bold text-gray-800">PATIENT INFORMATION</h2>
         <div className="flex flex-row">
           <Image
-            src={"/report/sample.jpg"}
+            src={
+              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+            }
             width={80}
-            height={80}
+            height={100}
             alt="profile Picture"
-            className="w-20 h-20 rounded-md object-cover"
+            className="w-20 h-24 rounded-md object-cover"
           />
           <div className="flex flex-col ml-4">
             <h2 className="text-lg text-gray-800">
-              {profile.firstName} {patient.lastName}
+              {patientProfile.firstName || "Unkonwn"}{" "}
+              {patient.lastName || "unknown"}
             </h2>
             <p className="text-gray-600 text-sm">
               <strong>Age:</strong>{" "}
-              {calculateAge(profile.dateofBirth) || "Unknown"}
+              {calculateAge(patientProfile.dateofBirth) || "Unknown"}
             </p>
             <p className="text-gray-600 text-sm">
-              <strong>Phone:</strong> {profile.phone || "Unknown"}
+              <strong>Phone:</strong> {patientProfile.phone || "Unknown"}
             </p>
             <p className="text-gray-600 text-sm">
-              <strong>Email:</strong> {profile.email || "Unknown"}
+              <strong>Email:</strong> {patientProfile.email || "Unknown"}
             </p>
           </div>
         </div>
@@ -74,26 +77,35 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
       {/* Patient Details Section */}
       <div className="grid grid-cols-4 grid-rows-3 gap-4 px-4 text-gray-700 w-full xmd:flex-1 md:border-l">
         {[
-          { label: "Identify Number", value: profile.id },
+          { label: "Identify Number", value: patientProfile.id },
           {
             label: "Date of Birth",
-            value: profile.dateofBirth
-              ? formatDate(profile.dateofBirth)
+            value: patientProfile.dateofBirth
+              ? formatDate(patientProfile.dateofBirth)
               : "Unknown",
           },
           {
             label: "Nationality",
-            value: profile.nationality ? profile.nationality : "Unknown",
+            value: patientProfile.nationality
+              ? patientProfile.nationality
+              : "Unknown",
           },
           { label: "Address", value: "Unknown" },
-          { label: "Sex", value: profile.gender ? profile.gender : "Unknown" },
+          {
+            label: "Sex",
+            value: patientProfile.gender ? patientProfile.gender : "Unknown",
+          },
           {
             label: "Height",
-            value: profile.height ? `${profile.height} CM` : "Unknown",
+            value: patientProfile.height
+              ? `${patientProfile.height} CM`
+              : "Unknown",
           },
           {
             label: "Weight",
-            value: profile.weight ? `${profile.weight} KG` : "Unknown",
+            value: patientProfile.weight
+              ? `${patientProfile.weight} KG`
+              : "Unknown",
           },
           { label: "Blood Type", value: "Unknown" },
         ].map((item, index) => (
@@ -118,7 +130,9 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
                   accurate and up-to-date.
                 </DialogDescription>
               </DialogHeader>
-              <PersonalInfoDialog id={profile.id ? Number(profile.id) : 0} />
+              <PersonalInfoDialog
+                id={patientProfile.id ? Number(patientProfile.id) : 0}
+              />
             </DialogContent>
           </Dialog>
         </div>

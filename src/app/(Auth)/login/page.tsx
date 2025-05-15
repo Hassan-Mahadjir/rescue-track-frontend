@@ -35,8 +35,6 @@ const Login = () => {
   const t = useTranslations("Auth");
   const { mutateLogin, isPending } = useLogin();
 
-  const { toast } = useToast();
-
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {

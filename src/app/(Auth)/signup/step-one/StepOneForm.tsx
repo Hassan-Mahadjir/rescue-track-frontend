@@ -11,11 +11,13 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useNewUserFormContext } from "@/hooks/userFormContext";
 import { useRouter } from "next/navigation";
-import { setItem } from "@/utils/storage";
 import { handleGoogleLogin, handleMicrosoftLogin } from "../../login/page";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
+  hospitalID: z.string({
+    message: "Enter the hospital ID that provided be the owner.",
+  }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -29,6 +31,7 @@ const StepOneForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: formContext.propertyForm?.email || "",
+      hospitalID: formContext.propertyForm?.hospitalID || "",
     },
   });
 
@@ -49,6 +52,14 @@ const StepOneForm = () => {
               label={t("yourEmail")}
               type="email"
               placeholder="Enter your email address"
+              className=""
+            />
+            <FormInput
+              form={form}
+              name="hospitalID"
+              label="Enter the hospital ID"
+              type=""
+              placeholder="it should look like(xbexx3xf-8x2a-4fxx-801e-ca8041cx9dxf)"
               className=""
             />
             <Button

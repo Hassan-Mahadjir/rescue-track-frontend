@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
 
@@ -7,7 +8,7 @@ interface ServiceCardProps {
   imageSrc?: string;
   icon?: React.ReactNode;
   text?: string;
-  buttons: { label: string; onClick: () => void }[];
+  buttons: { label: string; href: string }[];
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({
@@ -22,22 +23,21 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <p className="text-center font-semibold text-white">{title}</p>
 
       {icon ? (
-        <div className="text-white text-6xl">{icon}</div> // Display icon if provided
+        <div className="text-white text-6xl">{icon}</div>
       ) : (
         imageSrc && (
           <Image src={imageSrc} alt="Service icon" width={100} height={100} />
         )
       )}
-      <p className="text-white text-xs">{text}</p>
+
+      {text && <p className="text-white text-xs">{text}</p>}
 
       {buttons.map((button, index) => (
-        <Button
-          key={index}
-          onClick={button.onClick}
-          className="w-full bg-white text-main text-lg hover:bg-second-main hover:text-white"
-        >
-          {button.label}
-        </Button>
+        <Link href={button.href} key={index} className="w-full">
+          <Button className="w-full bg-white text-main text-lg hover:bg-second-main hover:text-white">
+            {button.label}
+          </Button>
+        </Link>
       ))}
     </div>
   );

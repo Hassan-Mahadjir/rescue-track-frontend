@@ -26,7 +26,7 @@ import { Form } from "@/components/ui/form";
 import {
   TreatmentsData,
   singleTreatmentSchema,
-} from "@/types/reportFormSchema";
+} from "@/types/schema/reportFormSchema";
 import { Treatment } from "@/types/report.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Pencil } from "lucide-react";
@@ -54,7 +54,7 @@ const EditTreatmentDialog = ({ treatment, id }: TreatmentsProps) => {
       id: treatment.id,
       name: treatment.name || "",
       quantity: treatment.quantity,
-      unit: treatment.unit || "",
+      unit: treatment.unit.abbreviation || "",
       category: treatment.category || "",
     },
   });

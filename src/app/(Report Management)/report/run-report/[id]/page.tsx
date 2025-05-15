@@ -55,16 +55,22 @@ const RunReportPatientId = () => {
             value={runReport.transportStatus}
           />
           <InfoItem label="Mileage" value={`${runReport.mileage} km`} />
-          <InfoItem label="Response Time" value={runReport.responseTime} />
+          <InfoItem
+            label="Response Time"
+            value={runReport.responseTime.split("T")[0]}
+          />
           <InfoItem
             label="Arrival at Scene"
-            value={runReport.arrivalTimeAtScense}
+            value={runReport.arrivalTimeAtScense.split("T")[0]}
           />
           <InfoItem
             label="Arrival at Patient"
-            value={runReport.arrivalTimeAtPatient}
+            value={runReport.arrivalTimeAtPatient.split("T")[0]}
           />
-          <InfoItem label="Departure Time" value={runReport.departureTime} />
+          <InfoItem
+            label="Departure Time"
+            value={runReport.departureTime.split("T")[0]}
+          />
           <InfoItem
             label="Created At"
             value={new Date(runReport.createAt).toLocaleString()}

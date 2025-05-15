@@ -17,7 +17,10 @@ import FormInput from "@/components/FormInput";
 import FormSelect from "@/components/FormSelect";
 import LoadingIndicator from "@/components/Loading-Indicator";
 import { TooltipButton } from "@/components/report/TooltipButton";
-import { VendorFormData, vendorSchema } from "@/types/inventoryFormSchema";
+import {
+  VendorFormData,
+  vendorSchema,
+} from "@/types/schema/inventoryFormSchema";
 import Image from "next/image";
 
 const specialistOptions = [

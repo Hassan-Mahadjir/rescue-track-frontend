@@ -3,7 +3,7 @@
 import FormInput from "@/components/FormInput";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useResendEmail, useVerifyEmail } from "@/services/api/auth";
+import { useResendEmail } from "@/services/api/auth";
 import { setItem } from "@/utils/storage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";

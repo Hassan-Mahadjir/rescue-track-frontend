@@ -13,7 +13,7 @@ const CreateRunReport = () => {
       buttons: [
         {
           label: "Existing patient",
-          onClick: () => router.push("create/registered"),
+          href: "create/registered",
         },
       ],
     },
@@ -24,7 +24,7 @@ const CreateRunReport = () => {
       buttons: [
         {
           label: "New patient",
-          onClick: () => router.push("create/unregistered"),
+          href: "create/unregistered",
         },
       ],
     },

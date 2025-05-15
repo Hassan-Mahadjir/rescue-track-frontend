@@ -84,7 +84,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
 
   useEffect(() => {
     if (patientData) {
-      const patientInfo = patientData.data.data;
+      const patientInfo = patientData;
       const dob = patientInfo.dateofBirth
         ? new Date(patientInfo.dateofBirth)
         : undefined;

@@ -26,7 +26,7 @@ import { Form } from "@/components/ui/form";
 import {
   singleTreatmentSchema,
   TreatmentsData,
-} from "@/types/reportFormSchema";
+} from "@/types/schema/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Loader2 } from "lucide-react";
 import React from "react";

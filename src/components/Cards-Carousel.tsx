@@ -6,7 +6,7 @@ interface CarouselProps {
     title: string;
     imageSrc?: string;
     icon?: React.ReactNode;
-    buttons: { label: string; onClick: () => void }[];
+    buttons: { label: string; href: string }[];
   }[];
 }
 
@@ -25,12 +25,12 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
           <div
             key={slide.title}
             className="transition-transform duration-500 cursor-pointer"
-            onClick={() => setCurrentPage(index)} // Set clicked slide as current
+            onClick={() => setCurrentPage(index)}
             style={{
               transform: isActive
-                ? "scale(1) translateZ(50px)" // Active slide pops forward
-                : "scale(0.9) translateZ(-20px)", // Others appear slightly behind
-              opacity: isActive ? 1 : 0.9, // Dim non-active slides slightly
+                ? "scale(1) translateZ(50px)"
+                : "scale(0.9) translateZ(-20px)",
+              opacity: isActive ? 1 : 0.9,
             }}
           >
             <ServiceCard {...slide} />

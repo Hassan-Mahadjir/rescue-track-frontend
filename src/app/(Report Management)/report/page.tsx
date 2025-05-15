@@ -1,9 +1,8 @@
 "use client";
 import Carousel from "@/components/Cards-Carousel";
-import { useRouter } from "next/navigation";
+import React from "react";
 
 export default function SwiperComponent() {
-  const router = useRouter();
   const slides = [
     {
       title: "Run Report",
@@ -11,9 +10,12 @@ export default function SwiperComponent() {
       buttons: [
         {
           label: "Create new",
-          onClick: () => router.push("/report/run-report/create"),
+          href: "/report/run-report/create",
         },
-        { label: "View all", onClick: () => router.push("/report/run-report") },
+        {
+          label: "View all",
+          href: "/report/run-report",
+        },
       ],
     },
 
@@ -23,9 +25,12 @@ export default function SwiperComponent() {
       buttons: [
         {
           label: "Create new",
-          onClick: () => router.push("/report/pcr/create"),
+          href: "/report/pcr/create",
         },
-        { label: "View all", onClick: () => router.push("/report/pcr") },
+        {
+          label: "View all",
+          href: "/report/pcr",
+        },
       ],
     },
 
@@ -33,8 +38,14 @@ export default function SwiperComponent() {
       title: "Compliance and Performance",
       imageSrc: "/report/regulatory.png",
       buttons: [
-        { label: "Create new", onClick: () => console.log("Create new") },
-        { label: "View all", onClick: () => console.log("View all") },
+        {
+          label: "Create new",
+          href: "#", // Update this when route is ready
+        },
+        {
+          label: "View all",
+          href: "#", // Update this when route is ready
+        },
       ],
     },
   ];

@@ -1,11 +1,11 @@
-import { Treatments } from "@/types/patients.type";
 import { Card, CardContent } from "@/components/ui/card";
 import DeleteTreatment from "./edit report/DeleteTreatment";
 import EditTreatmentDialog from "./edit report/EditTreatmentDialog";
 import { useAuth } from "@/hooks/useAuth";
+import { Treatment as TreatmentType } from "@/types/report.type";
 
 interface TreatmentProps {
-  treatments: Treatments[];
+  treatments: TreatmentType[];
   id: number;
 }
 
@@ -30,7 +30,7 @@ const Treatment = ({ treatments, id }: TreatmentProps) => {
                   {treat.category}
                 </p>
                 <p className="text-sm">
-                  {treat.quantity} {treat.unit}
+                  {treat.quantity} {treat.unit.abbreviation}
                 </p>
               </div>
 

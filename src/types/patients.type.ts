@@ -1,11 +1,3 @@
-export type Treatments = {
-  id: number;
-  name: string;
-  quantity: number;
-  unit: string;
-  category: string;
-};
-
 export type Profile = {
   id: number;
   firstName: string;
@@ -21,7 +13,7 @@ export type Profile = {
   updatedAt?: string;
 };
 
-export type InitiatedBy = {
+export type Responsible = {
   id: number;
   email: string;
   password: string;
@@ -32,6 +24,7 @@ export type InitiatedBy = {
   otpCodeExpiry: string | null;
   isVerified: boolean;
   profile: Profile;
+  hospital: Hospital;
 };
 
 export type Patient = {
@@ -43,22 +36,23 @@ export type Patient = {
   gender: string;
   phone: string;
   dateofBirth: string;
-  eligibility: string | null;
+  eligibility: any | null;
   nationality: string;
   weight: number;
   height: number;
-  status: string; // More specific if possible
+  status?: string;
   createdAt?: string;
+  hospitalId?: string;
+  updatedById?: number;
+  responsibleUserId?: number;
+  createById?: number;
+  patientCareReport?: PatientCareReport[];
+  responsible: Responsible;
 };
 
-export type PCR = {
-  id: number;
-  patientCondition: string | null;
-  primaryAssessment: string | null;
-  secondaryAssessment: string | null;
-  notes: string | null;
+type Hospital = {
+  id: string;
+  name: string;
+  isActive: boolean;
   createdAt: string;
-  treatments: Treatments[];
-  initiatedBy: InitiatedBy;
-  patient: Patient;
 };

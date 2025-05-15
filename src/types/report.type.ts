@@ -1,9 +1,18 @@
+import { Patient } from "./patients.type";
+
 export type Treatment = {
   id: number;
   name: string;
   quantity: number;
-  unit: string;
+  unit: Unit;
   category: string;
+};
+
+type Unit = {
+  id: number;
+  abbreviation: string;
+  name: string;
+  createAt: string;
 };
 
 type MedicalConditions = {
@@ -42,6 +51,7 @@ export type InitiatedBy = {
   otpCodeExpiry: string | null;
   isVerified: boolean;
   profile: Profile;
+  hospital: Hospital;
 };
 
 export type PCR = {
@@ -51,39 +61,14 @@ export type PCR = {
   secondaryAssessment: string | null;
   notes: string | null;
   createdAt: string;
+  createdById: number;
+  updatedById: number;
+  updatedAt: string;
   treatments: Treatment[];
   initiatedBy: InitiatedBy;
   patient: Patient;
   allergies: Allergies[];
   medicalConditions: MedicalConditions[];
-};
-
-type PatientCareReport = {
-  id: number;
-  patientCondition: string;
-  initialCondition: string | null;
-  primarySymptoms: string | null;
-  notes: string | null;
-  createdAt: string;
-  treatments: Treatment[];
-};
-
-type Patient = {
-  id: number;
-  nationalID: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  gender: string;
-  phone: string;
-  dateofBirth: string;
-  eligibility: any | null;
-  nationality: string;
-  weight: number;
-  height: number;
-  status: string;
-  createdAt: string;
-  patientCareReport: PatientCareReport[];
 };
 
 type UpdateFields = {
@@ -118,7 +103,16 @@ export type RunReportItem = {
   departureTime: string;
   notes: string;
   createAt: string;
+  updatedById: number;
+  createdById: number;
   initiatedBy: InitiatedBy;
   patient: Patient;
   updateHistory: UpdateHistory[];
+};
+
+type Hospital = {
+  id: string;
+  name: string;
+  isActive: boolean;
+  createAt: Date;
 };
