@@ -38,6 +38,7 @@ import InventoryToolbar from "./toolbars/InventoryToolbar";
 import MedicationToolbar from "./toolbars/MedicationToolbar";
 import DefultToolbar from "./toolbars/DefultToolbar";
 import SupplierVendorToolbar from "./toolbars/SupplierVendorToolbar";
+import EquipmentToolbar from "./toolbars/EquipmentToolbar";
 
 // Define toolbar types
 export type ToolbarType =
@@ -45,6 +46,7 @@ export type ToolbarType =
   | "runReport"
   | "inventory"
   | "medication"
+  | "equipment"
   | "supply"
   | "default";
 
@@ -59,9 +61,10 @@ const toolbarComponents: Record<
   React.ComponentType<ToolbarProps<unknown>>
 > = {
   PCR: PcrToolbar,
-  runReport: RunReportToobar, // placeholder
-  inventory: InventoryToolbar, // placeholder
-  medication: MedicationToolbar, // placeholder
+  runReport: RunReportToobar,
+  inventory: InventoryToolbar,
+  medication: MedicationToolbar,
+  equipment: EquipmentToolbar,
   supply: SupplierVendorToolbar,
   default: DefultToolbar,
 };

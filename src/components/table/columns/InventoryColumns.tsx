@@ -88,7 +88,7 @@ export const InventoryColumns: ColumnDef<InventoryManagement>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const inventory = row.original;
-      return <InventoryActions barcode={inventory.barcode} />;
+      return <InventoryActions inventory={inventory} />;
     },
   },
 ];
