@@ -1,9 +1,12 @@
+"use client";
 import SupplierVendorList from "@/components/inventory/SupplierVendorList";
 import ReportSummaryCard from "@/components/report/ReportSummaryCard";
+import { useSuppliers } from "@/services/api/supplier";
 import { Users } from "lucide-react";
 import React from "react";
 
 const SupplierVendorPage = () => {
+  const { supplierData, isPending } = useSuppliers();
   return (
     <div className="mt-5 px-5 space-y-3">
       <div className="flex flex-col items-center justify-between sm:flex-row">
@@ -21,7 +24,10 @@ const SupplierVendorPage = () => {
         </div>
       </div>
       <div className="rounded-lg border-0 bg-gradient-to-r from-gray-100 to-white p-6 mb-4">
-        <SupplierVendorList />
+        <SupplierVendorList
+          supplier={supplierData || []}
+          isLoading={isPending}
+        />
       </div>
     </div>
   );

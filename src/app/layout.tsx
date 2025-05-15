@@ -3,11 +3,7 @@ import "./globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import QueryProvider from "@/providers/QueryProvider";
-import NavBar from "@/components/NavBar";
-import { shouldHideNavBar } from "@/functions/hideNaveBar";
 import NavBarWrapper from "@/components/NavBarWrapper";
-import useCheckToken from "@/hooks/check-token";
-import TokenChecker from "@/components/Token-Checker";
 import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({

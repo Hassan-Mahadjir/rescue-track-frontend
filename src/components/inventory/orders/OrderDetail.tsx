@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Package, Repeat } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { EditOrderDialog } from "./EditOrderDialog";
 
 interface OrderDetailProps {
   open: boolean;
@@ -20,11 +22,13 @@ interface OrderDetailProps {
     quantity: number;
     day: number;
     recurring?: boolean;
+    date: Date;
   };
 }
 
 export function OrderDetail({ open, onOpenChange, order }: OrderDetailProps) {
   if (!order) return null;
+  const { isAdmin } = useAuth();
 
   const getTypeColor = (type: string) => {
     switch (type) {
@@ -103,12 +107,12 @@ export function OrderDetail({ open, onOpenChange, order }: OrderDetailProps) {
           </div>
 
           <div className="pt-4 space-y-2">
-            <Button className="w-full bg-green-800 hover:bg-green-700">
-              Edit Order
-            </Button>
-            <Button variant="outline" className="w-full">
-              Cancel Order
-            </Button>
+            <EditOrderDialog order={order} />
+            {isAdmin() && (
+              <Button variant="outline" className="w-full">
+                Cancel Order
+              </Button>
+            )}
           </div>
         </div>
       </SheetContent>
