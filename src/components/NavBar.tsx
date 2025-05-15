@@ -10,6 +10,7 @@ import { IoNotificationsOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { useProfile } from "@/services/api/profile";
+import ComingSoonDialog from "./coming-soon-alert";
 
 const navItems = [
   {
@@ -51,6 +52,8 @@ function NavBar() {
   const profileImage =
     profileData?.avatar ||
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+
+  const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
     const stepIndex = navItems.findIndex((item) => item.route === currentPath);
@@ -115,21 +118,40 @@ function NavBar() {
 
         {/* settings area */}
         <div className="p-1 rounded-3xl bg-main text-white hover:bg-second-main hover:text-white  transition-colors duration-500">
-          <Link href="/settings">
-            <div className="flex items-center font-medium px-2 py-2 rounded-3xl">
+          <>
+            <Link
+              href="/settings"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent navigation
+                setShowDialog(true); // Show the dialog
+              }}
+              className="flex items-center font-medium px-2 py-2 rounded-3xl"
+            >
               <IoSettingsOutline className="w-6 h-6" />
-              <span className=" px-2 hidden xd:block">settings</span>
-            </div>
-          </Link>
+              <span className="px-2 hidden xd:block">settings</span>
+            </Link>
+
+            <ComingSoonDialog open={showDialog} onOpenChange={setShowDialog} />
+          </>
         </div>
 
         {/* notifiaction area */}
         <div className="p-1 rounded-3xl bg-main hover:bg-second-main hover:text-white transition-colors duration-500">
-          <Link href="/notification">
-            <div className="flex items-center font-medium px-2 py-2 rounded-3xl">
+          <>
+            <Link
+              href="/notification"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent navigation
+                setShowDialog(true); // Show the dialog
+              }}
+              className="flex items-center font-medium px-2 py-2 rounded-3xl"
+            >
               <IoNotificationsOutline className="w-6 h-6" color="white" />
-            </div>
-          </Link>
+              <span className="px-2 hidden xd:block">settings</span>
+            </Link>
+
+            <ComingSoonDialog open={showDialog} onOpenChange={setShowDialog} />
+          </>
         </div>
 
         {/* user profile */}
