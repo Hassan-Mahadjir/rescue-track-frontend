@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Edit, Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -23,23 +23,41 @@ import {
   supplierSchema,
 } from "@/types/schema/supplierFormSchema";
 import { specialistOptions } from "@/constants/supplier";
-import { usePostSupplier } from "@/services/api/supplier";
+import { useUpdateSupplier } from "@/services/api/supplier";
 
-const CreateSupplierVendorDialog = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { mutatePost, isPending } = usePostSupplier();
+interface EditSupplierVendorDialogProps {
+  supplier: Supplier;
+}
+
+const EditSupplierVendorDialog = ({
+  supplier,
+}: EditSupplierVendorDialogProps) => {
+  const [open, setOpen] = useState(false);
+  const { mutateUpdate, isPending } = useUpdateSupplier(supplier.id);
+
+  const normalizeSpecialist = (input?: string) => {
+    if (!input) return "other";
+    return (
+      specialistOptions.find(
+        (opt) => opt.label.toLowerCase() === input.toLowerCase()
+      )?.value ?? "other"
+    );
+  };
 
   const form = useForm<SupplierFormValues>({
     resolver: zodResolver(supplierSchema),
     defaultValues: {
-      name: "",
-      specialist: undefined,
-      email: "",
-      phone: "",
-      address: "",
-      website: "",
-      contactPerson: "",
-      status: "active",
+      name: supplier.name,
+      specialist: normalizeSpecialist(supplier.specialist),
+      email: supplier.email,
+      phone: supplier.phone,
+      address: supplier.address,
+      website: supplier.website,
+      contactPerson: supplier.contactPerson,
+      status:
+        supplier.status === "active" || supplier.status === "inactive"
+          ? supplier.status
+          : undefined,
     },
     mode: "onChange",
   });
@@ -47,37 +65,33 @@ const CreateSupplierVendorDialog = () => {
   const { isValid } = form.formState;
 
   const onSubmit = (data: SupplierFormValues) => {
-    mutatePost(data, {
+    mutateUpdate(data, {
       onSuccess: () => {
-        setIsOpen(false);
+        setOpen(false);
         form.reset();
       },
     });
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <TooltipButton
-          tooltipText="Add New Supply"
-          className="rounded-full hover:bg-main hover:text-white"
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger>
+        <Button
+          variant="ghost"
+          className="rounded flex justify-center items-center hover:text-gray-400"
         >
-          <Plus />
-        </TooltipButton>
+          <Pencil />
+        </Button>
       </DialogTrigger>
-
       <DialogContent className="max-w-xl">
         <DialogHeader>
-          <DialogTitle className="text-green-900">
-            Create new Vendor
-          </DialogTitle>
+          <DialogTitle className="text-green-900">Edit Supplier</DialogTitle>
         </DialogHeader>
-
         <div className="flex justify-center">
           <div className="w-20 h-20 rounded-full overflow-hidden">
             <Image
               src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-              alt="blank-profile"
+              alt="supplier-profile"
               className="object-cover w-full h-full"
               width={80}
               height={80}
@@ -155,7 +169,7 @@ const CreateSupplierVendorDialog = () => {
                 type="button"
                 variant="outline"
                 className="bg-muted text-muted-foreground hover:bg-gray-100"
-                onClick={() => setIsOpen(false)}
+                onClick={() => setOpen(false)}
               >
                 Cancel
               </Button>
@@ -170,7 +184,7 @@ const CreateSupplierVendorDialog = () => {
                     Saving...
                   </>
                 ) : (
-                  "Save"
+                  "Update"
                 )}
               </Button>
             </div>
@@ -181,4 +195,4 @@ const CreateSupplierVendorDialog = () => {
   );
 };
 
-export default CreateSupplierVendorDialog;
+export default EditSupplierVendorDialog;

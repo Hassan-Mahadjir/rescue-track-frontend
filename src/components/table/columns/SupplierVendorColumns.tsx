@@ -2,12 +2,12 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { VendorData } from "@/components/inventory/SupplierVendorList";
-import InventoryActions from "../action/InventoryActions"; // or RunReportAction if that's your actions menu
-import OrderSentBadge from "@/components/badge/OrderSentBadge";
 import SupplierVendorActions from "../action/SupplierVendorActions";
+import Link from "next/link";
+import StatusBadge from "@/components/badge/StatusBadge";
+import { WebsiteLinkButton } from "../WebsiteLinkButton";
 
-export const SupplierVendorColumns: ColumnDef<VendorData>[] = [
+export const SupplierVendorColumns: ColumnDef<Supplier>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -31,15 +31,8 @@ export const SupplierVendorColumns: ColumnDef<VendorData>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "vendor",
-    header: "Vendor",
-    enableSorting: true,
-    enableColumnFilter: true,
-    enableHiding: true,
-  },
-  {
-    accessorKey: "vendorId",
-    header: "Vendor Id",
+    accessorKey: "name",
+    header: "Name",
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -66,19 +59,45 @@ export const SupplierVendorColumns: ColumnDef<VendorData>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "orderSent",
-    header: "Order sent",
-    cell: ({ row }) => <OrderSentBadge count={row.original.orderSent} />,
+    accessorKey: "Specialist",
+    header: "Specialist",
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
   },
   {
+    accessorKey: "contactPerson",
+    header: "Contact Person",
+    enableSorting: true,
+    enableColumnFilter: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "website",
+    header: "Website",
+    cell: ({ row }) => <WebsiteLinkButton url={row.original.website} />,
+    enableSorting: true,
+    enableColumnFilter: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row: { original: data } }) => {
+      const status = data.status;
+      return <StatusBadge status={status} />;
+    },
+    enableSorting: true,
+    enableColumnFilter: true,
+    enableHiding: true,
+  },
+
+  {
     id: "actions",
-    header: "Action",
+    header: "Actions",
     cell: ({ row }) => {
-      const { phone } = row.original;
-      return <SupplierVendorActions number={phone} />;
+      const supplier = row.original;
+      return <SupplierVendorActions supplier={supplier} />;
     },
   },
 ];

@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { APIError } from "@/types/error.type";
 import supplierService from "../supplier-service";
+import { SupplierFormValues } from "@/types/schema/supplierFormSchema";
 
 export const useSuppliers = () => {
   const { data: supplierData, ...props } = useRoleBasedQuery({
@@ -46,7 +47,7 @@ export const usePostSupplier = () => {
     mutate: mutatePost,
     isPending,
     ...props
-  } = useRoleBasedMutation<any, any>({
+  } = useRoleBasedMutation<SupplierFormValues, SupplierFormValues>({
     adminMutationFn: (data) => supplierService.postSupplier(data),
     employeeMutationFn: (data) => supplierService.postSupplier(data),
     onSuccess: (response) => {
@@ -84,7 +85,7 @@ export const useUpdateSupplier = (id: number) => {
     mutate: mutateUpdate,
     isPending,
     ...props
-  } = useRoleBasedMutation<any, any>({
+  } = useRoleBasedMutation<SupplierFormValues, SupplierFormValues>({
     adminMutationFn: (data) => supplierService.updateSupplier(data, id),
     employeeMutationFn: (data) => supplierService.updateSupplier(data, id),
     onSuccess: (response) => {
