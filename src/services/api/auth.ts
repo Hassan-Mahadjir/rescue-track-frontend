@@ -28,7 +28,11 @@ export const useLogin = () => {
     ...props
   } = useMutation({
     mutationFn: (data: LoginFormValues) =>
-      authService.postLogin({ password: data.password, email: data.email }),
+      authService.postLogin({
+        password: data.password,
+        email: data.email,
+        isOwner: false,
+      }),
     onSuccess: async (response) => {
       // console.log(`success from auth.ts ${response.data.data.accessToken}`);
       const token = response.data.data.accessToken;
