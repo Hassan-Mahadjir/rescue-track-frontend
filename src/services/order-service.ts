@@ -1,15 +1,16 @@
 import { AppResponse } from "@/types/common.type";
 import http from "./api/http";
 import BaseService from "./base-service";
+import { Order } from "@/types/order.type";
 
 class orderService extends BaseService {
   async getOrders() {
-    const response = await http.get<AppResponse<any>>("order");
+    const response = await http.get<AppResponse<Order[]>>("order");
     return response;
   }
 
   async getOrder(id: number) {
-    const response = await http.get<AppResponse<any>>(`order/${id}`);
+    const response = await http.get<AppResponse<Order>>(`order/${id}`);
     return response;
   }
 
