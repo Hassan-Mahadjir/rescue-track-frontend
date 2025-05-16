@@ -1,9 +1,10 @@
 export function CalendarLegend() {
   const legendItems = [
-    { color: "bg-orange-400", label: "Medication" },
-    { color: "bg-yellow-400", label: "Vaccine" },
-    { color: "bg-blue-400", label: "Syringe" },
-    { color: "bg-green-400", label: "Lab equipment" },
+    { color: "bg-yellow-400", label: "Pending" },
+    { color: "bg-purple-500", label: "Completed" },
+    { color: "bg-red-500", label: "Cancelled" },
+    { color: "bg-blue-500", label: "Delivered" },
+    { color: "bg-green-500", label: "Received" },
   ];
 
   return (

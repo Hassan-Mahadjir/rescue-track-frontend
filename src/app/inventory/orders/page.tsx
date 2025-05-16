@@ -2,10 +2,14 @@
 import { Calendar } from "@/components/inventory/orders/Calendar";
 import { CalendarHeader } from "@/components/inventory/orders/CalendarHeader";
 import { CalendarLegend } from "@/components/inventory/orders/CalendarLegend";
+import { useOrders } from "@/services/api/order";
 import { useState } from "react";
 
 const ReorderManagementPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const { orderData } = useOrders();
+  console.log(orderData);
+
   return (
     <div className="m-5">
       <div className="space-y-2 mb-6">
@@ -21,7 +25,7 @@ const ReorderManagementPage = () => {
           onDateChange={setCurrentDate}
         />
         <CalendarLegend />
-        <Calendar currentDate={currentDate} />
+        <Calendar order={orderData ?? []} currentDate={currentDate} />
       </div>
     </div>
   );
