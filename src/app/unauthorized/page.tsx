@@ -14,7 +14,7 @@ export default function UnauthorizedPage() {
         <AlertTriangle className="h-16 w-16 text-red-500 mx-auto" />
         <h1 className="text-2xl font-bold">Access Denied</h1>
         <p className="text-muted-foreground">
-          You don't have permission to access this resource.
+          You don&apos;t have permission to access this resource.
         </p>
         <div className="flex gap-2">
           <Button onClick={() => router.push("/dashboard")} variant="outline">

@@ -9,58 +9,48 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { TreatmentConfig } from "@/constants/treatments";
 import { TooltipButton } from "@/components/report/TooltipButton";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
-import FormSelect from "@/components/FormSelect";
 import FormInput from "@/components/FormInput";
 import LoadingIndicator from "@/components/Loading-Indicator";
 import Image from "next/image";
 import {
-  MedicationFormValues,
-  medicationSchema,
+  EquipmentFormValues,
+  equipmentSchema,
 } from "@/types/schema/medication-equipmentSchema";
-import { usePostMedication } from "@/services/api/item";
+import { usePostEquipment } from "@/services/api/item";
+import { TreatmentConfig } from "@/constants/treatments";
+import FormSelect from "@/components/FormSelect";
+import FormTextarea from "@/components/FormTextarea";
 
-const { categoryOptions, unitOptions } = TreatmentConfig;
+const { equipmentCategoryOptions } = TreatmentConfig;
 
-const CreateMedicationDialog = () => {
+const CreateEquipmentDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { mutatePost, isPending } = usePostMedication();
+  const { mutatePost, isPending } = usePostEquipment();
 
-  const form = useForm<MedicationFormValues>({
-    resolver: zodResolver(medicationSchema),
+  const form = useForm<EquipmentFormValues>({
+    resolver: zodResolver(equipmentSchema),
     defaultValues: {
       name: "",
       stockQuantity: 0,
       category: "",
-      unit: "mg",
-      expirationDate: new Date().toISOString().split("T")[0],
-      reorderPoint: 10,
-      batchNumber: "",
+      manufacturer: "",
+      serialNumber: "",
+      modelNumber: "",
+      purchaseDate: new Date().toISOString().split("T")[0],
+      warrantyPeriod: 1,
+      notes: "",
     },
     mode: "onChange",
   });
 
   const { isValid } = form.formState;
 
-  const onSubmit = (data: MedicationFormValues) => {
+  const onSubmit = (data: EquipmentFormValues) => {
     mutatePost(data, {
       onSuccess: () => {
         setIsOpen(false);
@@ -73,7 +63,7 @@ const CreateMedicationDialog = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <TooltipButton
-          tooltipText="Create New Medication"
+          tooltipText="Create New Equipment"
           className="rounded-full hover:bg-main hover:text-white"
         >
           <Plus />
@@ -82,7 +72,7 @@ const CreateMedicationDialog = () => {
 
       <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create New Medication</DialogTitle>
+          <DialogTitle>Create New Equipment</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -99,37 +89,39 @@ const CreateMedicationDialog = () => {
               </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-4">
-              <div className="w-full lg:w-3/4">
-                <FormInput
-                  form={form}
-                  name="name"
-                  label="Medication Name"
-                  placeholder="Enter medication name"
-                />
-              </div>
-              <div className="w-full lg:w-1/4">
-                <FormSelect
-                  form={form}
-                  name="category"
-                  label="Category"
-                  placeholder="Select category"
-                  options={categoryOptions.map((opt) => ({
-                    label: opt.name,
-                    value: opt.name,
-                  }))}
-                />
-              </div>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormInput
                 form={form}
-                name="batchNumber"
-                label="Batch Number"
-                placeholder="e.g. A12345"
+                name="name"
+                label="Equipment Name"
+                placeholder="Enter equipment name"
+              />
+              <FormSelect
+                form={form}
+                name="category"
+                label="Category"
+                placeholder="Select category"
+                options={[...equipmentCategoryOptions]}
               />
 
+              <FormInput
+                form={form}
+                name="manufacturer"
+                label="Manufacturer"
+                placeholder="Enter manufacturer"
+              />
+              <FormInput
+                form={form}
+                name="serialNumber"
+                label="Serial Number"
+                placeholder="Enter serial number"
+              />
+              <FormInput
+                form={form}
+                name="modelNumber"
+                label="Model Number"
+                placeholder="Enter model number"
+              />
               <FormInput
                 form={form}
                 name="stockQuantity"
@@ -137,34 +129,28 @@ const CreateMedicationDialog = () => {
                 placeholder="Enter quantity"
                 type="number"
               />
-
               <FormInput
                 form={form}
-                name="reorderPoint"
-                label="Reorder Point"
-                placeholder="Enter reorder point"
+                name="purchaseDate"
+                label="Purchase Date"
+                type="date"
+              />
+              <FormInput
+                form={form}
+                name="warrantyPeriod"
+                label="Warranty Period (Years)"
+                placeholder="Enter warranty years"
                 type="number"
               />
-
-              <FormSelect
-                form={form}
-                name="unit"
-                label="Unit"
-                placeholder="Select unit"
-                options={unitOptions.map((opt) => ({
-                  label: opt.name,
-                  value: opt.name,
-                }))}
-              />
+              <div className="col-span-2">
+                <FormTextarea
+                  form={form}
+                  name="notes"
+                  label="Notes"
+                  placeholder="Optional notes..."
+                />
+              </div>
             </div>
-
-            <FormInput
-              form={form}
-              name="expirationDate"
-              label="Expiration Date"
-              placeholder="Select a date"
-              type="date"
-            />
 
             <div className="flex justify-end gap-2 pt-2">
               <Button
@@ -197,4 +183,4 @@ const CreateMedicationDialog = () => {
   );
 };
 
-export default CreateMedicationDialog;
+export default CreateEquipmentDialog;

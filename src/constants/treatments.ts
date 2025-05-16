@@ -8,6 +8,15 @@ export const TreatmentConfig = {
     { id: 4, name: "Aspirin" },
   ],
 
+  equipmentCategoryOptions: [
+    { label: "CT Scanner", value: "CT Scanner" },
+    { label: "MRI Machine", value: "MRI Machine" },
+    { label: "X-Ray Machine", value: "X-Ray Machine" },
+    { label: "Ultrasound Machine", value: "Ultrasound Machine" },
+    { label: "Other", value: "Other" },
+    { label: "NULL", value: "NULL" },
+  ] as const,
+
   categoryOptions: [
     { id: 1, name: "antibiotic" },
     { id: 2, name: "analgesic" },

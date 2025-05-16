@@ -3,11 +3,11 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { calculateStockLevel } from "@/utils/inventoryUtils";
-import MedicationActions from "../action/MedicationActions";
 import StockLevelBadge from "@/components/badge/StockLevelBadge";
 import { formatDateTime } from "@/utils/extra";
+import EquipmentActions from "../action/EquipmentActions";
 
-export const InventoryMedicationColumns: ColumnDef<Medication>[] = [
+export const InventoryEquipmentColumns: ColumnDef<Equipment>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -36,9 +36,14 @@ export const InventoryMedicationColumns: ColumnDef<Medication>[] = [
     cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "batchNumber",
-    header: "Batch Number",
-    cell: ({ row }) => <div>{row.getValue("batchNumber")}</div>,
+    accessorKey: "serialNumber",
+    header: "Serial Number",
+    cell: ({ row }) => <div>{row.getValue("serialNumber")}</div>,
+  },
+  {
+    accessorKey: "modelNumber",
+    header: "Model Number",
+    cell: ({ row }) => <div>{row.getValue("modelNumber")}</div>,
   },
   {
     accessorKey: "category",
@@ -53,10 +58,10 @@ export const InventoryMedicationColumns: ColumnDef<Medication>[] = [
     cell: ({ row }) => <div>{row.getValue("stockQuantity")}</div>,
   },
   {
-    accessorKey: "expirationDate",
-    header: "Expiration Date",
+    accessorKey: "purchaseDate",
+    header: "Purchase Date",
     cell: ({ row }) => {
-      const date = new Date(row.getValue("expirationDate"));
+      const date = new Date(row.getValue("purchaseDate"));
       const formatted = formatDateTime(date);
       return <div>{formatted}</div>;
     },
@@ -77,8 +82,8 @@ export const InventoryMedicationColumns: ColumnDef<Medication>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const medication = row.original;
-      return <MedicationActions medication={medication} />;
+      const equipment = row.original;
+      return <EquipmentActions equipment={equipment} />;
     },
   },
 ];

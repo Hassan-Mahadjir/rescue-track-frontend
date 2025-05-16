@@ -1,3 +1,4 @@
+import { InventoryManagement } from "@/components/inventory/InventoryManagementList";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,7 +12,11 @@ import copy from "copy-to-clipboard";
 import { MoreHorizontal } from "lucide-react";
 import React from "react";
 
-const MedicationActions = ({ batchNumber }: { batchNumber: string }) => {
+interface MedicationActionsProps {
+  medication: Medication;
+}
+
+const MedicationActions = ({ medication }: MedicationActionsProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,12 +27,9 @@ const MedicationActions = ({ batchNumber }: { batchNumber: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => copy(batchNumber)}>
+        <DropdownMenuItem onClick={() => copy(medication.batchNumber)}>
           Copy Batch Number ID
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>View details</DropdownMenuItem>
-        <DropdownMenuItem>Edit inventory</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

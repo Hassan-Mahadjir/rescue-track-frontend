@@ -9,24 +9,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { TreatmentConfig } from "@/constants/treatments";
 import { TooltipButton } from "@/components/report/TooltipButton";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
 import FormSelect from "@/components/FormSelect";
 import FormInput from "@/components/FormInput";
@@ -36,24 +22,29 @@ import {
   MedicationFormValues,
   medicationSchema,
 } from "@/types/schema/medication-equipmentSchema";
-import { usePostMedication } from "@/services/api/item";
+import { TreatmentConfig } from "@/constants/treatments";
 
 const { categoryOptions, unitOptions } = TreatmentConfig;
 
-const CreateMedicationDialog = () => {
+interface EditMedicationDialogProps {
+  medication: Medication;
+}
+
+const EditMedicationDialog = ({ medication }: EditMedicationDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { mutatePost, isPending } = usePostMedication();
+  const [isPending, setPending] = useState(false);
+  // const { mutateUpdate, isPending } = useUpdateMedication();
 
   const form = useForm<MedicationFormValues>({
     resolver: zodResolver(medicationSchema),
     defaultValues: {
-      name: "",
-      stockQuantity: 0,
-      category: "",
-      unit: "mg",
-      expirationDate: new Date().toISOString().split("T")[0],
-      reorderPoint: 10,
-      batchNumber: "",
+      name: medication.name,
+      stockQuantity: medication.stockQuantity,
+      category: medication.category,
+      unit: medication.unit.name,
+      expirationDate: medication.expirationDate.split("T")[0], // "YYYY-MM-DD"
+      reorderPoint: medication.reorderPoint,
+      batchNumber: medication.batchNumber,
     },
     mode: "onChange",
   });
@@ -61,28 +52,31 @@ const CreateMedicationDialog = () => {
   const { isValid } = form.formState;
 
   const onSubmit = (data: MedicationFormValues) => {
-    mutatePost(data, {
-      onSuccess: () => {
-        setIsOpen(false);
-        form.reset();
-      },
-    });
+    // mutateUpdate(
+    //   { id: medication.id, data },
+    //   {
+    //     onSuccess: () => {
+    //       setIsOpen(false);
+    //     },
+    //   }
+    // );
+    console.log(data);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <TooltipButton
-          tooltipText="Create New Medication"
+          tooltipText="Edit Medication"
           className="rounded-full hover:bg-main hover:text-white"
         >
-          <Plus />
+          <Pencil className="w-4 h-4" />
         </TooltipButton>
       </DialogTrigger>
 
-      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-xl">
         <DialogHeader>
-          <DialogTitle>Create New Medication</DialogTitle>
+          <DialogTitle>Edit Medication</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -197,4 +191,4 @@ const CreateMedicationDialog = () => {
   );
 };
 
-export default CreateMedicationDialog;
+export default EditMedicationDialog;

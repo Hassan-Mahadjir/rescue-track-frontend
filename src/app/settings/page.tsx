@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useLogout } from "@/services/api/auth";
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 
 const settingsPage = () => {
   const { logout } = useLogout();

@@ -1,7 +1,6 @@
 "use client";
 
 import { Calendar } from "./ui/calendar";
-import { format } from "date-fns";
 import { useState } from "react";
 
 interface CustomCalendarProps {

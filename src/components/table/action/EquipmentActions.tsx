@@ -1,5 +1,4 @@
-"use client";
-
+import { InventoryManagement } from "@/components/inventory/InventoryManagementList";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,16 +8,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
 import copy from "copy-to-clipboard";
-import { InventoryManagement } from "@/components/inventory/InventoryManagementList";
-import EditMedicationDialog from "@/components/inventory/edit/EditMedicationDialog";
+import { MoreHorizontal } from "lucide-react";
+import React from "react";
 
-interface InventoryActionsProps {
-  inventory: InventoryManagement;
+interface EquipmentActionsProps {
+  equipment: Equipment;
 }
 
-const InventoryActions = ({ inventory }: InventoryActionsProps) => {
+const EquipmentActions = ({ equipment }: EquipmentActionsProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,16 +27,14 @@ const InventoryActions = ({ inventory }: InventoryActionsProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => copy(inventory.barcode)}>
-          Copy Barcode
+        <DropdownMenuItem onClick={() => copy(equipment.serialNumber)}>
+          Copy Serial Number ID
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          {/* Edit inventory <EditMedicationDialog medication={inventory} /> */}
-        </DropdownMenuItem>
+        <DropdownMenuItem>Edit inventory</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export default InventoryActions;
+export default EquipmentActions;

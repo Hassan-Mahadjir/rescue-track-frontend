@@ -6,6 +6,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { APIError } from "@/types/error.type";
 import itemService from "../item-service";
+import {
+  EquipmentFormValues,
+  MedicationFormValues,
+} from "@/types/schema/medication-equipmentSchema";
 
 // Get all items
 export const useItems = () => {
@@ -30,10 +34,10 @@ export const usePostMedication = () => {
   const { toast } = useToast();
 
   const {
-    mutate: mutateMedication,
+    mutate: mutatePost,
     isPending,
     ...props
-  } = useRoleBasedMutation<any, any>({
+  } = useRoleBasedMutation<MedicationFormValues, MedicationFormValues>({
     adminMutationFn: (data) => itemService.postMedication(data),
     employeeMutationFn: (data) => itemService.postMedication(data),
     onSuccess: (response) => {
@@ -61,7 +65,7 @@ export const usePostMedication = () => {
     },
   });
 
-  return { mutateMedication, isPending, ...props };
+  return { mutatePost, isPending, ...props };
 };
 
 // Post Equipment Item
@@ -70,10 +74,10 @@ export const usePostEquipment = () => {
   const { toast } = useToast();
 
   const {
-    mutate: mutateEquipment,
+    mutate: mutatePost,
     isPending,
     ...props
-  } = useRoleBasedMutation<any, any>({
+  } = useRoleBasedMutation<EquipmentFormValues, EquipmentFormValues>({
     adminMutationFn: (data) => itemService.postEquipment(data),
     employeeMutationFn: (data) => itemService.postEquipment(data),
     onSuccess: (response) => {
@@ -101,5 +105,5 @@ export const usePostEquipment = () => {
     },
   });
 
-  return { mutateEquipment, isPending, ...props };
+  return { mutatePost, isPending, ...props };
 };
