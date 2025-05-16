@@ -48,25 +48,6 @@ interface User {
   profile: Profile;
 }
 
-// Patient interface
-interface Patient {
-  id: number;
-  nationalID: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  gender: string;
-  phone: string;
-  dateofBirth: string;
-  eligibility: any | null;
-  nationality: string;
-  weight: number;
-  height: number;
-  status: string;
-  createdAt: string;
-  patientCareReport: PatientCareReport[];
-}
-
 // Update Fields interface (part of UpdateHistory)
 interface UpdateFields {
   category?: string;

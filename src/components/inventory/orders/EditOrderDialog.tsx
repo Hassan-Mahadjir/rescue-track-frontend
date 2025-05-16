@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,54 +11,79 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Pencil } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, Pencil } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
-
-interface OrderData {
-  name: string;
-  type: string;
-  quantity: number;
-  day: number;
-  recurring?: boolean;
-  date: Date;
-}
+  createOrderSchema,
+  CreateOrderValues,
+} from "@/types/schema/orderFormSchema";
+import { useSuppliers } from "@/services/api/supplier";
+import { useItems } from "@/services/api/item";
+import { useUpdateOrder } from "@/services/api/order";
+import { Form } from "@/components/ui/form";
+import FormSelect from "@/components/FormSelect";
+import FormInput from "@/components/FormInput";
+import FormTextarea from "@/components/FormTextarea";
+import LoadingIndicator from "@/components/Loading-Indicator";
+import { Order } from "@/types/order.type";
 
 interface EditOrderDialogProps {
-  order: OrderData;
+  order: Order;
 }
 
 export function EditOrderDialog({ order }: EditOrderDialogProps) {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState(order.name);
-  const [type, setType] = useState(order.type);
-  const [quantity, setQuantity] = useState(order.quantity);
-  const [date, setDate] = useState<Date>(order.date);
+  const { mutateUpdate, isPending } = useUpdateOrder(order.id);
+  const { supplierData } = useSuppliers();
+  const { itemData } = useItems();
+
+  // Determine if it's a medication or equipment order
+  const initialOrderType =
+    order.orderItems[0]?.medication !== null ? "medication" : "equipment";
+
+  const form = useForm<CreateOrderValues>({
+    resolver: zodResolver(createOrderSchema),
+    defaultValues: {
+      supplierId: order.supplier.id,
+      notes: order.notes,
+      status: order.status,
+      orderType: initialOrderType,
+      orderItems: [
+        {
+          quantity: order.orderItems[0]?.quantity ?? 1,
+          unit: order.orderItems[0]?.unit?.abbreviation ?? "",
+          medicationId: order.orderItems[0]?.medication?.id ?? undefined,
+          equipmentId: order.orderItems[0]?.equipment?.id ?? undefined,
+        },
+      ],
+    },
+    mode: "onChange",
+  });
+
+  const onSubmit = (data: CreateOrderValues) => {
+    mutateUpdate(data, {
+      onSuccess: () => {
+        setOpen(false);
+      },
+    });
+  };
 
   useEffect(() => {
-    setName(order.name);
-    setType(order.type);
-    setQuantity(order.quantity);
-    setDate(order.date);
-  }, [order]);
+    const type = form.watch("orderType");
 
-  const handleSave = () => {
-    setOpen(false);
-  };
+    if (type === "medication") {
+      const current = form.getValues("orderItems.0.equipmentId");
+      if (current !== undefined) {
+        form.setValue("orderItems.0.equipmentId", undefined);
+      }
+    } else if (type === "equipment") {
+      const current = form.getValues("orderItems.0.medicationId");
+      if (current !== undefined) {
+        form.setValue("orderItems.0.medicationId", undefined);
+      }
+    }
+  }, [form.watch("orderType")]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -72,85 +97,134 @@ export function EditOrderDialog({ order }: EditOrderDialogProps) {
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Order</DialogTitle>
           <DialogDescription>
             Modify the details of this order.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="col-span-3"
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+            <FormSelect
+              form={form}
+              name="orderType"
+              label="Order Type"
+              placeholder="Select type"
+              options={[
+                { label: "Medication", value: "medication" },
+                { label: "Equipment", value: "equipment" },
+              ]}
             />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="type" className="text-right">
-              Type
-            </Label>
-            <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="medication">Medication</SelectItem>
-                <SelectItem value="vaccine">Vaccine</SelectItem>
-                <SelectItem value="syringe">Syringe</SelectItem>
-                <SelectItem value="lab">Lab equipment</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Date</Label>
-            <Popover>
-              <PopoverTrigger asChild>
+
+            <FormSelect
+              form={form}
+              name="supplierId"
+              label="Supplier"
+              placeholder="Select supplier"
+              options={
+                supplierData?.map((s) => ({
+                  label: s.name,
+                  value: s.id,
+                })) ?? []
+              }
+            />
+
+            {form.watch("orderType") === "medication" && (
+              <FormSelect
+                form={form}
+                name="orderItems.0.medicationId"
+                label="Medication"
+                placeholder="Select medication"
+                options={
+                  itemData?.medications?.map((med) => ({
+                    label: med.name,
+                    value: med.id,
+                  })) || []
+                }
+              />
+            )}
+
+            {form.watch("orderType") === "equipment" && (
+              <FormSelect
+                form={form}
+                name="orderItems.0.equipmentId"
+                label="Equipment"
+                placeholder="Select equipment"
+                options={
+                  itemData?.equipments?.map((equip) => ({
+                    label: equip.name,
+                    value: equip.id,
+                  })) || []
+                }
+              />
+            )}
+            <div className="grid grid-cols-2">
+              <FormInput
+                form={form}
+                name="orderItems.0.quantity"
+                label="Quantity"
+                type="number"
+                placeholder="Enter quantity"
+              />
+
+              <FormInput
+                form={form}
+                name="orderItems.0.unit"
+                label="Unit"
+                placeholder="e.g. mg, ml"
+              />
+            </div>
+            <FormSelect
+              form={form}
+              name="status"
+              label="Order Status"
+              placeholder="Select status"
+              options={[
+                { label: "Pending", value: "pending" },
+                { label: "Completed", value: "completed" },
+                { label: "Cancelled", value: "cancelled" },
+                { label: "Delivered", value: "delivered" },
+                { label: "Received", value: "received" },
+              ]}
+            />
+
+            <FormTextarea
+              form={form}
+              name="notes"
+              label="Notes"
+              placeholder="Write notes about the order"
+            />
+
+            <DialogFooter>
+              <div className="flex justify-end gap-2 pt-2">
                 <Button
+                  type="button"
                   variant="outline"
-                  className="col-span-3 justify-start text-left font-normal"
+                  onClick={() => setOpen(false)}
+                  disabled={isPending}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  Cancel
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(selected) => selected && setDate(selected)}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="quantity" className="text-right">
-              Quantity
-            </Label>
-            <Input
-              id="quantity"
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            type="submit"
-            className="bg-green-800 hover:bg-green-700"
-            onClick={handleSave}
-          >
-            Save changes
-          </Button>
-        </DialogFooter>
+                <Button
+                  type="submit"
+                  className="bg-main hover:bg-main/90"
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <>
+                      <LoadingIndicator />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save"
+                  )}
+                </Button>
+              </div>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

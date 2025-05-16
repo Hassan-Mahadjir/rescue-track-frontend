@@ -1,7 +1,7 @@
 export type Order = {
   id: number;
   createdAt: string;
-  status: string;
+  status: "pending" | "completed" | "cancelled" | "delivered" | "received";
   notes: string;
   createdById: number;
   updatedById: number | null;
