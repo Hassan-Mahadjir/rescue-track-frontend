@@ -8,7 +8,7 @@ export default function NotFound() {
         Page will come soon
       </h2>
       <p className="text-gray-500 mt-2">
-        Sorry, the page you’re looking for doesn’t exist or has been moved.
+        Sorry, the page you’re looking for doesn’t exist yet.
       </p>
       <Link
         href="/"

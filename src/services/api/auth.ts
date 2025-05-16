@@ -84,8 +84,8 @@ export const useLogout = () => {
       Cookies.remove("token");
       Cookies.remove("refreshToken");
 
-      queryClient.clear();
       router.replace("/login");
+      queryClient.clear();
     },
 
     onError: (error) => {

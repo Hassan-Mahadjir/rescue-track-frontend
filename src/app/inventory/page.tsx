@@ -44,16 +44,16 @@ const Page = () => {
         },
       ],
     },
-    {
-      title: "Equipment & Asset Management",
-      imageSrc: "/inventory/medical-devices.png",
-      buttons: [
-        {
-          label: "View all",
-          href: "/inventory/management",
-        },
-      ],
-    },
+    // {
+    //   title: "Equipment & Asset Management",
+    //   imageSrc: "/inventory/medical-devices.png",
+    //   buttons: [
+    //     {
+    //       label: "View all",
+    //       href: "/inventory/management",
+    //     },
+    //   ],
+    // },
   ];
 
   return (

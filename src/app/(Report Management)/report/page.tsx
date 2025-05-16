@@ -40,11 +40,11 @@ export default function SwiperComponent() {
       buttons: [
         {
           label: "Create new",
-          href: "#", // Update this when route is ready
+          href: "/compliance-performance", // Update this when route is ready
         },
         {
           label: "View all",
-          href: "#", // Update this when route is ready
+          href: "/compliance-performance", // Update this when route is ready
         },
       ],
     },

@@ -1,10 +1,6 @@
-"use client";
-
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,16 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
+import { Patient } from "@/types/patients.type";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export type patient = {
-  id: number;
-  name: string;
-  status: "In hospital" | "Transfer";
-  sickness: string;
-  avatar: string;
-};
-
-export const columns: ColumnDef<patient>[] = [
+export const columns: ColumnDef<Patient>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -49,44 +40,48 @@ export const columns: ColumnDef<patient>[] = [
   },
   {
     accessorKey: "id",
-    header: () => <div className="">ID</div>,
-    cell: ({ row }) => {
-      //   const id = parseFloat(row.getValue("id"));
-      //   const formatted = new Intl.NumberFormat("en-US", {
-      //     style: "",
-      //     currency: "USD",
-      //   }).format(id);
-      return <div className="font-medium">{row.getValue("id")}</div>;
-    },
+    header: "ID",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("id")}</div>,
   },
   {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4 " />
-        </Button>
-      );
-    },
+    accessorKey: "",
+    header: "Avatar",
     cell: ({ row }) => (
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2 pr-3">
         <Image
-          src={row.original.avatar}
-          alt={row.original.name}
-          width={50}
-          height={50}
-          className="w-8 h-8 rounded-full object-cover "
+          src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+          alt="avatar"
+          width={40}
+          height={40}
+          className="w-8 h-8 rounded-full object-cover"
         />
-        <span>{row.original.name}</span>
       </div>
     ),
   },
-  { accessorKey: "sickness", header: "Sickness" },
-  { accessorKey: "status", header: "Status" },
+  {
+    accessorKey: "firstName",
+    header: "Name",
+  },
+  {
+    accessorKey: "nationalID",
+    header: "National ID",
+  },
+  {
+    accessorKey: "phone",
+    header: "Phone",
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+  },
+
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: ({ row }) => (
+      <span>{new Date(row.original.createdAt ?? "").toLocaleDateString()}</span>
+    ),
+  },
   {
     id: "actions",
     cell: ({ row }) => {
@@ -101,15 +96,15 @@ export const columns: ColumnDef<patient>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => console.log(patient.id.toString())}
-            >
-              Copy payment ID
+            <DropdownMenuItem asChild>
+              <Link
+                href={`report/pcr/patient/${patient.id}`}
+                className="flex items-center gap-2"
+              >
+                <Pencil className="w-4 h-4" />
+                Edit
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
