@@ -21,7 +21,6 @@ const orderItemSchema = z
 export const createOrderSchema = z.object({
   orderType: z.enum(["medication", "equipment"]),
   supplierId: z.number().int().positive("Supplier ID is required"),
-  status: z.string().optional(),
   notes: z.string().optional(),
   orderItems: z
     .array(orderItemSchema)

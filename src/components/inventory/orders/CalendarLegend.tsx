@@ -1,10 +1,10 @@
 export function CalendarLegend() {
   const legendItems = [
     { color: "bg-yellow-400", label: "Pending" },
-    { color: "bg-green-500", label: "Completed" },
+    { color: "bg-purple-500", label: "Completed" },
     { color: "bg-red-500", label: "Cancelled" },
     { color: "bg-blue-500", label: "Delivered" },
-    { color: "bg-purple-500", label: "Received" },
+    { color: "bg-green-500", label: "Received" },
   ];
 
   return (

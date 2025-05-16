@@ -10,10 +10,9 @@ import {
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Package, User, FileText } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { EditOrderDialog } from "./EditOrderDialog";
 import { Order } from "@/types/order.type";
 import { format } from "date-fns";
+import { useUpdateOrder } from "@/services/api/order";
 
 interface OrderDetailProps {
   open: boolean;
@@ -23,7 +22,7 @@ interface OrderDetailProps {
 
 export function OrderDetail({ open, onOpenChange, order }: OrderDetailProps) {
   if (!order) return null;
-  const { isAdmin } = useAuth();
+  const { mutateUpdate, isPending } = useUpdateOrder(order.id);
 
   const getStatusColor = (status: Order["status"]) => {
     switch (status) {
@@ -111,12 +110,23 @@ export function OrderDetail({ open, onOpenChange, order }: OrderDetailProps) {
           </div>
 
           <div className="pt-4 space-y-2">
-            <EditOrderDialog order={order} />
-            {isAdmin() && (
-              <Button variant="outline" className="w-full">
-                Cancel Order
-              </Button>
-            )}
+            <Button
+              variant="outline"
+              className="w-full border-green-600 text-green-700 hover:bg-green-50"
+              disabled={isPending}
+              onClick={() => mutateUpdate({ status: "received" })}
+            >
+              Receive Order
+            </Button>
+
+            <Button
+              variant="outline"
+              className="w-full border-red-600 text-red-700 hover:bg-red-50"
+              disabled={isPending}
+              onClick={() => mutateUpdate({ status: "cancelled" })}
+            >
+              Cancel Order
+            </Button>
           </div>
         </div>
       </SheetContent>

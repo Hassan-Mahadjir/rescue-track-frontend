@@ -26,14 +26,12 @@ export function Calendar({ order, currentDate }: CalendarProps) {
   useEffect(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-
     const firstDay = new Date(year, month, 1);
     let firstDayOfWeek = firstDay.getDay() - 1;
     if (firstDayOfWeek === -1) firstDayOfWeek = 6;
 
     const daysFromPrevMonth = firstDayOfWeek;
     const startDate = new Date(year, month, 1 - daysFromPrevMonth);
-
     const dates: number[][] = [];
     let currentWeek: number[] = [];
 
@@ -41,7 +39,6 @@ export function Calendar({ order, currentDate }: CalendarProps) {
       const currentDate = new Date(startDate);
       currentDate.setDate(startDate.getDate() + i);
       currentWeek.push(currentDate.getDate());
-
       if (currentWeek.length === 7) {
         dates.push([...currentWeek]);
         currentWeek = [];
@@ -59,12 +56,10 @@ export function Calendar({ order, currentDate }: CalendarProps) {
     ) {
       return false;
     }
-
     const isCurrentMonth = !(
       (weekIndex === 0 && day > 20) ||
       (weekIndex === calendarDates.length - 1 && day < 10)
     );
-
     return isCurrentMonth && day === today.getDate();
   };
 
@@ -91,13 +86,13 @@ export function Calendar({ order, currentDate }: CalendarProps) {
       case "pending":
         return "bg-yellow-400";
       case "completed":
-        return "bg-green-500";
+        return "bg-purple-500";
       case "cancelled":
         return "bg-red-500";
       case "delivered":
         return "bg-blue-500";
       case "received":
-        return "bg-purple-500";
+        return "bg-green-500";
       default:
         return "";
     }
@@ -135,7 +130,7 @@ export function Calendar({ order, currentDate }: CalendarProps) {
                   <div
                     key={dateIndex}
                     className={cn(
-                      "min-h-24 border-r last:border-r-0 relative p-1 group cursor-pointer hover:bg-slate-50",
+                      "min-h-24 border-r last:border-r-0 relative p-1 group hover:bg-slate-50",
                       !currentMonthDate && "text-gray-400",
                       todayDate && "bg-blue-50"
                     )}

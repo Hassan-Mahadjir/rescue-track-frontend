@@ -1,7 +1,7 @@
 import { AppResponse } from "@/types/common.type";
 import http from "./api/http";
 import BaseService from "./base-service";
-import { Order } from "@/types/order.type";
+import { Order, Status } from "@/types/order.type";
 import { CreateOrderValues } from "@/types/schema/orderFormSchema";
 
 class orderService extends BaseService {
@@ -23,18 +23,8 @@ class orderService extends BaseService {
     return response;
   }
 
-  async updateOrder(data: CreateOrderValues, id: number) {
-    const response = await http.patch<AppResponse<CreateOrderValues>>(
-      `order/${id}`,
-      data
-    );
-    return response;
-  }
-
-  async deleteOrder(id: number) {
-    const response = await http.delete<AppResponse<CreateOrderValues>>(
-      `order/${id}`
-    );
+  async updateOrder(data: Status, id: number) {
+    const response = await http.patch<AppResponse<Status>>(`order/${id}`, data);
     return response;
   }
 }

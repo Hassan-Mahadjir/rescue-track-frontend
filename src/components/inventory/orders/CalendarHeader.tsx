@@ -35,8 +35,8 @@ export function CalendarHeader({
 
   // Generate years from current year - 1 to current year + 5
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 7 }, (_, i) =>
-    (currentYear - 1 + i).toString()
+  const years = Array.from({ length: 4 }, (_, i) =>
+    (currentYear - 2 + i).toString()
   );
 
   // Get current month and year from the currentDate prop

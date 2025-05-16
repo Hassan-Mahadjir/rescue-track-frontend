@@ -23,3 +23,7 @@ export type Unit = {
   name: string;
   createdAt: string;
 };
+
+export type Status = {
+  status: string;
+};

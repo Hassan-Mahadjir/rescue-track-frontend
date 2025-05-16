@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { APIError } from "@/types/error.type";
 import orderService from "../order-service";
 import { CreateOrderValues } from "@/types/schema/orderFormSchema";
+import { Status } from "@/types/order.type";
 
 // GET all orders
 export const useOrders = () => {
@@ -90,7 +91,7 @@ export const useUpdateOrder = (id: number) => {
     mutate: mutateUpdate,
     isPending,
     ...props
-  } = useRoleBasedMutation<CreateOrderValues, CreateOrderValues>({
+  } = useRoleBasedMutation<Status, Status>({
     adminMutationFn: (data) => orderService.updateOrder(data, id),
     employeeMutationFn: (data) => orderService.updateOrder(data, id),
     onSuccess: (response) => {
@@ -120,43 +121,3 @@ export const useUpdateOrder = (id: number) => {
 
   return { mutateUpdate, isPending, ...props };
 };
-
-// // DELETE order
-// export const useDeleteOrder = () => {
-//   const queryClient = useQueryClient();
-//   const { toast } = useToast();
-
-//   const {
-//     mutate: mutateDelete,
-//     isPending,
-//     ...props
-//   } = useRoleBasedMutation<number, CreateOrderValues>({
-//     adminMutationFn: (id) => orderService.deleteOrder(id),
-//     employeeMutationFn: (id) => orderService.deleteOrder(id),
-//     onSuccess: (_, id) => {
-//       toast({
-//         title: "Order Deleted",
-//         description: "The order was successfully deleted.",
-//         variant: "default",
-//         duration: 3000,
-//         progressColor: "bg-green-500",
-//       });
-//       queryClient.invalidateQueries({ queryKey: ["orders"] });
-//       queryClient.removeQueries({ queryKey: ["order", id] });
-//     },
-//     onError: (error: APIError) => {
-//       console.error(error);
-//       toast({
-//         title: "Deletion Failed",
-//         description:
-//           error?.response?.data?.message ||
-//           "An error occurred while deleting the order.",
-//         variant: "destructive",
-//         duration: 5000,
-//         progressColor: "bg-red-500",
-//       });
-//     },
-//   });
-
-//   return { mutateDelete, isPending, ...props };
-// };
