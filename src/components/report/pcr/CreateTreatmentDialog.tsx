@@ -28,7 +28,7 @@ import {
   TreatmentsData,
 } from "@/types/schema/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { TreatmentConfig } from "@/constants/treatments";

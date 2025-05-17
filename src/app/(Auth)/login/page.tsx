@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import FormInput from "@/components/FormInput";
 import { useLogin } from "@/services/api/auth";
 import LoadingIndicator from "@/components/Loading-Indicator";
-import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -51,7 +50,7 @@ const Login = () => {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Sign up section */}
-      <div className="flex flex-col gap-3 items-center justify-center p-6 md:p-10 items-center">
+      <div className="flex flex-col gap-3 justify-center p-6 md:p-10 items-center">
         <div className="text-center max-w-xs">
           <h1 className="font-bold text-3xl mb-2">{t("welcome")}</h1>
           <p className="text-sm text-muted-foreground xs:text-sx">

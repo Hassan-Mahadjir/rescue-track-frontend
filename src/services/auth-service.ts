@@ -1,10 +1,6 @@
 import BaseService from "./base-service";
 import http from "./api/http";
-import {
-  ChangePassword,
-  LoginFormValues,
-  ResetPassword,
-} from "@/types/login.type";
+import { LoginFormValues, ResetPassword } from "@/types/login.type";
 import { AppResponse, AuthDataType } from "@/types/common.type";
 import {
   SignupFormValues,
@@ -65,4 +61,5 @@ class AuthService extends BaseService {
   }
 }
 
-export default new AuthService();
+const authService = new AuthService();
+export default authService;

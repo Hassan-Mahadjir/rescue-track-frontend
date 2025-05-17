@@ -1,3 +1,5 @@
+import { Supplier } from "./supplier";
+
 type Unit = {
   id: number;
   abbreviation: string;
@@ -5,7 +7,7 @@ type Unit = {
   createdAt: string; // ISO date string
 };
 
-type Medication = {
+export type Medication = {
   id: number;
   name: string;
   category: string;
@@ -15,11 +17,11 @@ type Medication = {
   createdAt: string; // ISO date string
   createdById: number;
   reorderPoint: number;
-  supplier: any | null;
+  supplier: Supplier | null;
   unit: Unit;
 };
 
-type Equipment = {
+export type Equipment = {
   id: number;
   name: string;
   category: string;
@@ -34,10 +36,10 @@ type Equipment = {
   notes: string;
   createdAt: string; // ISO date string
   createdById: number;
-  supplier: any | null;
+  supplier: Supplier | null;
 };
 
-type InventoryData = {
+export type InventoryData = {
   medications: Medication[];
   equipments: Equipment[];
 };

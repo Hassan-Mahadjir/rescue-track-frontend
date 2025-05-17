@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import FormInput from "@/components/FormInput";
 import FormTextarea from "@/components/FormTextarea";
 import { RunReportConfig } from "@/constants/runReport";
 import FormSelect from "@/components/FormSelect";

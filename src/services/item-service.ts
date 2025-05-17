@@ -5,14 +5,15 @@ import {
   EquipmentFormValues,
   MedicationFormValues,
 } from "@/types/schema/medication-equipmentSchema";
+import { InventoryData } from "@/types/medication-equipment";
 
-class itemService extends BaseService {
+class ItemService extends BaseService {
   async getAllItems() {
     const response = await http.get<AppResponse<InventoryData>>("item");
     return response;
   }
 
-  async postMedication(data: any) {
+  async postMedication(data: MedicationFormValues) {
     const response = await http.post<AppResponse<MedicationFormValues>>(
       "item/medication",
       data
@@ -20,7 +21,7 @@ class itemService extends BaseService {
     return response;
   }
 
-  async postEquipment(data: any) {
+  async postEquipment(data: EquipmentFormValues) {
     const response = await http.post<AppResponse<EquipmentFormValues>>(
       "item/equipment",
       data
@@ -28,5 +29,5 @@ class itemService extends BaseService {
     return response;
   }
 }
-
-export default new itemService();
+const itemService = new ItemService();
+export default itemService;

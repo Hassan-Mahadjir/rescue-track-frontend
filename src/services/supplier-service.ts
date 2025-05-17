@@ -2,8 +2,9 @@ import { AppResponse } from "@/types/common.type";
 import http from "./api/http";
 import BaseService from "./base-service";
 import { SupplierFormValues } from "@/types/schema/supplierFormSchema";
+import { Supplier } from "@/types/supplier";
 
-class supplierService extends BaseService {
+class SupplierService extends BaseService {
   async getSuppliers() {
     const response = await http.get<AppResponse<Supplier[]>>("supplier");
     return response;
@@ -14,7 +15,7 @@ class supplierService extends BaseService {
     return response;
   }
 
-  async postSupplier(data: any) {
+  async postSupplier(data: SupplierFormValues) {
     const response = await http.post<AppResponse<SupplierFormValues>>(
       "supplier",
       data
@@ -22,7 +23,7 @@ class supplierService extends BaseService {
     return response;
   }
 
-  async updateSupplier(data: any, id: number) {
+  async updateSupplier(data: SupplierFormValues, id: number) {
     const response = await http.patch<AppResponse<SupplierFormValues>>(
       `supplier/${id}`,
       data
@@ -30,5 +31,5 @@ class supplierService extends BaseService {
     return response;
   }
 }
-
-export default new supplierService();
+const supplierService = new SupplierService();
+export default supplierService;

@@ -48,7 +48,7 @@ function NavBar() {
   const pathName = usePathname();
   const currentPath = pathName.split("/").pop();
   const [currentItem, setCurrentItem] = useState(0);
-  const { profileData, isPending } = useProfile();
+  const { profileData } = useProfile();
   const profileImage =
     profileData?.avatar ||
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
@@ -67,13 +67,13 @@ function NavBar() {
         <div className="  rounded-3xl bg-main xmd:bg-light-gray">
           <div className="flex items-center font-medium px-0 py-0 xmd:py-3">
             {navItems.map((item, index) => (
-              <div key={item.route} className="flex hidden xmd:block">
+              <div key={item.route} className="hidden xmd:flex">
                 <Link href={item.link} onClick={() => setCurrentItem(index)}>
                   <span
                     className={clsx(
                       "px-3 py-2 mx-1 rounded-3xl whitespace-nowrap hover:bg-main hover:text-white transition-colors duration-500",
                       {
-                        "bg-main text-white": pathName.startsWith(item.link),
+                        "bg-main text-white": currentItem === index,
                         "bg-light-gray": !pathName.startsWith(item.link),
                       }
                     )}

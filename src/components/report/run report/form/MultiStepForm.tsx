@@ -10,7 +10,7 @@ import {
   Step3Schema,
 } from "@/types/schema/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import RunReportStep1 from "./RunReportStep1";
@@ -70,8 +70,10 @@ const MultiStepForm = ({
 
   const handleNext = async () => {
     const currentStepSchema = stepSchemas[step];
-    const currentFields = Object.keys(currentStepSchema.shape);
-    const isValid = await trigger(currentFields as any);
+    const currentFields = Object.keys(currentStepSchema.shape) as Array<
+      keyof CombinedFormData
+    >;
+    const isValid = await trigger(currentFields);
     if (isValid) {
       setTouchedSteps((prev) => [...new Set([...prev, step])]);
       setStep((prev) => prev + 1);
@@ -186,7 +188,6 @@ const MultiStepForm = ({
                       >
                         {submitting ? (
                           <>
-                            <Loader2 className="animate-spin mr-2 h-4 w-4" />
                             <LoadingIndicator />
                           </>
                         ) : isEdit ? (

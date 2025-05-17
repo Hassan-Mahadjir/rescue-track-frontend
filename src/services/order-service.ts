@@ -4,7 +4,7 @@ import BaseService from "./base-service";
 import { Order, Status } from "@/types/order.type";
 import { CreateOrderValues } from "@/types/schema/orderFormSchema";
 
-class orderService extends BaseService {
+class OrderService extends BaseService {
   async getOrders() {
     const response = await http.get<AppResponse<Order[]>>("order");
     return response;
@@ -28,5 +28,5 @@ class orderService extends BaseService {
     return response;
   }
 }
-
-export default new orderService();
+const orderService = new OrderService();
+export default orderService;

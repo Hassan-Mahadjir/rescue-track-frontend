@@ -5,7 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
 } from "@/components/ui/dropdown-menu";
-import { SlidersHorizontal, Search, Plus, Upload } from "lucide-react";
+import { SlidersHorizontal, Search, Upload } from "lucide-react";
 import { CardHeader } from "@/components/ui/card";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";

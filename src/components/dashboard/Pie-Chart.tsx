@@ -4,15 +4,8 @@ import * as React from "react";
 import { Label, Pie, PieChart, Sector, Cell } from "recharts";
 import { PieSectorDataItem } from "recharts/types/polar/Pie";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
   ChartContainer,
   ChartStyle,
   ChartTooltip,
@@ -111,10 +104,6 @@ export function Piechart() {
       value: item.total,
     }));
   }, [activeDuration, activeTitle]);
-
-  const [activeMonth, setActiveMonth] = React.useState(Data[0].reason);
-
-  const months = React.useMemo(() => Data.map((item) => item.reason), []);
 
   return (
     <Card className="w-full h-full flex flex-col">

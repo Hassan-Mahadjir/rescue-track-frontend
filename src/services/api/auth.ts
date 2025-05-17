@@ -1,16 +1,13 @@
 "use client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ChangePassword,
-  LoginFormValues,
-  ResetPassword,
-} from "@/types/login.type";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { LoginFormValues, ResetPassword } from "@/types/login.type";
 import authService from "../auth-service";
-import { getItem, removeItem, setItem } from "@/utils/storage";
+import { removeItem, setItem } from "@/utils/storage";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useToast } from "@/hooks/use-toast";
 import { SignupFormValues, ValidationFormValues } from "@/types/signup.type";
+import { APIError } from "@/types/error.type";
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -112,7 +109,7 @@ export const useSignup = () => {
       authService.verifyEmail(response.data.data.email);
       router.replace("/validation");
     },
-    onError: (error: any) => {
+    onError: (error: APIError) => {
       // Unsuccessful login toast
       toast({
         title: "unsuccessful signup",
@@ -148,7 +145,7 @@ export const useResendEmail = (email: string) => {
         progressColor: "bg-green-500",
       });
     },
-    onError: (error: any) => {
+    onError: (error: APIError) => {
       toast({
         title: "Failed to resend",
         description: error.message,
@@ -183,7 +180,7 @@ export const useVerifyEmail = () => {
         progressColor: "bg-green-500",
       });
     },
-    onError: (error: any) => {
+    onError: (error: APIError) => {
       toast({
         title: "Verification failed",
         description: error.message,
@@ -197,7 +194,7 @@ export const useVerifyEmail = () => {
   return { verifyEmail, isVerifyPending: isPending, ...props };
 };
 
-export const usegetUser = (id: number) => {
+export const useGetUser = (id: number) => {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -211,7 +208,7 @@ export const usegetUser = (id: number) => {
     onSuccess: async (response) => {
       const token = response.data.data.accessToken;
       const refreshToken = response.data.data.refreshToken;
-      console.log(`success from auth.ts ${token}`);
+      console.log(`success from auth.ts ${token}, ${refreshToken}`);
       // Store tokens if needed here
     },
     onError: () => {

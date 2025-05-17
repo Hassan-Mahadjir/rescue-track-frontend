@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +11,6 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import copy from "copy-to-clipboard";
 import { InventoryManagement } from "@/components/inventory/InventoryManagementList";
-import EditMedicationDialog from "@/components/inventory/edit/EditMedicationDialog";
 
 interface InventoryActionsProps {
   inventory: InventoryManagement;

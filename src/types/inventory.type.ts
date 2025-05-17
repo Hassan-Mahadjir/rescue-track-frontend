@@ -1,4 +1,4 @@
-type InventoryMedication = {
+export type InventoryMedication = {
   itemName: string;
   batchNumber: string;
   category: string;

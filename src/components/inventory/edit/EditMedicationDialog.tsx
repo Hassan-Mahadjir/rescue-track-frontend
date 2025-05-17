@@ -23,6 +23,7 @@ import {
   medicationSchema,
 } from "@/types/schema/medication-equipmentSchema";
 import { TreatmentConfig } from "@/constants/treatments";
+import { Medication } from "@/types/medication-equipment";
 
 const { categoryOptions, unitOptions } = TreatmentConfig;
 
@@ -52,6 +53,7 @@ const EditMedicationDialog = ({ medication }: EditMedicationDialogProps) => {
   const { isValid } = form.formState;
 
   const onSubmit = (data: MedicationFormValues) => {
+    setPending(true);
     // mutateUpdate(
     //   { id: medication.id, data },
     //   {

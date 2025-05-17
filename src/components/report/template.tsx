@@ -1,14 +1,6 @@
-import { NextResponse } from "next/server";
-import {
-  pdf,
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { format } from "date-fns";
-import { PCR } from "@/types/patients.type";
+import { PCR } from "@/types/report.type";
 
 // Styles
 const styles = StyleSheet.create({
@@ -71,10 +63,10 @@ export const ReportDocument = ({ data }: { data: PCR }) => {
             Current Condition: {data.patientCondition}
           </Text>
           <Text style={styles.field}>
-            Initial Condition: {data.initialCondition || "N/A"}
+            patient Condition: {data.patientCondition || "N/A"}
           </Text>
           <Text style={styles.field}>
-            Primary Symptoms: {data.primarySymptoms || "N/A"}
+            Primary Assessment: {data.primaryAssessment || "N/A"}
           </Text>
           <Text style={styles.field}>Notes: {data.notes || "N/A"}</Text>
         </View>
@@ -94,7 +86,7 @@ export const ReportDocument = ({ data }: { data: PCR }) => {
               <View style={styles.tableRow} key={treatment.id}>
                 <Text style={styles.tableCol}>{treatment.name}</Text>
                 <Text style={styles.tableCol}>{treatment.quantity}</Text>
-                <Text style={styles.tableCol}>{treatment.unit}</Text>
+                <Text style={styles.tableCol}>{String(treatment.unit)}</Text>
                 <Text style={styles.tableCol}>{treatment.category}</Text>
               </View>
             ))}

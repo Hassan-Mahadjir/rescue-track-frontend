@@ -1,3 +1,5 @@
+import { PatientCareReport } from "./runReport.type";
+
 export type Profile = {
   id: number;
   firstName: string;
@@ -36,7 +38,7 @@ export type Patient = {
   gender: string;
   phone: string;
   dateofBirth: string;
-  eligibility: any | null;
+  eligibility: string | null;
   nationality: string;
   weight: number;
   height: number;

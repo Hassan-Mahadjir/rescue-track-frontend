@@ -9,5 +9,5 @@ class StaffService extends BaseService {
     return response;
   }
 }
-
-export default new StaffService();
+const staffService = new StaffService();
+export default staffService;

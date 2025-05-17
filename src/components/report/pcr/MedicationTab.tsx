@@ -2,6 +2,7 @@
 
 import { useFormContext } from "react-hook-form";
 import React from "react";
+import { Treatment } from "@/types/report.type";
 
 const MedicationTab = () => {
   const { getValues } = useFormContext();
@@ -17,7 +18,7 @@ const MedicationTab = () => {
 
   return (
     <div className="grid grid-cols-1 gap-4 p-4">
-      {treatments.map((treat: any, index: number) => (
+      {treatments.map((treat: Treatment, index: number) => (
         <div
           key={treat.id || index}
           className="border rounded-lg p-4 bg-gray-50 shadow-sm"
@@ -36,7 +37,7 @@ const MedicationTab = () => {
             </div>
             <div>
               <span className="font-medium text-gray-600">Quantity:</span>{" "}
-              {treat.quantity} {treat.unit}
+              {treat.quantity} {String(treat.unit)}
             </div>
           </div>
         </div>

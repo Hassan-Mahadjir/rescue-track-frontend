@@ -4,10 +4,8 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -16,7 +14,6 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import React, { useEffect, useState } from "react";
-import { Mo } from "react-flags-select";
 import { useForm } from "react-hook-form";
 import { MdMarkEmailUnread } from "react-icons/md";
 import { z } from "zod";
@@ -31,7 +28,7 @@ const FormSchema = z.object({
   }),
 });
 
-const validation = () => {
+const Validation = () => {
   const router = useRouter();
 
   const [email, setEmail] = useState<string | null>(null);
@@ -44,7 +41,7 @@ const validation = () => {
   });
 
   const { resendVerificationEmail, isPending } = useResendEmail(email || "");
-  const { verifyEmail, isVerifyPending } = useVerifyEmail();
+  const { verifyEmail } = useVerifyEmail();
 
   useEffect(() => {
     const fetchEmail = async () => {
@@ -152,4 +149,4 @@ const validation = () => {
   );
 };
 
-export default validation;
+export default Validation;

@@ -1,10 +1,8 @@
 "use client";
 import Carousel from "@/components/Cards-Carousel";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 const CreateRunReport = () => {
-  const router = useRouter();
   const slides = [
     {
       title: "Registered patient",

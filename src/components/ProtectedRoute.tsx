@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { Role } from "@/utils/auth";
-import { Skeleton } from "./ui/skeleton";
 import RecentCardSkeleton from "./loading/RecentCardSkeleton";
 import DoctorListSkeleton from "./loading/staffListSkeleton";
 import ShiftScheduleSkeleton from "./loading/ShiftScheduleSkeleton ";

@@ -2,23 +2,21 @@
 
 import { bloodTypes } from "@/constants/bloodTypes";
 import { GenericSelect } from "../ui/GenericSelect";
-import { Control } from "react-hook-form";
+import { Control, FieldValues, Path } from "react-hook-form";
 
-
-
-interface BloodTypeSelectProps {
-  control: Control<any>;
-  name: string;
+interface BloodTypeSelectProps<T extends FieldValues> {
+  control: Control<T>;
+  name: Path<T>;
   label?: string;
   className?: string;
 }
 
-export const BloodTypeSelect = ({
+export const BloodTypeSelect = <T extends FieldValues>({
   control,
   name,
   label = "Blood Type",
   className,
-}: BloodTypeSelectProps) => {
+}: BloodTypeSelectProps<T>) => {
   return (
     <GenericSelect
       control={control}
@@ -31,4 +29,4 @@ export const BloodTypeSelect = ({
       className={className}
     />
   );
-}; 
+};

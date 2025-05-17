@@ -1,4 +1,6 @@
-type Supplier = {
+import { UpdateHistory } from "./runReport.type";
+
+export type Supplier = {
   id: number;
   name: string;
   email: string;
@@ -10,5 +12,5 @@ type Supplier = {
   status: "active" | "inactive" | string; // Add more statuses as needed
   createdAt: string | Date;
   createdById: number;
-  updateHistory: any[]; // Replace `any` with a specific type if you have one
+  updateHistory: UpdateHistory[];
 };

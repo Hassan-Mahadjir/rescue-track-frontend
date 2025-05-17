@@ -38,7 +38,7 @@ export function OrderDialog() {
     defaultValues: {
       supplierId: 0,
       notes: "",
-      orderType: "medication", // New: order type field
+      orderType: "medication",
       orderItems: [
         {
           quantity: 1,
@@ -51,6 +51,8 @@ export function OrderDialog() {
     mode: "onChange",
   });
 
+  const orderType = form.watch("orderType");
+
   const onSubmit = (data: CreateOrderValues) => {
     mutatePost(data, {
       onSuccess: () => {
@@ -60,22 +62,19 @@ export function OrderDialog() {
     });
   };
 
-  // Clear the unused field when switching type
   useEffect(() => {
-    const type = form.watch("orderType");
-
-    if (type === "medication") {
+    if (orderType === "medication") {
       const current = form.getValues("orderItems.0.equipmentId");
       if (current !== undefined) {
         form.setValue("orderItems.0.equipmentId", undefined);
       }
-    } else if (type === "equipment") {
+    } else if (orderType === "equipment") {
       const current = form.getValues("orderItems.0.medicationId");
       if (current !== undefined) {
         form.setValue("orderItems.0.medicationId", undefined);
       }
     }
-  }, [form.watch("orderType")]);
+  }, [orderType, form]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -119,7 +118,7 @@ export function OrderDialog() {
               }
             />
 
-            {form.watch("orderType") === "medication" && (
+            {orderType === "medication" && (
               <FormSelect
                 form={form}
                 name="orderItems.0.medicationId"
@@ -134,7 +133,7 @@ export function OrderDialog() {
               />
             )}
 
-            {form.watch("orderType") === "equipment" && (
+            {orderType === "equipment" && (
               <FormSelect
                 form={form}
                 name="orderItems.0.equipmentId"

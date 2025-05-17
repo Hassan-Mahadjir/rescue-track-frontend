@@ -1,18 +1,15 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react";
+import { MoreHorizontal, Pencil } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { Patient } from "@/types/patients.type";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export const columns: ColumnDef<Patient>[] = [
@@ -46,7 +43,7 @@ export const columns: ColumnDef<Patient>[] = [
   {
     accessorKey: "",
     header: "Avatar",
-    cell: ({ row }) => (
+    cell: () => (
       <div className="flex items-center space-x-2 pr-3">
         <Image
           src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"

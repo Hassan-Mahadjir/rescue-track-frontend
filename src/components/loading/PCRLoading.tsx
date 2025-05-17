@@ -1,5 +1,4 @@
 import React from "react";
-import { Skeleton } from "../ui/skeleton";
 import { PatientInfoSkeleton } from "./PatientInfoSkeleton";
 
 const PCRLoading = () => {

@@ -1,3 +1,5 @@
+import { Patient } from "./patients.type";
+
 // Treatment interface
 type Treatment = {
   id: number;
@@ -8,7 +10,7 @@ type Treatment = {
 };
 
 // Patient Care Report interface
-type PatientCareReport = {
+export type PatientCareReport = {
   id: number;
   patientCondition: string;
   initialCondition: string | null;
@@ -61,14 +63,14 @@ interface UpdateFields {
 }
 
 // Update History interface
-interface UpdateHistory {
+export type UpdateHistory = {
   id: number;
   updateFields: UpdateFields;
   updatedAt: string;
-}
+};
 
 // Single Run Report interface
-interface RunReportItem {
+export type RunReportItem = {
   id: number;
   caller: string;
   callerPhone: string;
@@ -86,4 +88,4 @@ interface RunReportItem {
   initiatedBy: User;
   patient: Patient;
   updateHistory: UpdateHistory[];
-}
+};

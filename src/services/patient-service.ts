@@ -2,6 +2,7 @@ import { AppResponse } from "@/types/common.type";
 import http from "./api/http";
 import BaseService from "./base-service";
 import { Patient } from "@/types/patients.type";
+import { FormSchema } from "@/app/(Report Management)/report/pcr/create/unregistered/page";
 
 class PatientService extends BaseService {
   async getPatientAdmin(id: number) {
@@ -24,8 +25,8 @@ class PatientService extends BaseService {
     return response;
   }
 
-  async createPatient(data: Patient) {
-    const response = await http.post<AppResponse<Patient>>(`/patient`, data);
+  async createPatient(data: FormSchema) {
+    const response = await http.post<AppResponse<FormSchema>>(`/patient`, data);
     return response;
   }
 
@@ -39,5 +40,5 @@ class PatientService extends BaseService {
     return response;
   }
 }
-
-export default new PatientService();
+const patientService = new PatientService();
+export default patientService;

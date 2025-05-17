@@ -7,7 +7,7 @@ import React from "react";
 import { InventoryMedicationColumns } from "@/components/table/columns/MedicationCulomns";
 import { InventoryEquipmentColumns } from "@/components/table/columns/EquipmentColumns";
 
-const page = () => {
+const MedicationPage = () => {
   const { itemData, isPending } = useItems();
   const medication = itemData?.medications;
   const equipment = itemData?.equipments;
@@ -52,4 +52,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default MedicationPage;

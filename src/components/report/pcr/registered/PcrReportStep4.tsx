@@ -22,9 +22,11 @@ import SearchableFormSelect from "@/components/FormSelectSearchable";
 const { treatmentOptions, categoryOptions, unitOptions, quantityOptions } =
   TreatmentConfig;
 
+type NamedItem = { name: string };
+
 export default function PcrReportStep4() {
   const form = useFormContext();
-  const { control, setValue } = form;
+  const { control } = form;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "treatments",
@@ -57,23 +59,26 @@ export default function PcrReportStep4() {
   };
 
   const addCustomItem = (
-    field: any,
+    field: { value: NamedItem[]; onChange: (value: NamedItem[]) => void },
     value: string,
     setValueFn: (v: string) => void
   ) => {
     if (
       value.trim() &&
-      !field.value.some((item: any) => item.name === value.trim())
+      !field.value?.some((item) => item.name === value.trim())
     ) {
       field.onChange([...field.value, { name: value.trim() }]);
       setValueFn("");
     }
   };
 
-  const toggleItem = (field: any, value: string) => {
-    const exists = field.value?.some((item: any) => item.name === value);
+  const toggleItem = (
+    field: { value: NamedItem[]; onChange: (value: NamedItem[]) => void },
+    value: string
+  ) => {
+    const exists = field.value?.some((item) => item.name === value);
     if (exists) {
-      field.onChange(field.value.filter((item: any) => item.name !== value));
+      field.onChange(field.value.filter((item) => item.name !== value));
     } else {
       field.onChange([...(field.value || []), { name: value }]);
     }
@@ -101,7 +106,7 @@ export default function PcrReportStep4() {
                     <FormControl>
                       <Checkbox
                         checked={field.value?.some(
-                          (item: any) => item.name === condition.value
+                          (item: NamedItem) => item.name === condition.value
                         )}
                         onCheckedChange={() =>
                           toggleItem(field, condition.value)
@@ -144,7 +149,7 @@ export default function PcrReportStep4() {
 
               {field.value?.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {field.value.map((condition: any) => (
+                  {field.value.map((condition: NamedItem) => (
                     <div
                       key={condition.name}
                       className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full flex items-center"
@@ -183,7 +188,7 @@ export default function PcrReportStep4() {
                     <FormControl>
                       <Checkbox
                         checked={field.value?.some(
-                          (item: any) => item.name === allergy.value
+                          (item: NamedItem) => item.name === allergy.value
                         )}
                         onCheckedChange={() => toggleItem(field, allergy.value)}
                       />
@@ -224,7 +229,7 @@ export default function PcrReportStep4() {
 
               {field.value?.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {field.value.map((allergy: any) => (
+                  {field.value.map((allergy: NamedItem) => (
                     <div
                       key={allergy.name}
                       className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full flex items-center"

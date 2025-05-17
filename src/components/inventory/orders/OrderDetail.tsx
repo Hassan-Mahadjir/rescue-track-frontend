@@ -21,8 +21,11 @@ interface OrderDetailProps {
 }
 
 export function OrderDetail({ open, onOpenChange, order }: OrderDetailProps) {
+  // ✅ Always call hooks unconditionally
+  const { mutateUpdate, isPending } = useUpdateOrder(order?.id ?? 0);
+
+  // 🛑 Early return if there's no order
   if (!order) return null;
-  const { mutateUpdate, isPending } = useUpdateOrder(order.id);
 
   const getStatusColor = (status: Order["status"]) => {
     switch (status) {

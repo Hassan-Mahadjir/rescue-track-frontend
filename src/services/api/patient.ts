@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { Patient } from "@/types/patients.type";
 import patientService from "../patient-service";
@@ -8,6 +7,7 @@ import {
   useRoleBasedMutation,
 } from "@/hooks/useRoleBasedQuery";
 import { useQueryClient } from "@tanstack/react-query";
+import { FormSchema } from "@/app/(Report Management)/report/pcr/create/unregistered/page";
 
 export const useGetPatient = (id: number) => {
   const { data: patientData, ...props } = useRoleBasedQuery<Patient>({
@@ -85,7 +85,7 @@ export const useCreatePatient = () => {
     mutate: createPatient,
     isPending,
     ...props
-  } = useRoleBasedMutation<Patient, Patient>({
+  } = useRoleBasedMutation<FormSchema, FormSchema>({
     adminMutationFn: (data) => patientService.createPatient(data),
     employeeMutationFn: (data) => patientService.createPatient(data),
     onSuccess: (response) => {

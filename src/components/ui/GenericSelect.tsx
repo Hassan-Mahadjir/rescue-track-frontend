@@ -13,16 +13,16 @@ import {
   CommandItem,
   CommandList,
 } from "./command";
-import { Control } from "react-hook-form";
+import { Control, FieldValues, Path } from "react-hook-form";
 
 interface SelectItem {
   readonly value: string;
   readonly label: string;
 }
 
-interface GenericSelectProps {
-  control: Control<any>;
-  name: string;
+interface GenericSelectProps<T extends FieldValues> {
+  control: Control<T>;
+  name: Path<T>;
   items: readonly SelectItem[];
   label?: string;
   placeholder?: string;
@@ -31,7 +31,7 @@ interface GenericSelectProps {
   className?: string;
 }
 
-export const GenericSelect = ({
+export const GenericSelect = <T extends FieldValues>({
   control,
   name,
   items,
@@ -40,7 +40,7 @@ export const GenericSelect = ({
   searchPlaceholder = "Search...",
   emptyMessage = "No items found.",
   className,
-}: GenericSelectProps) => {
+}: GenericSelectProps<T>) => {
   return (
     <FormField
       control={control}
@@ -52,7 +52,7 @@ export const GenericSelect = ({
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
-                  variant={"outline"}
+                  variant="outline"
                   className={cn(
                     "w-full pl-3 text-left font-normal flex justify-between items-center",
                     !field.value && "text-muted-foreground"
@@ -77,9 +77,7 @@ export const GenericSelect = ({
                       <CommandItem
                         key={item.value}
                         value={item.label}
-                        onSelect={() => {
-                          field.onChange(item.value);
-                        }}
+                        onSelect={() => field.onChange(item.value)}
                       >
                         {item.label}
                         <Check
@@ -101,4 +99,4 @@ export const GenericSelect = ({
       )}
     />
   );
-}; 
+};

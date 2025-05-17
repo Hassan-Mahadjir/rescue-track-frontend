@@ -9,24 +9,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { TreatmentConfig } from "@/constants/treatments";
 import { TooltipButton } from "@/components/report/TooltipButton";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
 import FormSelect from "@/components/FormSelect";
 import FormInput from "@/components/FormInput";

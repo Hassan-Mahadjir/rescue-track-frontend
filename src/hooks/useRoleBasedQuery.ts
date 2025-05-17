@@ -1,4 +1,5 @@
 "use client";
+
 import {
   useQuery,
   UseQueryOptions,
@@ -9,8 +10,8 @@ import { useAuth } from "./useAuth";
 import { useToast } from "./use-toast";
 import { AppResponse } from "@/types/common.type";
 
-interface RoleBasedQueryOptions<T>
-  extends Omit<UseQueryOptions<T, Error, T, any[]>, "queryFn"> {
+interface RoleBasedQueryOptions<T, TQueryKey extends unknown[] = unknown[]>
+  extends Omit<UseQueryOptions<T, Error, T, TQueryKey>, "queryFn"> {
   adminQueryFn: () => Promise<T>;
   employeeQueryFn: () => Promise<T>;
 }
@@ -28,15 +29,15 @@ interface RoleBasedMutationOptions<TData, TVariables>
   ) => Promise<{ data: AppResponse<TData> }>;
 }
 
-export const useRoleBasedQuery = <T>({
+export const useRoleBasedQuery = <T, TQueryKey extends unknown[] = unknown[]>({
   adminQueryFn,
   employeeQueryFn,
   ...options
-}: RoleBasedQueryOptions<T>) => {
+}: RoleBasedQueryOptions<T, TQueryKey>) => {
   const { toast } = useToast();
   const { isAdmin, isEmployee, isLoading: isAuthLoading } = useAuth();
 
-  return useQuery<T, Error, T, any[]>({
+  return useQuery<T, Error, T, TQueryKey>({
     ...options,
     enabled: !isAuthLoading,
     queryFn: async () => {

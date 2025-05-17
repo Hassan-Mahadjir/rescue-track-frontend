@@ -5,7 +5,6 @@ import { GiMedicinePills } from "react-icons/gi";
 import { MdMarkEmailUnread } from "react-icons/md";
 import { PiAmbulanceFill } from "react-icons/pi";
 import { IoDocumentText } from "react-icons/io5";
-import clsx from "clsx";
 
 const RecentCard = () => {
   const items = [

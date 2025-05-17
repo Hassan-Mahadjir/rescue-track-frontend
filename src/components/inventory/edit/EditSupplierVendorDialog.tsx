@@ -9,14 +9,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Edit, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import FormInput from "@/components/FormInput";
 import FormSelect from "@/components/FormSelect";
 import LoadingIndicator from "@/components/Loading-Indicator";
-import { TooltipButton } from "@/components/report/TooltipButton";
 import Image from "next/image";
 import {
   SupplierFormValues,
@@ -24,6 +23,7 @@ import {
 } from "@/types/schema/supplierFormSchema";
 import { specialistOptions } from "@/constants/supplier";
 import { useUpdateSupplier } from "@/services/api/supplier";
+import { Supplier } from "@/types/supplier";
 
 interface EditSupplierVendorDialogProps {
   supplier: Supplier;

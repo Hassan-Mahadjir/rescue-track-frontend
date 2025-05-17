@@ -61,10 +61,8 @@ type FormSchema = z.infer<typeof formSchema>;
 
 const PersonalInfoDialog = ({ id }: { id: number }) => {
   const { patientData } = useGetPatient(id);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedNationality, setSelectedNationality] = useState<string>("");
-  const [month, setMonth] = useState<number>(new Date().getMonth());
-  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [, setMonth] = useState<number>(new Date().getMonth());
+  const [, setYear] = useState<number>(new Date().getFullYear());
 
   const { mutateUpdatePatient } = useUpdatePatient(id);
 
@@ -111,45 +109,37 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
         setMonth(dob.getMonth());
         setYear(dob.getFullYear());
       }
-      setSelectedNationality(patientInfo.nationality || "");
     }
   }, [patientData, form]);
 
   const onSubmit = async (values: FormSchema) => {
     const formattedDateOfBirth = values.dateofBirth
       ? values.dateofBirth.toISOString().split("T")[0]
-      : null;
+      : "";
+    if (!patientData?.responsible) {
+      console.error("Missing responsible user. Cannot update.");
+      return;
+    }
 
-    console.log("Form submitted with values:", formattedDateOfBirth);
     mutateUpdatePatient({
       ...values,
-      dateofBirth: formattedDateOfBirth,
-      status: "active",
+      phone: values.phone ?? "", // ✅ ensure string
+      nationalID: values.nationalID ?? "", // ✅ ensure string
       weight: Number(values.weight),
       height: Number(values.height),
+      dateofBirth: formattedDateOfBirth,
+      status: "active",
+      responsible: patientData.responsible, // guaranteed
     });
   };
 
   return (
     <div>
       <div className="flex flex-col items-center my-4">
-        {/* Photo area */}
-        {/* <PhotoUpload
-        
-          onImageSelect={(file) => {
-            setSelectedImage(URL.createObjectURL(file));
-          }}
-          initialImage={selectedImage || undefined}
-          size="lg"
-          shape="square"
-          className="rounded-full"
-        /> */}
         <div className="w-20 h-20 bg-main rounded-full flex items-center justify-center border border-gray-300">
           <Image
-            src={
-              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-            }
-            alt="bland-profile"
+            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+            alt="blank-profile"
             className="object-cover rounded-full w-full h-full"
             width={50}
             height={50}
@@ -190,7 +180,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
+                            variant="outline"
                             className={cn(
                               "w-full pl-3 text-left font-normal",
                               !field.value && "text-muted-foreground"
@@ -213,15 +203,6 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
                         <CustomCalendar
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          month={new Date(year, month, 1)}
-                          onMonthChange={(date) => {
-                            setMonth(date.getMonth());
-                            setYear(date.getFullYear());
-                          }}
-                          initialFocus
                         />
                       </PopoverContent>
                     </Popover>
@@ -234,13 +215,13 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
             <div>
               <label className="text-sm">Gender</label>
               <RadioGroup
-                className="grid grid-cols-2 flex gap-8 mt-3"
+                className="grid grid-cols-2 gap-8 mt-3"
                 value={form.watch("gender")}
-                onValueChange={(value) => {
+                onValueChange={(value) =>
                   form.setValue("gender", value as "male" | "female", {
                     shouldValidate: true,
-                  });
-                }}
+                  })
+                }
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem id="male" value="male" />
@@ -272,7 +253,7 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
               name="phone"
               render={({ field }) => (
                 <FormItem className="flex flex-col items-start">
-                  <FormLabel>Phone nubmer</FormLabel>
+                  <FormLabel>Phone number</FormLabel>
                   <FormControl className="w-full">
                     <PhoneInput
                       placeholder="Enter a phone number"

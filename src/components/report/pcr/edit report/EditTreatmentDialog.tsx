@@ -29,7 +29,7 @@ import {
 } from "@/types/schema/reportFormSchema";
 import { Treatment } from "@/types/report.type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { TreatmentConfig } from "@/constants/treatments";

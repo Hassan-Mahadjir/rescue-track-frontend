@@ -165,5 +165,5 @@ class ReportService extends BaseService {
     return response;
   }
 }
-
-export default new ReportService();
+const reportService = new ReportService();
+export default reportService;

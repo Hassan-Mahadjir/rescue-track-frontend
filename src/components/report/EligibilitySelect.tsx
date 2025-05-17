@@ -1,22 +1,20 @@
-"use client";
-
+import { Control, FieldValues, Path } from "react-hook-form";
 import { GenericSelect } from "../ui/GenericSelect";
-import { Control } from "react-hook-form";
 import { eligibilities } from "@/constants/eligibilities";
 
-interface EligibilitySelectProps {
-  control: Control<any>;
-  name: string;
+interface EligibilitySelectProps<T extends FieldValues> {
+  control: Control<T>;
+  name: Path<T>;
   label?: string;
   className?: string;
 }
 
-export const EligibilitySelect = ({
+export const EligibilitySelect = <T extends FieldValues>({
   control,
   name,
   label = "Eligibility",
   className,
-}: EligibilitySelectProps) => {
+}: EligibilitySelectProps<T>) => {
   return (
     <GenericSelect
       control={control}

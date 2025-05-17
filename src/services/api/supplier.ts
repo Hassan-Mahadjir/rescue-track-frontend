@@ -25,7 +25,7 @@ export const useSuppliers = () => {
 };
 
 export const useSupplier = (id: number) => {
-  const { data: supplierData, ...props } = useRoleBasedQuery<any>({
+  const { data: supplierData, ...props } = useRoleBasedQuery({
     queryKey: ["supplier", id],
     adminQueryFn: async () => {
       const response = await supplierService.getSupplier(id);

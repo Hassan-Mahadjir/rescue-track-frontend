@@ -16,14 +16,6 @@ import PcrReportStep2 from "./PcrReportStep2";
 import PcrReportStep3 from "./PcrReportStep3";
 import PcrReportStep4 from "./PcrReportStep4";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { usePostPCR } from "@/services/api/reports";
 import LoadingIndicator from "@/components/Loading-Indicator";
 
@@ -31,7 +23,7 @@ const RegisteredForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [touchedSteps, setTouchedSteps] = useState<number[]>([]);
   // const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const { mutatePost, isPending } = usePostPCR();
+  const { mutatePost } = usePostPCR();
 
   const form = useForm<PcrReportFormValues>({
     resolver: zodResolver(PcrReportFormSchema),

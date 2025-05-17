@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
 import ReactFlagsSelect from "react-flags-select";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -62,13 +61,13 @@ const formSchema = z.object({
   bloodType: z.string().optional(),
 });
 
-type FormSchema = z.infer<typeof formSchema>;
+export type FormSchema = z.infer<typeof formSchema>;
 
 const CreateUnregisteredPCRReport = () => {
   const { createPatient, isPending } = useCreatePatient();
   const router = useRouter();
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  // const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -85,24 +84,25 @@ const CreateUnregisteredPCRReport = () => {
     },
   });
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedImage(URL.createObjectURL(file));
-    }
-  };
+  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     setSelectedImage(URL.createObjectURL(file));
+  //   }
+  // };
 
   const onSubmit = async (values: FormSchema) => {
     const formattedDateOfBirth = values.dateofBirth
       ? values.dateofBirth.toISOString().split("T")[0]
-      : null;
+      : "";
 
-    await createPatient({
+    createPatient({
       ...values,
-      dateofBirth: formattedDateOfBirth,
-      status: "active",
-      weight: Number(values.weight),
-      height: Number(values.height),
+      phone: values.phone ?? "", // ✅ ensure string
+      nationalID: values.nationalID ?? "", // ✅ ensure string
+      weight: values.weight ?? "",
+      height: values.height ?? "",
+      dateofBirth: values.dateofBirth, // Pass as Date object
     });
     router.replace("/report/run-report/create/registered");
   };
@@ -202,7 +202,7 @@ const CreateUnregisteredPCRReport = () => {
             <div>
               <label className="text-sm">Gender</label>
               <RadioGroup
-                className="grid grid-cols-2 flex gap-8 mt-3"
+                className="grid grid-cols-2 gap-8 mt-3"
                 value={form.watch("gender")}
                 onValueChange={(value) => {
                   form.setValue("gender", value as "male" | "female", {

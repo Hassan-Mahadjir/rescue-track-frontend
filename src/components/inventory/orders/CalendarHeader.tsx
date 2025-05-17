@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import {
@@ -18,32 +18,35 @@ export function CalendarHeader({
   currentDate: Date;
   onDateChange: (date: Date) => void;
 }) {
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  // Generate years from current year - 1 to current year + 5
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 4 }, (_, i) =>
-    (currentYear - 2 + i).toString()
+  // Wrap months in useMemo to fix exhaustive-deps warning
+  const months = useMemo(
+    () => [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
+    []
   );
 
-  // Get current month and year from the currentDate prop
+  // Generate years from current year - 2 to current year + 1
+  const currentYear = new Date().getFullYear();
+  const years = useMemo(
+    () => Array.from({ length: 4 }, (_, i) => (currentYear - 2 + i).toString()),
+    [currentYear]
+  );
+
   const [month, setMonth] = useState(months[currentDate.getMonth()]);
   const [year, setYear] = useState(currentDate.getFullYear().toString());
 
-  // Update the parent component when month or year changes
   const handleMonthChange = (newMonth: string) => {
     setMonth(newMonth);
     const newDate = new Date(currentDate);
@@ -58,7 +61,6 @@ export function CalendarHeader({
     onDateChange(newDate);
   };
 
-  // Handle "Today" button click
   const goToToday = () => {
     const today = new Date();
     setMonth(months[today.getMonth()]);
@@ -66,7 +68,6 @@ export function CalendarHeader({
     onDateChange(today);
   };
 
-  // Update local state when currentDate changes from parent
   useEffect(() => {
     setMonth(months[currentDate.getMonth()]);
     setYear(currentDate.getFullYear().toString());

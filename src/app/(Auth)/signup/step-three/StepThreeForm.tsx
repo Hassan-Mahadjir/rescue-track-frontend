@@ -9,7 +9,6 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { useNewUserFormContext } from "@/hooks/userFormContext";
-import { useRouter } from "next/navigation";
 import { useSignup } from "@/services/api/auth";
 import { SignupFormValues } from "@/types/signup.type";
 import LoadingIndicator from "@/components/Loading-Indicator";

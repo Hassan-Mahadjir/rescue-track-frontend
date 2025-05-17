@@ -30,7 +30,6 @@ const FormInput = <T extends FieldValues>({
   icon,
   value,
   className = "",
-  onChange,
 }: FormInputProps<T>) => {
   const {
     register,

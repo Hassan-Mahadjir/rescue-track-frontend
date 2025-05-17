@@ -38,12 +38,6 @@ const FormSelect = <T extends FieldValues>({
   options,
   className = "",
 }: FormSelectProps<T>) => {
-  const {
-    formState: { errors },
-  } = form;
-
-  const error = errors[name];
-
   const currentValue = form.getValues(name);
 
   return (

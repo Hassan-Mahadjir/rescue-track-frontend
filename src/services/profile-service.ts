@@ -18,4 +18,5 @@ class ProfileService extends BaseService {
   }
 }
 
-export default new ProfileService();
+const profileService = new ProfileService();
+export default profileService;

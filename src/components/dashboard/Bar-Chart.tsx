@@ -46,27 +46,8 @@ const durations = [
   { id: 3, duration: "This Month" },
 ];
 
-const rawData = [
-  {
-    date: "2025-03-26T10:00:00",
-    type: "PCR",
-    low: 186,
-    high: 80,
-    medium: 20,
-    critical: 10,
-  },
-  {
-    date: "2025-03-26T12:00:00",
-    type: "Run report",
-    stable: 305,
-    serious: 200,
-    good: 20,
-    critical: 30,
-  },
-];
-
 const Barchart = () => {
-  const { StatsData, isPending } = useStats();
+  const { StatsData } = useStats();
 
   const [activeTitle, setActiveTitle] = useState<string>(reportTypes[0].title);
   const [activeDuration, setActiveDuration] = useState<string>(

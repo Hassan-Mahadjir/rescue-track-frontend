@@ -1,4 +1,3 @@
-import { InventoryManagement } from "@/components/inventory/InventoryManagementList";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Equipment } from "@/types/medication-equipment";
 import copy from "copy-to-clipboard";
 import { MoreHorizontal } from "lucide-react";
 import React from "react";

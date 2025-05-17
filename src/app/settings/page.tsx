@@ -5,7 +5,7 @@ import { useLogout } from "@/services/api/auth";
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
 
-const settingsPage = () => {
+const SettingsPage = () => {
   const { logout } = useLogout();
   const { toast } = useToast();
 
@@ -30,4 +30,4 @@ const settingsPage = () => {
   );
 };
 
-export default settingsPage;
+export default SettingsPage;

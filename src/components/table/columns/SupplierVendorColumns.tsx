@@ -3,9 +3,9 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import SupplierVendorActions from "../action/SupplierVendorActions";
-import Link from "next/link";
 import StatusBadge from "@/components/badge/StatusBadge";
 import { WebsiteLinkButton } from "../WebsiteLinkButton";
+import { Supplier } from "@/types/supplier";
 
 export const SupplierVendorColumns: ColumnDef<Supplier>[] = [
   {

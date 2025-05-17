@@ -9,17 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Supplier } from "@/types/supplier";
 import copy from "copy-to-clipboard";
 import { MoreHorizontal } from "lucide-react";
-import React, { useState } from "react";
 
 interface SupplierVendorActionsProps {
   supplier: Supplier;
 }
 
 const SupplierVendorActions = ({ supplier }: SupplierVendorActionsProps) => {
-  const [isEditOpen, setIsEditOpen] = useState(false);
-
   return (
     <>
       <DropdownMenu>

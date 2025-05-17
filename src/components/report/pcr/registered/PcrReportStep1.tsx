@@ -12,10 +12,7 @@ import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RunReportItem } from "@/types/report.type";
-import {
-  useRunReports,
-  useUniqueRecentRunReports,
-} from "@/services/api/reports";
+import { useUniqueRecentRunReports } from "@/services/api/reports";
 
 export default function PcrReportStep1() {
   const { uniqueRecentRunReportsData: data, isPending } =
