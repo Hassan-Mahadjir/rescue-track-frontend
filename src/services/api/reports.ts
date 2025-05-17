@@ -491,7 +491,7 @@ export const usePostRunReport = () => {
         progressColor: "bg-green-500",
       });
       queryClient.invalidateQueries({ queryKey: ["run-report"] });
-      router.push("/report/pcr/create/registered");
+      router.push("/report");
     },
     onError: (error: APIError) => {
       console.error(error);
