@@ -92,10 +92,6 @@ const CreateUnregisteredPCRReport = () => {
   // };
 
   const onSubmit = async (values: FormSchema) => {
-    const formattedDateOfBirth = values.dateofBirth
-      ? values.dateofBirth.toISOString().split("T")[0]
-      : "";
-
     createPatient({
       ...values,
       phone: values.phone ?? "", // ✅ ensure string

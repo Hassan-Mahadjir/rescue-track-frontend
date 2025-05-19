@@ -11,7 +11,10 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useNewUserFormContext } from "@/hooks/userFormContext";
 import { useRouter } from "next/navigation";
-import { handleGoogleLogin, handleMicrosoftLogin } from "../../login/page";
+import {
+  handleGoogleLogin,
+  handleMicrosoftLogin,
+} from "@/utils/otherLoginService";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),

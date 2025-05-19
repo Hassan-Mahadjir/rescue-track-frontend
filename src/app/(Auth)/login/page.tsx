@@ -12,6 +12,10 @@ import { Button } from "@/components/ui/button";
 import FormInput from "@/components/FormInput";
 import { useLogin } from "@/services/api/auth";
 import LoadingIndicator from "@/components/Loading-Indicator";
+import {
+  handleGoogleLogin,
+  handleMicrosoftLogin,
+} from "@/utils/otherLoginService";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -21,14 +25,6 @@ const formSchema = z.object({
 });
 
 type FormSchema = z.infer<typeof formSchema>;
-
-export const handleGoogleLogin = () => {
-  window.location.href = "http://localhost:3000/auth/google/login";
-};
-
-export const handleMicrosoftLogin = () => {
-  window.location.href = "http://localhost:3000/auth/microsoft/login";
-};
 
 const Login = () => {
   const t = useTranslations("Auth");

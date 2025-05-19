@@ -18,7 +18,7 @@ const EditRunReportPage = () => {
 
   const mappedValues: CombinedFormData = {
     id: runReport.id,
-    patientId: runReport.patient.id,
+    patientId: runReport.patient.id || 0,
     caller: runReport.caller,
     callerPhone: runReport.callerPhone,
     relationship: runReport.relationship,
