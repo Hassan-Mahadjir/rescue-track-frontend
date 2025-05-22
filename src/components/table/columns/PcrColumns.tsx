@@ -3,7 +3,7 @@
 import StatusBadge from "@/components/badge/StatusBadge";
 import PcrActions from "@/components/table/action/PcrActions";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PCR } from "@/types/patients.type";
+import { PCR } from "@/types/report.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 
@@ -112,7 +112,7 @@ export const PcrColumns: ColumnDef<PCR>[] = [
     ),
     cell: ({ row: { original: data } }) => {
       const status = data.patient.status;
-      return <StatusBadge status={status} />;
+      return <StatusBadge status={status || ""} />;
     },
     enableSorting: true,
     enableColumnFilter: true,

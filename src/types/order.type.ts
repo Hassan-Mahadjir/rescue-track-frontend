@@ -1,3 +1,6 @@
+import { Equipment, Medication } from "./medication-equipment";
+import { Supplier } from "./supplier";
+
 export type Order = {
   id: number;
   createdAt: string;

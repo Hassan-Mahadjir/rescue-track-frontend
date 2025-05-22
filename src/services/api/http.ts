@@ -1,8 +1,10 @@
+// src/services/api/http.ts
 import axios from "axios";
-import { getItem, removeItem, setItem } from "@/utils/storage";
 import Cookies from "js-cookie";
+import { getItem, removeItem, setItem } from "@/utils/storage";
 import { AuthDataType } from "@/types/common.type";
-const baseurl = "http://192.168.31.234:3000";
+
+const baseurl = "http://192.168.178.175:3000";
 
 const http = axios.create({
   baseURL: baseurl,
@@ -13,25 +15,31 @@ const http = axios.create({
   withCredentials: true,
 });
 
-// Attach access token to each request
-http.interceptors.request.use(async (config) => {
-  // console.log("🔑 Token from cookies:", Cookies.get("token"));
+// ── REQUEST INTERCEPTOR ─────────────────────────────────────
+// Synchronous handler only—no `async` here:
+http.interceptors.request.use(
+  (config) => {
+    // prefer cookie, fallback to localStorage
+    const token =
+      Cookies.get("token") ??
+      (typeof window !== "undefined" ? localStorage.getItem("token") : null);
 
-  const token = Cookies.get("token") || (await getItem("token"));
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-  return config;
-});
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-// Handle response errors globally
+// ── RESPONSE INTERCEPTOR ────────────────────────────────────
 http.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Avoid infinite loop and skip refresh for refresh endpoint itself
+    // Refresh token on 401, except refresh endpoint itself
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
@@ -41,37 +49,26 @@ http.interceptors.response.use(
 
       try {
         const refreshToken = await getItem("refreshToken");
+        if (!refreshToken) throw new Error("No refresh token");
 
-        if (!refreshToken) {
-          console.error("No refresh token available");
-          throw new Error("No refresh token available");
-        }
-
-        // Try to refresh tokens
-        const refreshResponse = await axios.post<AuthDataType>(
+        const { data } = await axios.post<AuthDataType>(
           `${baseurl}/auth/refresh`,
           {},
           {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
+            headers: { Authorization: `Bearer ${refreshToken}` },
             withCredentials: true,
           }
         );
 
-        const { accessToken, refreshToken: newRefreshToken } =
-          refreshResponse.data;
-
+        const { accessToken, refreshToken: newRefreshToken } = data;
         if (accessToken) {
-          await setItem("token", accessToken);
+          localStorage.setItem("token", accessToken);
           Cookies.set("token", accessToken, { path: "/", sameSite: "Lax" });
         }
-
         if (newRefreshToken) {
           await setItem("refreshToken", newRefreshToken);
         }
 
-        // Retry original request with new access token
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return http(originalRequest);
       } catch (refreshError) {
@@ -83,11 +80,13 @@ http.interceptors.response.use(
       }
     }
 
+    // Forbidden
     if (error.response?.status === 403) {
-      const errorMessage = "You don't have permission to access this resource";
       console.error("Access forbidden:", error.response.data);
       window.location.href = "/unauthorized";
-      return Promise.reject(new Error(errorMessage));
+      return Promise.reject(
+        new Error("You don't have permission to access this resource")
+      );
     }
 
     return Promise.reject(error);

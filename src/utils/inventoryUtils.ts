@@ -1,3 +1,5 @@
+import { InventoryMedication } from "@/types/inventory.type";
+
 //To make the stock field dynamic based on the quantity
 export const calculateStockLevel = (quantity: number): string => {
   if (quantity === 0) {

@@ -2,18 +2,23 @@
 import { NewUserFormContext, User } from "@/contexts/multistep-form-context";
 import { useState } from "react";
 
-export function UserFormContextProider({
+const initialUser: User = {
+  email: "",
+  phone: "",
+  role: "",
+  password: "",
+  confirm: "",
+  firstName: "",
+  lastName: "",
+  hospitalID: "",
+};
+
+export function UserFormContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [propertyForm, setPropertyForm] = useState<User>({
-    email: "",
-    phone: "",
-    role: "",
-    password: "",
-    confirm: "",
-  });
+  const [propertyForm, setPropertyForm] = useState<User>(initialUser);
 
   const updatePropertyForm = (values: Partial<User>) => {
     setPropertyForm((prev) => ({ ...prev, ...values }));

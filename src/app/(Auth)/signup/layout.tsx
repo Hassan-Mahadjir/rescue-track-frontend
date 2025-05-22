@@ -1,5 +1,5 @@
 import HeaderWrapper from "@/components/signup/HeaderWrapper";
-import { UserFormContextProider } from "@/components/UserFormContextProvider";
+import { UserFormContextProvider } from "@/components/UserFormContextProvider";
 import React from "react";
 
 const SignupLayout = ({ children }: { children: React.ReactNode }) => {
@@ -7,7 +7,7 @@ const SignupLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="bg-gradient-to-t from-main to-second-green min-h-screen flex items-center justify-center">
       <div className="flex flex-col bg-white w-3/4 rounded-3xl p-5 py-10 my-10">
         <HeaderWrapper />
-        <UserFormContextProider>{children}</UserFormContextProider>
+        <UserFormContextProvider>{children}</UserFormContextProvider>
       </div>
     </div>
   );

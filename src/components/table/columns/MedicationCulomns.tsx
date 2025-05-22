@@ -6,6 +6,7 @@ import { calculateStockLevel } from "@/utils/inventoryUtils";
 import MedicationActions from "../action/MedicationActions";
 import StockLevelBadge from "@/components/badge/StockLevelBadge";
 import { formatDateTime } from "@/utils/extra";
+import { Medication } from "@/types/medication-equipment";
 
 export const InventoryMedicationColumns: ColumnDef<Medication>[] = [
   {
