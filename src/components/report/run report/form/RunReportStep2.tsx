@@ -3,10 +3,11 @@
 import { useFormContext } from "react-hook-form";
 import FormInput from "@/components/FormInput";
 import FormSelect from "@/components/FormSelect";
-import { RunReportConfig } from "@/constants/runReport";
 import FormTextarea from "@/components/FormTextarea";
+import { RunReportConfig } from "@/constants/runReport";
 
-const { incidentOptions, relationshipOptions } = RunReportConfig;
+const { incidentOptions, relationshipOptions, severityCodeOptions } =
+  RunReportConfig;
 
 const RunReportStep2 = () => {
   const form = useFormContext();
@@ -52,12 +53,15 @@ const RunReportStep2 = () => {
               value,
             }))}
           />
-          <FormInput
+          <FormSelect
             form={form}
-            name="mileage"
-            label="Mileage"
-            placeholder="e.g., 12.5"
-            type="number"
+            name="severtiyCode"
+            label="Severity Code"
+            placeholder="Select severity code"
+            options={severityCodeOptions.map(({ name, value }) => ({
+              label: name,
+              value,
+            }))}
           />
         </div>
 
@@ -81,12 +85,16 @@ const RunReportStep2 = () => {
             placeholder="Select Transport Status"
             options={[
               { label: "Transported", value: "transported" },
-              { label: "Not Transported", value: "not transported" },
-              { label: "Pending", value: "pending" },
+              { label: "Refused", value: "refused" },
+              { label: "Cancelled", value: "cancelled" },
+              { label: "Complete", value: "complete" },
+              { label: "In Progress", value: "in progress" },
+              { label: "Unable to Response", value: "unable to response" },
             ]}
           />
         </div>
       </div>
+
       <div>
         <h3 className="text-2xl font-bold mb-4">Response Information</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -115,6 +123,7 @@ const RunReportStep2 = () => {
             type="datetime-local"
           />
         </div>
+
         <FormTextarea
           form={form}
           name="notes"

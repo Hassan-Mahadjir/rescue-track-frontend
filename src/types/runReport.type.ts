@@ -1,27 +1,7 @@
 import { Patient } from "./patients.type";
 
-// Treatment interface
-type Treatment = {
-  id: number;
-  name: string;
-  quantity: number;
-  unit: string;
-  category: string;
-};
-
-// Patient Care Report interface
-export type PatientCareReport = {
-  id: number;
-  patientCondition: string;
-  initialCondition: string | null;
-  primarySymptoms: string | null;
-  notes: string | null;
-  createdAt: string;
-  treatments: Treatment[];
-};
-
-// Profile interface
-interface Profile {
+// Profile type
+export type Profile = {
   id: number;
   firstName: string;
   middleName: string | null;
@@ -34,10 +14,10 @@ interface Profile {
   dateofBirth: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-// User interface (initiatedBy)
-interface User {
+// InitiatedBy / User type
+export type User = {
   id: number;
   email: string;
   password: string;
@@ -48,28 +28,35 @@ interface User {
   otpCodeExpiry: string | null;
   isVerified: boolean;
   profile: Profile;
-}
+};
 
-// Update Fields interface (part of UpdateHistory)
-interface UpdateFields {
+// UpdateFields type
+export type UpdateFields = {
+  id?: number;
+  notes?: string;
+  caller?: string;
+  mileage?: number;
   category?: string;
   priority?: string;
+  patientId?: number;
   callerPhone?: string;
   relationship?: string;
   responseTime?: string;
+  departureTime?: string;
   transportStatus?: string;
   arrivalTimeAtScense?: string;
   arrivalTimeAtPatient?: string;
-}
+};
 
-// Update History interface
+// UpdateHistory type
 export type UpdateHistory = {
   id: number;
   updateFields: UpdateFields;
   updatedAt: string;
+  updatedById: number;
 };
 
-// Single Run Report interface
+// Main RunReportItem type
 export type RunReportItem = {
   id: number;
   caller: string;
@@ -77,15 +64,27 @@ export type RunReportItem = {
   relationship: string;
   category: string;
   priority: string;
+  severtiyCode: string;
   transportStatus: string;
-  mileage: number;
+  mileage: number | null;
   responseTime: string;
+  callReceivedTime: string | null;
+  notificationTime: string | null;
   arrivalTimeAtScense: string;
   arrivalTimeAtPatient: string;
   departureTime: string;
+  fromLocation: string | null;
+  toLocation: string | null;
+  locationNote: string | null;
+  ambulanceNumber: string | null;
+  ambulanceDriver: string | null;
+  arrivalTimeAtDestination: string | null;
+  departureTimeFromDestination: string | null;
   notes: string;
   createAt: string;
-  initiatedBy: User;
-  patient: Patient;
+  updatedAt: string;
+  createdById: number;
+  updatedById: number | null;
+  patient: Patient | null;
   updateHistory: UpdateHistory[];
 };

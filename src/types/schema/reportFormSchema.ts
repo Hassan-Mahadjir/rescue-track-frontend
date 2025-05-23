@@ -1,27 +1,67 @@
-import {
-  CategoryLiterals,
-  TreatmentNameLiterals,
-  UnitLiterals,
-} from "@/constants/treatments";
+// --------------------
+// Imports
+// --------------------
 import { z } from "zod";
 
-// Step 1: Run report ID
-export const runReportSchema = z.object({
-  runReportId: z.number({
-    required_error: "Please select a patient",
-    invalid_type_error: "Invalid runReportId format",
-  }),
+// --------------------
+// Shared Item Schemas
+// --------------------
+export const AllergyItemSchema = z.object({
+  name: z.string().optional(),
 });
 
-// Step 2: Assessments
-export const assessmentsSchema = z.object({
-  patientCondition: z.string().min(1, "Patient condition is required"),
-  primaryAssessment: z.string().min(1, "Primary assessment is required"),
-  secondaryAssessment: z.string().min(1, "Secondary assessment is required"),
+export const ConditionItemSchema = z.object({
+  name: z.string().optional(),
 });
 
-// Step 3: Transport Info
-export const transportInfoSchema = z.object({
+export const TreatmentsSchema = z.object({
+  name: z.string().optional(),
+  dosage: z.number().optional(),
+  giveAt: z.string().optional().nullable(),
+  route: z.string().optional(),
+  result: z.string().optional(),
+  unit: z.string().optional(),
+  category: z.string().optional(),
+});
+
+// --------------------
+// Vital Signs and GCS
+// --------------------
+export const VitalSignSchema = z.object({
+  time: z.string().optional(),
+  T: z.string().optional(),
+  BP: z.string().optional(),
+  pulse: z.string().optional(),
+  resp: z.string().optional(),
+  spO2: z.string().optional(),
+  treatments: z.array(TreatmentsSchema).optional().default([]),
+});
+
+export const GcsSchema = z
+  .object({
+    E: z.number().optional(),
+    V: z.number().optional(),
+    M: z.number().optional(),
+  })
+  .optional();
+
+// --------------------
+// PCR Step Schemas
+// --------------------
+export const PcrStep1Schema = z.object({
+  patientId: z.number().optional(),
+});
+
+export const PcrStep2Schema = z.object({
+  patientCondition: z.string().optional(),
+  primaryAssessment: z.string().optional(),
+  secondaryAssessment: z.string().optional(),
+  notes: z.string().optional(),
+  medicalConditions: z.array(ConditionItemSchema).optional().default([]),
+  allergies: z.array(AllergyItemSchema).optional().default([]),
+});
+
+export const PcrStep3Schema = z.object({
   transferType: z.string().optional(),
   vehicleId: z.string().optional(),
   emergencyType: z.string().optional(),
@@ -29,131 +69,117 @@ export const transportInfoSchema = z.object({
   destinationAddress: z.string().optional(),
 });
 
-// Step 4: Treatments, Medical History, Allergies
-export const singleTreatmentSchema = z.object({
-  id: z.number().optional(),
-  name: z.enum(TreatmentNameLiterals, {
-    errorMap: () => ({ message: "Please select a valid treatment" }),
-  }),
-  quantity: z
-    .number({ required_error: "Quantity is required" })
-    .int()
-    .positive()
-    .max(1000),
-  unit: z.enum(UnitLiterals, {
-    errorMap: () => ({ message: "Please select a valid unit" }),
-  }),
-  category: z.enum(CategoryLiterals, {
-    errorMap: () => ({ message: "Please select a valid category" }),
-  }),
+export const PcrStep4Schema = z.object({
+  truma: z
+    .array(z.object({ name: z.string().optional() }))
+    .optional()
+    .default([]),
+  injuryMechanism: z
+    .array(
+      z.object({
+        mechanism: z.string().optional(),
+        height: z.number().nullable().optional(),
+      })
+    )
+    .optional()
+    .default([]),
+  circumstances: z
+    .array(z.object({ circumstance: z.string().optional() }))
+    .optional()
+    .default([]),
 });
 
-export const allergyItemSchema = z.object({
-  name: z.string().min(1),
-});
-
-export const conditionItemSchema = z.object({
-  name: z.string().min(1),
-});
-
-export const finalStepSchema = z.object({
-  treatments: z.array(singleTreatmentSchema),
-  medicalConditions: z.array(conditionItemSchema).optional().default([]),
-  allergies: z.array(allergyItemSchema).optional().default([]),
-  notes: z.string().optional().default(""),
-});
-
-// Full schema (merged)
-export const PcrReportFormSchema = runReportSchema
-  .merge(assessmentsSchema)
-  .merge(transportInfoSchema)
-  .merge(finalStepSchema);
-
-// Step schemas for wizard forms
-export const stepSchemas = [
-  runReportSchema, // Step 1
-  assessmentsSchema, // Step 2
-  transportInfoSchema, // Step 3
-  finalStepSchema, // Step 4
-];
-
-export type PcrReportFormValues = z.infer<typeof PcrReportFormSchema>;
-
-// PCR Schema with validation messages
-export const PCRSchema = z.object({
+export const PcrStep5Schema = z.object({
+  vitalSigns: z.array(VitalSignSchema).optional().default([]),
+  pupils: z
+    .array(z.object({ PHSY: z.string().optional() }))
+    .optional()
+    .default([]),
+  skins: z
+    .array(z.object({ skin_status: z.string().optional() }))
+    .optional()
+    .default([]),
+  resps: z
+    .array(z.object({ RESP: z.string().optional() }))
+    .optional()
+    .default([]),
+  therapies: z
+    .array(z.object({ therapy: z.string().optional() }))
+    .optional()
+    .default([]),
+  gcs: GcsSchema,
+  dietressLevel: z.string().optional().nullable(),
   runReportId: z.number().optional(),
-  patientCondition: z
-    .string({
-      invalid_type_error: "Patient condition must be a string",
-    })
-    .max(500, {
-      message: "Patient condition must not exceed 500 characters",
-    })
-    .nullable(),
-  primaryAssessment: z
-    .string({
-      invalid_type_error: "Initial condition must be a string",
-    })
-    .max(500, {
-      message: "Initial condition must not exceed 500 characters",
-    })
-    .nullable(),
-  secondaryAssessment: z
-    .string({
-      invalid_type_error: "Primary symptoms must be a string",
-    })
-    .max(500, {
-      message: "Primary symptoms must not exceed 500 characters",
-    })
-    .nullable(),
-  notes: z
-    .string({
-      invalid_type_error: "Notes must be a string",
-    })
-    .max(1000, {
-      message: "Notes must not exceed 1000 characters",
-    })
-    .nullable(),
-  createdAt: z.string().optional(),
 });
 
-//run report schema
-export const Step1Schema = z.object({
+// --------------------
+// Combined PCR Schema
+// --------------------
+export const PcrSchema = PcrStep1Schema.merge(PcrStep2Schema)
+  .merge(PcrStep3Schema)
+  .merge(PcrStep4Schema)
+  .merge(PcrStep5Schema);
+
+export type PcrFormData = z.infer<typeof PcrSchema>;
+export type TreatmentsData = z.infer<typeof TreatmentsSchema>;
+export type AllergyData = z.infer<typeof AllergyItemSchema>;
+export type ConditionData = z.infer<typeof ConditionItemSchema>;
+
+// --------------------
+// Run Report Schemas
+// --------------------
+export const RunReportStep1Schema = z.object({
   id: z.number().optional(),
-  patientId: z.number().min(1, "Please select a patient"),
+  patientId: z.number().optional(),
 });
 
-export const Step2Schema = z.object({
-  caller: z.string().min(1, "Caller name is required"),
-  callerPhone: z.string(),
-  relationship: z.string().min(1, "Relationship is required"),
-  category: z.string().min(1),
-  priority: z.enum(["low", "medium", "high"]),
-  transportStatus: z.enum(["not transported", "transported", "pending"]),
-  mileage: z.coerce.number().nonnegative(),
-});
-
-export const Step3Schema = z.object({
+export const RunReportStep2Schema = z.object({
+  caller: z.string().optional(),
+  callerPhone: z.string().optional(),
+  relationship: z.string().optional(),
+  category: z.string().optional(),
+  priority: z.enum(["low", "medium", "high"]).optional(),
+  severtiyCode: z.string().optional(),
+  transportStatus: z
+    .enum([
+      "transported",
+      "refused",
+      "cancelled",
+      "complete",
+      "in progress",
+      "unable to response",
+    ])
+    .optional(),
   responseTime: z
     .string()
-    .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+    .optional()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Invalid responseTime format",
+    }),
   arrivalTimeAtScense: z
     .string()
-    .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+    .optional()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Invalid arrivalTimeAtScense format",
+    }),
   arrivalTimeAtPatient: z
     .string()
-    .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+    .optional()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Invalid arrivalTimeAtPatient format",
+    }),
   departureTime: z
     .string()
-    .refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+    .optional()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Invalid departureTime format",
+    }),
   notes: z.string().optional(),
 });
 
-// Combine all steps
-export const CombinedSchema = Step1Schema.merge(Step2Schema).merge(Step3Schema);
+export const RunReportStep3Schema = z.object({});
 
-export type CombinedFormData = z.infer<typeof CombinedSchema>;
-export type PCRData = z.infer<typeof PCRSchema>;
-export type TreatmentsData = z.infer<typeof singleTreatmentSchema>;
-export type AllergyData = z.infer<typeof allergyItemSchema>;
-export type ConditionData = z.infer<typeof conditionItemSchema>;
+export const RunReportSchema =
+  RunReportStep1Schema.merge(RunReportStep2Schema).merge(RunReportStep3Schema);
+
+export type RunReportFormData = z.infer<typeof RunReportSchema>;

@@ -25,4 +25,10 @@ export const RunReportConfig = {
     { id: 1, value: "serious", name: "Serious" },
     { id: 1, value: "good", name: "Good" },
   ],
+
+  severityCodeOptions: [
+    { name: "Code 1", value: "CODE-1" },
+    { name: "Code 2", value: "CODE-2" },
+    { name: "Code 3", value: "CODE-3" },
+  ],
 };

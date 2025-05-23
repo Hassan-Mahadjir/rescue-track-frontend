@@ -1,13 +1,5 @@
 "use client";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  AllergyData,
-  CombinedFormData,
-  ConditionData,
-  PCRData,
-  PcrReportFormValues,
-  TreatmentsData,
-} from "@/types/schema/reportFormSchema";
 import { useToast } from "@/hooks/use-toast";
 import reportsService from "../reports-service";
 import { useRouter } from "next/navigation";
@@ -15,8 +7,16 @@ import {
   useRoleBasedQuery,
   useRoleBasedMutation,
 } from "@/hooks/useRoleBasedQuery";
-import { PCR, ReportStat, RunReportItem } from "@/types/report.type";
+import { PCR, ReportStat } from "@/types/report.type";
 import { APIError } from "@/types/error.type";
+import { RunReportItem } from "@/types/runReport.type";
+import {
+  AllergyData,
+  ConditionData,
+  PcrFormData,
+  RunReportFormData,
+  TreatmentsData,
+} from "@/types/schema/reportFormSchema";
 
 export const usePCRs = () => {
   const { data: PCRsData, ...props } = useRoleBasedQuery<PCR[]>({
@@ -57,7 +57,7 @@ export const usePostPCR = () => {
     mutate: mutatePost,
     isPending,
     ...props
-  } = useRoleBasedMutation<PCR, PcrReportFormValues>({
+  } = useRoleBasedMutation<PCR, PcrFormData>({
     adminMutationFn: (data) => reportsService.postPCR(data),
     employeeMutationFn: (data) => reportsService.postPCR(data),
     onSuccess: (response) => {
@@ -94,7 +94,7 @@ export const useUpdatePCR = (id: number) => {
     mutate: mutateUpdate,
     isPending,
     ...props
-  } = useRoleBasedMutation<PCR, PCRData>({
+  } = useRoleBasedMutation<PCR, PcrFormData>({
     adminMutationFn: (data) => reportsService.updatePCR(data, id),
     employeeMutationFn: (data) => reportsService.updatePCR(data, id),
     onSuccess: (response) => {
@@ -478,7 +478,7 @@ export const usePostRunReport = () => {
     mutate: mutatePost,
     isPending,
     ...props
-  } = useRoleBasedMutation<CombinedFormData, CombinedFormData>({
+  } = useRoleBasedMutation<RunReportFormData, RunReportFormData>({
     adminMutationFn: (data) => reportsService.postRunReport(data),
     employeeMutationFn: (data) => reportsService.postRunReport(data),
     onSuccess: async (response) => {
@@ -518,7 +518,7 @@ export const useUpdateRunReport = (id: number) => {
     mutate: mutateUpdate,
     isPending,
     ...props
-  } = useRoleBasedMutation<CombinedFormData, CombinedFormData>({
+  } = useRoleBasedMutation<RunReportFormData, RunReportFormData>({
     adminMutationFn: (data) => reportsService.updateRunReport(data, id),
     employeeMutationFn: (data) => reportsService.updateRunReport(data, id),
     onSuccess: async (response) => {
@@ -558,7 +558,7 @@ export const useDeleteRunReport = () => {
     mutate: mutateDelete,
     isPending,
     ...props
-  } = useRoleBasedMutation<CombinedFormData, number>({
+  } = useRoleBasedMutation<RunReportFormData, number>({
     adminMutationFn: (id) => reportsService.deleteRunReportAdmin(id),
     employeeMutationFn: (id) => reportsService.deleteRunReportAdmin(id),
     onSuccess: (response) => {

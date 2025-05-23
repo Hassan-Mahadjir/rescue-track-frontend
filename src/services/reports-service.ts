@@ -1,13 +1,13 @@
 import { AppResponse } from "@/types/common.type";
 import http from "./api/http";
 import BaseService from "./base-service";
-import { PCR, ReportStat, RunReportItem } from "@/types/report.type";
+import { PCR, ReportStat } from "@/types/report.type";
+import { RunReportItem } from "@/types/runReport.type";
 import {
   AllergyData,
-  CombinedFormData,
   ConditionData,
-  PCRData,
-  PcrReportFormValues,
+  PcrFormData,
+  RunReportFormData,
   TreatmentsData,
 } from "@/types/schema/reportFormSchema";
 
@@ -24,14 +24,14 @@ class ReportService extends BaseService {
     );
     return response;
   }
-  async postPCR(data: PcrReportFormValues) {
+  async postPCR(data: RunReportFormData) {
     const response = await http.post<AppResponse<PCR>>(
       `patient-care-report`,
       data
     );
     return response;
   }
-  async updatePCR(data: PCRData, id: number) {
+  async updatePCR(data: PcrFormData, id: number) {
     const response = await http.patch<AppResponse<PCR>>(
       `patient-care-report/${id}`,
       data
@@ -106,22 +106,22 @@ class ReportService extends BaseService {
     );
     return response;
   }
-  async postRunReport(data: CombinedFormData) {
-    const response = await http.post<AppResponse<CombinedFormData>>(
+  async postRunReport(data: RunReportFormData) {
+    const response = await http.post<AppResponse<RunReportFormData>>(
       `run-report`,
       data
     );
     return response;
   }
-  async updateRunReport(data: CombinedFormData, id: number) {
-    const response = await http.patch<AppResponse<CombinedFormData>>(
+  async updateRunReport(data: RunReportFormData, id: number) {
+    const response = await http.patch<AppResponse<RunReportFormData>>(
       `run-report/${id}`,
       data
     );
     return response;
   }
   async deleteRunReportAdmin(id: number) {
-    const response = await http.delete<AppResponse<CombinedFormData>>(
+    const response = await http.delete<AppResponse<RunReportFormData>>(
       `run-report/manage/${id}`
     );
     return response;

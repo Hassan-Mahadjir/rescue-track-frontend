@@ -1,5 +1,3 @@
-import { PatientCareReport } from "./runReport.type";
-
 export type Profile = {
   id: number;
   firstName: string;
@@ -30,7 +28,7 @@ export type Responsible = {
 };
 
 export type Patient = {
-  id?: number;
+  id: number;
   nationalID: string;
   firstName: string;
   lastName: string;
@@ -42,14 +40,12 @@ export type Patient = {
   nationality: string;
   weight: number;
   height: number;
-  status?: string;
-  createdAt?: string;
-  hospitalId?: string;
-  updatedById?: number;
-  responsibleUserId?: number;
-  createById?: number;
-  patientCareReport?: PatientCareReport[];
-  responsible: Responsible;
+  status: string;
+  createdAt: string;
+  hospitalId: string;
+  createdById: number;
+  updatedById: number | null;
+  responsibleUserId: number;
 };
 
 type Hospital = {

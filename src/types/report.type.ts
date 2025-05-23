@@ -1,28 +1,86 @@
 import { Patient } from "./patients.type";
+export type Unit = {
+  id: number;
+  abbreviation: string;
+  name: string;
+  createdAt: string; // corrected typo from createAt
+};
 
 export type Treatment = {
   id: number;
   name: string;
-  quantity: number;
-  unit: Unit;
+  dosage: number;
+  givenAt: string | null;
+  route: string;
+  result: string;
   category: string;
+  unit: Unit;
 };
 
-type Unit = {
+export type VitalSign = {
   id: number;
-  abbreviation: string;
-  name: string;
-  createAt: string;
+  time: string;
+  T: string;
+  BP: string;
+  pulse: string;
+  resp: string;
+  spO2: string;
+  createdAt: string;
+  treatments: Treatment[];
 };
 
-type MedicalConditions = {
+export type Allergy = {
   id: number;
   name: string;
 };
 
-export type Allergies = {
+export type MedicalCondition = {
   id: number;
   name: string;
+};
+
+export type Trauma = {
+  id: number;
+  name: string;
+};
+
+export type InjuryMechanism = {
+  id: number;
+  mechanism: string;
+  height: number | null;
+};
+
+export type Pupil = {
+  id: number;
+  PHSY: string;
+};
+
+export type Skin = {
+  id: number;
+  skin_status: string;
+};
+
+export type Resp = {
+  id: number;
+  RESP: string;
+};
+
+export type Therapy = {
+  id: number;
+  therapy: string;
+};
+
+export type Circumstance = {
+  id: number;
+  circumstance: string;
+};
+
+export type GCS = {
+  id: number;
+  E: number;
+  V: number;
+  M: number;
+  total: number;
 };
 
 export type Profile = {
@@ -31,93 +89,40 @@ export type Profile = {
   middleName: string | null;
   lastName: string;
   address: string | null;
-  phone: string;
+  city: string | null;
+  area: string | null;
+  phone: string | null;
   avatar: string | null;
   gender: string;
   nationality: string;
   dateofBirth: string;
   createdAt: string;
-  updatedAt?: string;
+  updatedAt: string;
+};
+
+export type Hospital = {
+  id: string;
+  name: string;
+  databaseUrl: string;
+  isActive: boolean;
+  createdAt: string;
 };
 
 export type InitiatedBy = {
   id: number;
   email: string;
   password: string;
-  role: "ADMIN" | "EMPLOYEE" | string;
+  role: string;
   createdAt: string;
-  hashedRefreshToken: string | null;
-  otp: string | null;
-  otpCodeExpiry: string | null;
+  hashedRefreshToken: string;
+  otp: string;
+  otpCodeExpiry: string;
   isVerified: boolean;
   profile: Profile;
   hospital: Hospital;
 };
 
-export type PCR = {
-  id: number;
-  patientCondition: string | null;
-  primaryAssessment: string | null;
-  secondaryAssessment: string | null;
-  notes: string | null;
-  createdAt: string;
-  createdById: number;
-  updatedById: number;
-  updatedAt: string;
-  treatments: Treatment[];
-  initiatedBy: InitiatedBy;
-  patient: Patient;
-  allergies: Allergies[];
-  medicalConditions: MedicalConditions[];
-};
-
-type UpdateFields = {
-  category?: string;
-  priority?: string;
-  callerPhone?: string;
-  relationship?: string;
-  responseTime?: string;
-  transportStatus?: string;
-  arrivalTimeAtScense?: string;
-  arrivalTimeAtPatient?: string;
-};
-
-type UpdateHistory = {
-  id: number;
-  updateFields: UpdateFields;
-  updatedAt: string;
-};
-
-export type RunReportItem = {
-  id: number;
-  caller: string;
-  callerPhone: string;
-  relationship: string;
-  category: string;
-  priority: string;
-  transportStatus: string;
-  mileage: number;
-  responseTime: string;
-  arrivalTimeAtScense: string;
-  arrivalTimeAtPatient: string;
-  departureTime: string;
-  notes: string;
-  createAt: string;
-  updatedById: number;
-  createdById: number;
-  initiatedBy: InitiatedBy;
-  patient: Patient;
-  updateHistory: UpdateHistory[];
-};
-
-type Hospital = {
-  id: string;
-  name: string;
-  isActive: boolean;
-  createAt: Date;
-};
-
-export type ReportStat = {
+export type StatRecord = {
   date: string; // ISO date string like "2025-05-14T00:00:00.000Z"
   type: "PCR" | "Run report";
   low?: number;
@@ -127,4 +132,37 @@ export type ReportStat = {
   stable?: number;
   serious?: number;
   good?: number;
+};
+
+export type ReportStat = {
+  status: number;
+  message: string;
+  data: StatRecord[];
+};
+
+export type PCR = {
+  id: number;
+  patientCondition: string | null;
+  primaryAssessment: string | null;
+  secondaryAssessment: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  dietressLevel: string | null;
+  createdById: number;
+  updatedById: number | null;
+  vitalSign: VitalSign[];
+  treatments: Treatment[]; // redundant if you're accessing treatments only via vitalSign
+  initiatedBy: InitiatedBy;
+  patient: Patient;
+  allergies: Allergy[];
+  medicalConditions: MedicalCondition[];
+  truma: Trauma[];
+  injuryMechanism: InjuryMechanism[];
+  pupil: Pupil[];
+  skin: Skin[];
+  resp: Resp[];
+  therapies: Therapy[];
+  circumstances: Circumstance[];
+  gcs: GCS;
 };

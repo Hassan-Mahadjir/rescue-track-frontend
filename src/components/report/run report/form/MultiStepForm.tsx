@@ -2,13 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  CombinedFormData,
-  CombinedSchema,
-  Step1Schema,
-  Step2Schema,
-  Step3Schema,
-} from "@/types/schema/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
@@ -18,12 +11,19 @@ import RunReportStep2 from "./RunReportStep2";
 import RunReportStep3 from "./RunReportStep3";
 import { usePostRunReport, useUpdateRunReport } from "@/services/api/reports";
 import LoadingIndicator from "@/components/Loading-Indicator";
+import {
+  RunReportFormData,
+  RunReportSchema,
+  RunReportStep1Schema,
+  RunReportStep2Schema,
+  RunReportStep3Schema,
+} from "@/types/schema/reportFormSchema";
 
 const MultiStepForm = ({
   defaultValues,
   isEdit = false,
 }: {
-  defaultValues?: CombinedFormData;
+  defaultValues?: RunReportFormData;
   isEdit?: boolean;
 }) => {
   const allSteps = [
@@ -31,7 +31,11 @@ const MultiStepForm = ({
     { id: "2", label: "Emergency Details" },
     { id: "3", label: "Crew Information" },
   ];
-  const allSchemas = [Step1Schema, Step2Schema, Step3Schema];
+  const allSchemas = [
+    RunReportStep1Schema,
+    RunReportStep2Schema,
+    RunReportStep3Schema,
+  ];
 
   const steps = isEdit ? allSteps.slice(1) : allSteps;
   const stepSchemas = isEdit ? allSchemas.slice(1) : allSchemas;
@@ -44,8 +48,8 @@ const MultiStepForm = ({
   const { mutatePost } = usePostRunReport();
   const { mutateUpdate } = useUpdateRunReport(reportId);
 
-  const form = useForm<CombinedFormData>({
-    resolver: zodResolver(CombinedSchema),
+  const form = useForm<RunReportFormData>({
+    resolver: zodResolver(RunReportSchema),
     mode: "onTouched",
     defaultValues,
   });
@@ -58,7 +62,7 @@ const MultiStepForm = ({
 
   const hasStepErrors = (stepIndex: number) => {
     const schemaKeys = Object.keys(stepSchemas[stepIndex].shape);
-    return schemaKeys.some((key) => !!errors[key as keyof CombinedFormData]);
+    return schemaKeys.some((key) => !!errors[key as keyof RunReportFormData]);
   };
 
   const goToStep = (index: number) => {
@@ -71,7 +75,7 @@ const MultiStepForm = ({
   const handleNext = async () => {
     const currentStepSchema = stepSchemas[step];
     const currentFields = Object.keys(currentStepSchema.shape) as Array<
-      keyof CombinedFormData
+      keyof RunReportFormData
     >;
     const isValid = await trigger(currentFields);
     if (isValid) {
@@ -84,7 +88,7 @@ const MultiStepForm = ({
     setStep((prev) => prev - 1);
   };
 
-  const onSubmit = async (data: CombinedFormData) => {
+  const onSubmit = async (data: RunReportFormData) => {
     setSubmitting(true);
     if (isEdit) {
       mutateUpdate(data, {
