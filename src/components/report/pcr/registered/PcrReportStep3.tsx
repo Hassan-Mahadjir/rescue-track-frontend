@@ -21,7 +21,7 @@ export default function PcrReportStep3() {
   const { control } = useFormContext();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-3xl mx-auto">
       <div className="grid grid-cols-2 gap-4">
         <div className=" p-4 ">
           <h3 className="text-sm font-medium mb-3">Responsible</h3>

@@ -1,11 +1,6 @@
 "use client";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  PcrReportFormSchema,
-  stepSchemas,
-  type PcrReportFormValues,
-} from "@/types/schema/reportFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -18,6 +13,12 @@ import PcrReportStep4 from "./PcrReportStep4";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { usePostPCR } from "@/services/api/reports";
 import LoadingIndicator from "@/components/Loading-Indicator";
+import {
+  PcrFormData,
+  PcrSchema,
+  stepSchemas,
+} from "@/types/schema/reportFormSchema";
+import PcrReportStep5 from "./PcrReportStep5";
 
 const RegisteredForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -25,23 +26,9 @@ const RegisteredForm = () => {
   // const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const { mutatePost } = usePostPCR();
 
-  const form = useForm<PcrReportFormValues>({
-    resolver: zodResolver(PcrReportFormSchema),
-    defaultValues: {
-      runReportId: 0,
-      patientCondition: "",
-      primaryAssessment: "",
-      secondaryAssessment: "",
-      transferType: "",
-      vehicleId: "",
-      emergencyType: "",
-      pickupAddress: "",
-      destinationAddress: "",
-      treatments: [],
-      medicalConditions: [],
-      allergies: [],
-      notes: "",
-    },
+  const form = useForm<PcrFormData>({
+    resolver: zodResolver(PcrSchema),
+    defaultValues: {},
     mode: "onChange",
   });
 
@@ -63,7 +50,7 @@ const RegisteredForm = () => {
     const currentSchema = stepSchemas[currentStep];
     const fieldsToValidate = Object.keys(
       currentSchema.shape
-    ) as (keyof PcrReportFormValues)[];
+    ) as (keyof PcrFormData)[];
 
     const isValid = await trigger(fieldsToValidate);
 
@@ -77,7 +64,7 @@ const RegisteredForm = () => {
     setCurrentStep(step);
   };
 
-  const onSubmit = async (data: PcrReportFormValues) => {
+  const onSubmit = async (data: PcrFormData) => {
     const isValid = await trigger();
 
     if (!isValid) {
@@ -142,6 +129,7 @@ const RegisteredForm = () => {
                     {index === 1 && <PcrReportStep2 />}
                     {index === 2 && <PcrReportStep3 />}
                     {index === 3 && <PcrReportStep4 />}
+                    {index === 4 && <PcrReportStep5 />}
                   </div>
                   <div className="flex justify-between items-center mt-8">
                     {index > 0 ? (

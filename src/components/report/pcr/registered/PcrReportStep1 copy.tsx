@@ -11,20 +11,17 @@ import { useFormContext } from "react-hook-form";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { RunReportItem } from "@/types/report.type";
 import { useUniqueRecentRunReports } from "@/services/api/reports";
-import { useGetPatients } from "@/services/api/patient";
-import { Patient } from "@/types/patients.type";
-import { PatientInfoSkeleton } from "@/components/loading/PatientInfoSkeleton";
-import PatientPersonalInfo from "../../PatientPersonalInfo";
 
 export default function PcrReportStep1() {
-  const { patientsData, isPending } = useGetPatients();
-  const data = patientsData;
+  const { uniqueRecentRunReportsData: data, isPending } =
+    useUniqueRecentRunReports();
   const { setValue, watch, control } = useFormContext();
   const [search, setSearch] = useState("");
-  const [results, setResults] = useState<Patient[]>([]);
+  const [results, setResults] = useState<RunReportItem[]>([]);
 
-  const selectedPatientId = watch("patientId");
+  const selectedRunReportId = watch("runReportId");
 
   useEffect(() => {
     if (!data) return;
@@ -34,62 +31,45 @@ export default function PcrReportStep1() {
   useEffect(() => {
     if (!data) return;
 
-    const filtered = data.filter((patient) => {
+    const filtered = data.filter((report) => {
       const searchLower = search.toLowerCase();
       const patientName =
-        `${patient.firstName} ${patient.lastName}`.toLowerCase();
-      const patientId = (patient.id ?? "").toString();
+        `${report.patient.firstName} ${report.patient.lastName}`.toLowerCase();
+      const nationalId = report.patient.nationalID?.toLowerCase() || "";
+      const reportId = report.id.toString();
 
       return (
-        patientName.includes(searchLower) || patientId.includes(searchLower)
+        patientName.includes(searchLower) ||
+        nationalId.includes(searchLower) ||
+        reportId.includes(searchLower)
       );
     });
     setResults(filtered);
   }, [search, data]);
 
   if (isPending) {
-    return (
-      <div className="space-y-2">
-        <div className="w-full max-w-3xl mx-auto px-4">
-          <div className="relative">
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, national ID, or report ID"
-              className="pl-3 pr-3 py-2 h-10 w-full"
-            />
-          </div>
-        </div>
-        <div className="space-y-2">
-          {[...Array(3)].map((_, index) => (
-            <PatientInfoSkeleton key={index} />
-          ))}
-        </div>
-      </div>
-    );
+    return <div>Loading run reports...</div>;
   }
 
   if (!data) {
-    return <div>No patient data available</div>;
+    return <div>No run report data available</div>;
   }
 
   return (
-    <div className="space-y-4 max-w-6xl mx-auto">
+    <div className="space-y-4">
       <div className="w-full max-w-3xl mx-auto px-4">
-        <div className="relative">
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, national ID, or report ID"
-            className="pl-3 pr-3 py-2 h-10 w-full"
-          />
-        </div>
+        <Input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by patient name, national ID, or report ID"
+          className="pl-3 pr-3 py-2 h-10 w-full"
+        />
       </div>
 
       <div className="space-y-2">
         <FormField
           control={control}
-          name="patientId"
+          name="runReportId"
           render={() => (
             <FormItem>
               <FormControl>
@@ -97,25 +77,36 @@ export default function PcrReportStep1() {
                   <div className="p-4 space-y-4">
                     {results.length === 0 ? (
                       <div className="flex items-center justify-center h-full text-gray-500">
-                        No patients found
+                        No run reports found
                       </div>
                     ) : (
-                      results.map((patient) => (
+                      results.map((report) => (
                         <div
-                          key={patient.id}
+                          key={report.id}
                           className={clsx(
                             "cursor-pointer border rounded-lg transition-colors hover:shadow-md",
-                            selectedPatientId === patient.id
+                            selectedRunReportId === report.id
                               ? "border-gray-900"
                               : "hover:border-gray-400"
                           )}
                           onClick={() =>
-                            setValue("patientId", patient.id, {
+                            setValue("runReportId", report.id, {
                               shouldValidate: true,
                             })
                           }
                         >
-                          <PatientPersonalInfo patient={patient} />
+                          <div className="p-3">
+                            <h3 className="font-semibold text-base">
+                              #{report.id} – {report.patient.firstName}{" "}
+                              {report.patient.lastName}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {report.category} | {report.priority}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Caller: {report.caller}
+                            </p>
+                          </div>
                         </div>
                       ))
                     )}

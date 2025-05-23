@@ -1,6 +1,3 @@
-// --------------------
-// Imports
-// --------------------
 import { z } from "zod";
 
 // --------------------
@@ -110,7 +107,6 @@ export const PcrStep5Schema = z.object({
   therapies: z.array(TherapySchema).optional().default([]),
   gcs: GcsSchema,
   dietressLevel: z.string().optional().nullable(),
-  runReportId: z.number().optional(),
 });
 
 // --------------------
@@ -120,6 +116,14 @@ export const PcrSchema = PcrStep1Schema.merge(PcrStep2Schema)
   .merge(PcrStep3Schema)
   .merge(PcrStep4Schema)
   .merge(PcrStep5Schema);
+
+export const stepSchemas = [
+  PcrStep1Schema, // Step 1
+  PcrStep2Schema, // Step 2
+  PcrStep3Schema, // Step 3
+  PcrStep4Schema, // Step 4
+  PcrStep5Schema, // Step 5
+];
 
 export type PcrFormData = z.infer<typeof PcrSchema>;
 export type TreatmentsData = z.infer<typeof TreatmentsSchema>;
