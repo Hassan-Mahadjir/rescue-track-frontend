@@ -45,6 +45,33 @@ export const GcsSchema = z
   })
   .optional();
 
+export const TrumaSchema = z.object({ name: z.string().optional() });
+
+export const InjuryMechanismSchema = z.object({
+  mechanism: z.string().optional(),
+  height: z.number().nullable().optional(),
+});
+
+export const CircumstanceSchema = z.object({
+  circumstance: z.string().optional(),
+});
+
+export const TherapySchema = z.object({ therapy: z.string().optional() });
+
+export const PupilSchema = z.object({ PHSY: z.string().optional() });
+
+export const SkinSchema = z.object({ skin_status: z.string().optional() });
+
+export const RespSchema = z.object({ RESP: z.string().optional() });
+
+export const UpdatePcrSchema = z.object({
+  patientId: z.number().optional(),
+  patientCondition: z.string().optional(),
+  primaryAssessment: z.string().optional(),
+  secondaryAssessment: z.string().optional(),
+  notes: z.string().optional(),
+});
+
 // --------------------
 // PCR Step Schemas
 // --------------------
@@ -70,43 +97,17 @@ export const PcrStep3Schema = z.object({
 });
 
 export const PcrStep4Schema = z.object({
-  truma: z
-    .array(z.object({ name: z.string().optional() }))
-    .optional()
-    .default([]),
-  injuryMechanism: z
-    .array(
-      z.object({
-        mechanism: z.string().optional(),
-        height: z.number().nullable().optional(),
-      })
-    )
-    .optional()
-    .default([]),
-  circumstances: z
-    .array(z.object({ circumstance: z.string().optional() }))
-    .optional()
-    .default([]),
+  truma: z.array(TrumaSchema).optional().default([]),
+  injuryMechanism: z.array(InjuryMechanismSchema).optional().default([]),
+  circumstances: z.array(CircumstanceSchema).optional().default([]),
 });
 
 export const PcrStep5Schema = z.object({
   vitalSigns: z.array(VitalSignSchema).optional().default([]),
-  pupils: z
-    .array(z.object({ PHSY: z.string().optional() }))
-    .optional()
-    .default([]),
-  skins: z
-    .array(z.object({ skin_status: z.string().optional() }))
-    .optional()
-    .default([]),
-  resps: z
-    .array(z.object({ RESP: z.string().optional() }))
-    .optional()
-    .default([]),
-  therapies: z
-    .array(z.object({ therapy: z.string().optional() }))
-    .optional()
-    .default([]),
+  pupils: z.array(PupilSchema).optional().default([]),
+  skins: z.array(SkinSchema).optional().default([]),
+  resps: z.array(RespSchema).optional().default([]),
+  therapies: z.array(TherapySchema).optional().default([]),
   gcs: GcsSchema,
   dietressLevel: z.string().optional().nullable(),
   runReportId: z.number().optional(),
@@ -124,6 +125,14 @@ export type PcrFormData = z.infer<typeof PcrSchema>;
 export type TreatmentsData = z.infer<typeof TreatmentsSchema>;
 export type AllergyData = z.infer<typeof AllergyItemSchema>;
 export type ConditionData = z.infer<typeof ConditionItemSchema>;
+export type VitalSignData = z.infer<typeof VitalSignSchema>;
+export type TrumaData = z.infer<typeof TrumaSchema>;
+export type InjuryMechanismdata = z.infer<typeof TrumaSchema>;
+export type CircumstanceData = z.infer<typeof TrumaSchema>;
+export type TherapyData = z.infer<typeof TherapySchema>;
+export type PupilsData = z.infer<typeof PupilSchema>;
+export type SkinData = z.infer<typeof SkinSchema>;
+export type RespData = z.infer<typeof RespSchema>;
 
 // --------------------
 // Run Report Schemas
