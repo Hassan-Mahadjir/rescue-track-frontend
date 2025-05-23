@@ -1,8 +1,29 @@
 import { AppResponse } from "@/types/common.type";
 import http from "./api/http";
 import BaseService from "./base-service";
-import { PCR, ReportStat } from "@/types/report.type";
+import {
+  Circumstance,
+  InjuryMechanism,
+  PCR,
+  Pupil,
+  ReportStat,
+  Resp,
+  Skin,
+  Therapy,
+  Trauma,
+  VitalSign,
+} from "@/types/report.type";
 import { RunReportItem } from "@/types/runReport.type";
+import {
+  CircumstanceData,
+  InjuryMechanismdata,
+  PupilsData,
+  RespData,
+  SkinData,
+  TherapyData,
+  TrumaData,
+  VitalSignData,
+} from "@/types/schema/reportFormSchema";
 import {
   AllergyData,
   ConditionData,
@@ -161,6 +182,181 @@ class ReportService extends BaseService {
   async getStats() {
     const response = await http.get<AppResponse<ReportStat[]>>(
       "/patient-care-report/manage/stats"
+    );
+    return response;
+  }
+  // Tharapy endpoint
+  async postPCRTherapy(data: TherapyData, id: number) {
+    const response = await http.post<AppResponse<Therapy>>(
+      `patient-care-report/therapy/${id}`,
+      data
+    );
+    return response;
+  }
+  async updatePCRTherapy(data: TherapyData, id: number) {
+    const response = await http.patch<AppResponse<Therapy>>(
+      `patient-care-report/therapy/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRTherapy(id: number) {
+    const response = await http.delete<AppResponse<null>>(
+      `patient-care-report/therapy/${id}`
+    );
+    return response;
+  }
+  // Skin endpoint
+  async postPCRSkin(data: SkinData, id: number) {
+    const response = await http.post<AppResponse<Skin>>(
+      `patient-care-report/skin/${id}`,
+      data
+    );
+    return response;
+  }
+  async updatePCRSkin(data: SkinData, id: number) {
+    const response = await http.patch<AppResponse<Skin>>(
+      `patient-care-report/skin/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRSkin(id: number) {
+    const response = await http.delete<AppResponse<null>>(
+      `patient-care-report/skin/${id}`
+    );
+    return response;
+  }
+
+  // Pupil endpoint
+  async postPCRPupil(data: PupilsData, id: number) {
+    const response = await http.post<AppResponse<Pupil>>(
+      `patient-care-report/pupil/${id}`,
+      data
+    );
+    return response;
+  }
+
+  async updatePCRPupil(data: PupilsData, id: number) {
+    const response = await http.patch<AppResponse<Pupil>>(
+      `patient-care-report/pupil/${id}`,
+      data
+    );
+    return response;
+  }
+
+  async deletePCRPupil(id: number) {
+    const response = await http.delete<AppResponse<null>>(
+      `patient-care-report/pupil/${id}`
+    );
+    return response;
+  }
+
+  // endpoint for RESP
+  async postPCRResp(data: RespData, id: number) {
+    const response = await http.post<AppResponse<Resp>>(
+      `patient-care-report/resp/${id}`,
+      data
+    );
+    return response;
+  }
+  async updatePCRResp(data: RespData, id: number) {
+    const response = await http.patch<AppResponse<Resp>>(
+      `patient-care-report/resp/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRResp(id: number) {
+    const response = await http.delete<AppResponse<null>>(
+      `patient-care-report/resp/${id}`
+    );
+    return response;
+  }
+
+  // Endpoint for Vital sign
+  async postPCRVitalSign(data: VitalSignData, id: number) {
+    const response = await http.post<AppResponse<VitalSign>>(
+      `patient-care-report/vital-signs/${id}`,
+      data
+    );
+    return response;
+  }
+  async updatePCRVitalSign(data: VitalSignData, id: number) {
+    const response = await http.patch<AppResponse<VitalSign>>(
+      `patient-care-report/vital-signs/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRVitalSign(id: number) {
+    const response = await http.delete<AppResponse<null>>(
+      `patient-care-report/vital-signs/${id}`
+    );
+    return response;
+  }
+  // Endpoint for Trauma
+  async postPCRTrauma(data: TrumaData, id: number) {
+    const response = await http.post<AppResponse<Trauma>>(
+      `patient-care-report/truma/${id}`,
+      data
+    );
+    return response;
+  }
+  async updatePCRTrauma(data: TrumaData, id: number) {
+    const response = await http.patch<AppResponse<Trauma>>(
+      `patient-care-report/truma/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRTrauma(id: number) {
+    const response = await http.delete<AppResponse<null>>(
+      `patient-care-report/truma/${id}`
+    );
+    return response;
+  }
+
+  // Endpoind for Injurey Mechansim Enpoint
+  async postPCRInjuryMechanism(data: InjuryMechanismdata, id: number) {
+    const response = await http.post<AppResponse<InjuryMechanism>>(
+      `patient-care-report/injury-mechanism/${id}`,
+      data
+    );
+    return response;
+  }
+  async updatePCRInjuryMechanism(data: InjuryMechanismdata, id: number) {
+    const response = await http.patch<AppResponse<InjuryMechanism>>(
+      `patient-care-report/injury-mechanism/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRInjuryMechanism(id: number) {
+    const response = await http.delete<AppResponse<null>>(
+      `patient-care-report/injury-mechanism/${id}`
+    );
+    return response;
+  }
+
+  // Endpoind for Special circumstances
+  async postPCRSpecialCircumstance(data: CircumstanceData, id: number) {
+    const response = await http.post<AppResponse<Circumstance>>(
+      `patient-care-report/special-circumstance/${id}`,
+      data
+    );
+    return response;
+  }
+  async updatePCRSpecialCircumstance(data: CircumstanceData, id: number) {
+    const response = await http.patch<AppResponse<Circumstance>>(
+      `patient-care-report/special-circumstance/${id}`,
+      data
+    );
+    return response;
+  }
+  async deletePCRSpecialCircumstance(id: number) {
+    const response = await http.delete<AppResponse<null>>(
+      `patient-care-report/special-circumstance/${id}`
     );
     return response;
   }
