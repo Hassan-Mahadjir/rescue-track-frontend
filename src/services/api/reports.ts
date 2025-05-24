@@ -7,7 +7,7 @@ import {
   useRoleBasedQuery,
   useRoleBasedMutation,
 } from "@/hooks/useRoleBasedQuery";
-import { PCR, ReportStat } from "@/types/report.type";
+import { PCR, ReportStat, Skin, Therapy } from "@/types/report.type";
 import { APIError } from "@/types/error.type";
 import { RunReportItem } from "@/types/runReport.type";
 import {
@@ -15,8 +15,26 @@ import {
   ConditionData,
   PcrFormData,
   RunReportFormData,
+  SkinData,
+  TherapyData,
   TreatmentsData,
 } from "@/types/schema/reportFormSchema";
+import {
+  PupilsData,
+  RespData,
+  VitalSignData,
+  TrumaData,
+  InjuryMechanismdata,
+  CircumstanceData,
+} from "@/types/schema/reportFormSchema";
+import {
+  Pupil,
+  Resp,
+  VitalSign,
+  Trauma,
+  InjuryMechanism,
+  Circumstance,
+} from "@/types/report.type";
 
 export const usePCRs = () => {
   const { data: PCRsData, ...props } = useRoleBasedQuery<PCR[]>({
@@ -621,4 +639,933 @@ export const useStats = () => {
   });
 
   return { StatsData, ...props };
+};
+
+export const usePostPCRTherapy = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<TherapyData, Therapy>({
+    adminMutationFn: (data) => reportsService.postPCRTherapy(data, id),
+    employeeMutationFn: (data) => reportsService.postPCRTherapy(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Therapy Created",
+        description: response.message || "PCR Therapy submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the therapy.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCRTherapy = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<TherapyData, Therapy>({
+    adminMutationFn: (data) => reportsService.updatePCRTherapy(data, id),
+    employeeMutationFn: (data) => reportsService.updatePCRTherapy(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "PCR Treatment Updated",
+        description: response.message || "PCR therapy updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the therapy.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateUpdate, isPending, ...props };
+};
+
+export const useDeletePCRTherapy = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<null, number>({
+    adminMutationFn: (id) => reportsService.deletePCRTherapy(id),
+    employeeMutationFn: (id) => reportsService.deletePCRTherapy(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.message,
+        description: "Therapy deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete failed",
+        description: error.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateDelete, isPending, ...props };
+};
+
+export const usePostPCRSkin = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<SkinData, Skin>({
+    adminMutationFn: (data) => reportsService.postPCRSkin(data, id),
+    employeeMutationFn: (data) => reportsService.postPCRSkin(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Skin Assessment Created",
+        description:
+          response.message || "Skin assessment submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the skin assessment.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCRSkin = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<SkinData, Skin>({
+    adminMutationFn: (data) => reportsService.updatePCRSkin(data, id),
+    employeeMutationFn: (data) => reportsService.updatePCRSkin(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Skin Assessment Updated",
+        description:
+          response.message || "Skin assessment updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the skin assessment.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateUpdate, isPending, ...props };
+};
+
+export const useDeletePCRSkin = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<null, number>({
+    adminMutationFn: (id) => reportsService.deletePCRSkin(id),
+    employeeMutationFn: (id) => reportsService.deletePCRSkin(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.message,
+        description: "Skin assessment deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete Failed",
+        description: error?.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+
+  return { mutateDelete, isPending, ...props };
+};
+
+// --- Pupil Endpoints ---
+export const usePostPCRPupil = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<Pupil, PupilsData>({
+    adminMutationFn: (data) => reportsService.postPCRPupil(data, id),
+    employeeMutationFn: (data) => reportsService.postPCRPupil(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Pupil Assessment Created",
+        description:
+          response.message || "Pupil assessment submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the pupil assessment.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCRPupil = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<Pupil, PupilsData>({
+    adminMutationFn: (data) => reportsService.updatePCRPupil(data, id),
+    employeeMutationFn: (data) => reportsService.updatePCRPupil(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Pupil Assessment Updated",
+        description:
+          response.message || "Pupil assessment updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the pupil assessment.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateUpdate, isPending, ...props };
+};
+
+export const useDeletePCRPupil = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<null, number>({
+    adminMutationFn: (id) => reportsService.deletePCRPupil(id),
+    employeeMutationFn: (id) => reportsService.deletePCRPupil(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.message,
+        description: "Pupil assessment deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete Failed",
+        description: error?.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateDelete, isPending, ...props };
+};
+
+// --- Resp Endpoints ---
+export const usePostPCRResp = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<Resp, RespData>({
+    adminMutationFn: (data) => reportsService.postPCRResp(data, id),
+    employeeMutationFn: (data) => reportsService.postPCRResp(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Respiratory Assessment Created",
+        description:
+          response.message || "Respiratory assessment submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the respiratory assessment.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCRResp = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<Resp, RespData>({
+    adminMutationFn: (data) => reportsService.updatePCRResp(data, id),
+    employeeMutationFn: (data) => reportsService.updatePCRResp(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Respiratory Assessment Updated",
+        description:
+          response.message || "Respiratory assessment updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the respiratory assessment.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateUpdate, isPending, ...props };
+};
+
+export const useDeletePCRResp = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<null, number>({
+    adminMutationFn: (id) => reportsService.deletePCRResp(id),
+    employeeMutationFn: (id) => reportsService.deletePCRResp(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.message,
+        description: "Respiratory assessment deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete Failed",
+        description: error?.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateDelete, isPending, ...props };
+};
+
+// --- Vital Sign Endpoints ---
+export const usePostPCRVitalSign = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<VitalSign, VitalSignData>({
+    adminMutationFn: (data) => reportsService.postPCRVitalSign(data, id),
+    employeeMutationFn: (data) => reportsService.postPCRVitalSign(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Vital Sign Created",
+        description: response.message || "Vital sign submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the vital sign.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCRVitalSign = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<VitalSign, VitalSignData>({
+    adminMutationFn: (data) => reportsService.updatePCRVitalSign(data, id),
+    employeeMutationFn: (data) => reportsService.updatePCRVitalSign(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Vital Sign Updated",
+        description: response.message || "Vital sign updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the vital sign.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateUpdate, isPending, ...props };
+};
+
+export const useDeletePCRVitalSign = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<null, number>({
+    adminMutationFn: (id) => reportsService.deletePCRVitalSign(id),
+    employeeMutationFn: (id) => reportsService.deletePCRVitalSign(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.message,
+        description: "Vital sign deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete Failed",
+        description: error?.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateDelete, isPending, ...props };
+};
+
+// --- Trauma Endpoints ---
+export const usePostPCRTrauma = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<Trauma, TrumaData>({
+    adminMutationFn: (data) => reportsService.postPCRTrauma(data, id),
+    employeeMutationFn: (data) => reportsService.postPCRTrauma(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Trauma Created",
+        description: response.message || "Trauma submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the trauma.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCRTrauma = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<Trauma, TrumaData>({
+    adminMutationFn: (data) => reportsService.updatePCRTrauma(data, id),
+    employeeMutationFn: (data) => reportsService.updatePCRTrauma(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Trauma Updated",
+        description: response.message || "Trauma updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the trauma.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateUpdate, isPending, ...props };
+};
+
+export const useDeletePCRTrauma = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<null, number>({
+    adminMutationFn: (id) => reportsService.deletePCRTrauma(id),
+    employeeMutationFn: (id) => reportsService.deletePCRTrauma(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.message,
+        description: "Trauma deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete Failed",
+        description: error?.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateDelete, isPending, ...props };
+};
+
+// --- Injury Mechanism Endpoints ---
+export const usePostPCRInjuryMechanism = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<InjuryMechanism, InjuryMechanismdata>({
+    adminMutationFn: (data) => reportsService.postPCRInjuryMechanism(data, id),
+    employeeMutationFn: (data) =>
+      reportsService.postPCRInjuryMechanism(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Injury Mechanism Created",
+        description:
+          response.message || "Injury mechanism submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the injury mechanism.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCRInjuryMechanism = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<InjuryMechanism, InjuryMechanismdata>({
+    adminMutationFn: (data) =>
+      reportsService.updatePCRInjuryMechanism(data, id),
+    employeeMutationFn: (data) =>
+      reportsService.updatePCRInjuryMechanism(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Injury Mechanism Updated",
+        description:
+          response.message || "Injury mechanism updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the injury mechanism.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateUpdate, isPending, ...props };
+};
+
+export const useDeletePCRInjuryMechanism = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<null, number>({
+    adminMutationFn: (id) => reportsService.deletePCRInjuryMechanism(id),
+    employeeMutationFn: (id) => reportsService.deletePCRInjuryMechanism(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.message,
+        description: "Injury mechanism deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete Failed",
+        description: error?.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateDelete, isPending, ...props };
+};
+
+// --- Special Circumstance Endpoints ---
+export const usePostPCRSpecialCircumstance = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutatePost,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<Circumstance, CircumstanceData>({
+    adminMutationFn: (data) =>
+      reportsService.postPCRSpecialCircumstance(data, id),
+    employeeMutationFn: (data) =>
+      reportsService.postPCRSpecialCircumstance(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Special Circumstance Created",
+        description:
+          response.message || "Special circumstance submitted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Submission Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while submitting the special circumstance.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutatePost, isPending, ...props };
+};
+
+export const useUpdatePCRSpecialCircumstance = (id: number) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateUpdate,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<Circumstance, CircumstanceData>({
+    adminMutationFn: (data) =>
+      reportsService.updatePCRSpecialCircumstance(data, id),
+    employeeMutationFn: (data) =>
+      reportsService.updatePCRSpecialCircumstance(data, id),
+    onSuccess: (response) => {
+      toast({
+        title: "Special Circumstance Updated",
+        description:
+          response.message || "Special circumstance updated successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR", id] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Update Failed",
+        description:
+          error?.response?.data?.message ||
+          "An error occurred while updating the special circumstance.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateUpdate, isPending, ...props };
+};
+
+export const useDeletePCRSpecialCircumstance = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateDelete,
+    isPending,
+    ...props
+  } = useRoleBasedMutation<null, number>({
+    adminMutationFn: (id) => reportsService.deletePCRSpecialCircumstance(id),
+    employeeMutationFn: (id) => reportsService.deletePCRSpecialCircumstance(id),
+    onSuccess: (response) => {
+      toast({
+        title: response.message,
+        description: "Special circumstance deleted successfully.",
+        variant: "default",
+        duration: 3000,
+        progressColor: "bg-green-500",
+      });
+      queryClient.invalidateQueries({ queryKey: ["PCR"] });
+      router.refresh();
+    },
+    onError: (error: APIError) => {
+      console.error(error);
+      toast({
+        title: "Delete Failed",
+        description: error?.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+        duration: 5000,
+        progressColor: "bg-red-500",
+      });
+    },
+  });
+  return { mutateDelete, isPending, ...props };
 };

@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { getItem, removeItem, setItem } from "@/utils/storage";
 import { AuthDataType } from "@/types/common.type";
 
-const baseurl = "http://192.168.178.175:3000";
+const baseurl = "http://192.168.37.29:3000";
 
 const http = axios.create({
   baseURL: baseurl,
