@@ -14,11 +14,11 @@ import CrewTab from "../CrewTab";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { PCRData, PCRSchema } from "@/types/schema/reportFormSchema";
 import { useUpdatePCR } from "@/services/api/reports";
 import { PCR } from "@/types/report.type";
 import { formatDateOnly } from "@/utils/extra";
 import LoadingIndicator from "@/components/Loading-Indicator";
+import { PcrFormData, PcrSchema } from "@/types/schema/reportFormSchema";
 
 interface EditPCRDialogProp {
   pcr: PCR;
@@ -29,19 +29,18 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
   const [activeTab, setActiveTab] = React.useState("incident");
   const { mutateUpdate, isPending } = useUpdatePCR(pcr.id);
 
-  const form = useForm<PCRData>({
-    resolver: zodResolver(PCRSchema),
+  const form = useForm<PcrFormData>({
+    resolver: zodResolver(PcrSchema),
     defaultValues: {
-      runReportId: pcr.id,
+      patientId: pcr.patient.id,
       patientCondition: pcr.patientCondition ?? "",
       primaryAssessment: pcr.primaryAssessment ?? "",
       secondaryAssessment: pcr.secondaryAssessment ?? "",
       notes: pcr.notes ?? "",
-      createdAt: formatDateOnly(pcr.createdAt),
     },
   });
 
-  const onSubmit = async (data: PCRData) => {
+  const onSubmit = async (data: PcrFormData) => {
     console.log("data", data);
 
     mutateUpdate(data, {

@@ -50,13 +50,7 @@ const EditTreatmentDialog = ({ treatment, id }: TreatmentsProps) => {
 
   const form = useForm<TreatmentsData>({
     resolver: zodResolver(singleTreatmentSchema),
-    defaultValues: {
-      id: treatment.id,
-      name: treatment.name || "",
-      quantity: treatment.quantity,
-      unit: treatment.unit.abbreviation || "",
-      category: treatment.category || "",
-    },
+    defaultValues,
   });
 
   const onSubmit = (data: TreatmentsData) => {
