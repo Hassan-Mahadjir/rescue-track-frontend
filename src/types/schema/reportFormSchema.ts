@@ -190,7 +190,43 @@ export const RunReportStep2Schema = z.object({
   notes: z.string().optional(),
 });
 
-export const RunReportStep3Schema = z.object({});
+export const RunReportStep3Schema = z.object({
+  // Transport & crew details
+  mileage: z.number().nullable().optional(),
+  callReceivedTime: z
+    .string()
+    .optional()
+    .nullable()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Invalid callReceivedTime format",
+    }),
+  notificationTime: z
+    .string()
+    .optional()
+    .nullable()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Invalid notificationTime format",
+    }),
+  fromLocation: z.string().optional().nullable(),
+  toLocation: z.string().optional().nullable(),
+  locationNote: z.string().optional().nullable(),
+  ambulanceNumber: z.string().optional().nullable(),
+  ambulanceDriver: z.string().optional().nullable(),
+  arrivalTimeAtDestination: z
+    .string()
+    .optional()
+    .nullable()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Invalid arrivalTimeAtDestination format",
+    }),
+  departureTimeFromDestination: z
+    .string()
+    .optional()
+    .nullable()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Invalid departureTimeFromDestination format",
+    }),
+});
 
 export const RunReportSchema =
   RunReportStep1Schema.merge(RunReportStep2Schema).merge(RunReportStep3Schema);

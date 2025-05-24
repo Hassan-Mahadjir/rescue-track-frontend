@@ -1,9 +1,7 @@
-"use client";
-
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import RunReportAction from "../action/RunReportAction";
-import { RunReportItem } from "@/types/report.type";
+import { RunReportItem } from "@/types/runReport.type";
 
 export const RunReportColumns: ColumnDef<RunReportItem>[] = [
   {
@@ -28,20 +26,19 @@ export const RunReportColumns: ColumnDef<RunReportItem>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: "firstName",
+    id: "firstName",
     header: "First Name",
-    accessorFn: (row) => row.patient.firstName,
-    cell: ({ row: { original: patient } }) => (
-      <span>{patient.patient.firstName}</span>
-    ),
+    accessorFn: (row) => row.patient?.firstName ?? "Unknown",
+    cell: (info) => <span>{String(info.getValue())}</span>,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
   },
   {
-    accessorKey: "lastName",
+    id: "lastName",
     header: "Last Name",
-    accessorFn: (row) => `${row.patient.lastName}`,
+    accessorFn: (row) => row.patient?.lastName ?? "Unknown",
+    cell: (info) => <span>{String(info.getValue())}</span>,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -49,25 +46,31 @@ export const RunReportColumns: ColumnDef<RunReportItem>[] = [
   {
     id: "fullName",
     header: "Full Name",
-    accessorFn: (row) =>
-      `${row.patient.firstName ?? ""} ${row.patient.lastName ?? ""}`.trim(),
+    accessorFn: (row) => {
+      const first = row.patient?.firstName || "Unknown";
+      const last = row.patient?.lastName;
+      return first || last ? `${first ?? ""} ${last ?? ""}`.trim() : "Unknown";
+    },
+    cell: (info) => <span>{String(info.getValue())}</span>,
     enableSorting: true,
     enableColumnFilter: true,
     enableGlobalFilter: true,
     enableHiding: true,
   },
   {
-    accessorKey: "gender",
+    id: "gender",
     header: "Gender",
-    accessorFn: (row) => `${row.patient.gender}`,
+    accessorFn: (row) => row.patient?.gender ?? "Unknown",
+    cell: (info) => <span>{String(info.getValue())}</span>,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
   },
   {
-    accessorKey: "nationality",
+    id: "nationality",
     header: "Nationality",
-    accessorFn: (row) => `${row.patient.nationality}`,
+    accessorFn: (row) => row.patient?.nationality ?? "Unknown",
+    cell: (info) => <span>{String(info.getValue())}</span>,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
@@ -76,17 +79,14 @@ export const RunReportColumns: ColumnDef<RunReportItem>[] = [
     id: "id",
     accessorKey: "id",
     header: "ID Number",
+    cell: (info) => <span>{String(info.getValue())}</span>,
     enableSorting: true,
     enableColumnFilter: true,
     enableHiding: true,
   },
-
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
-      const id = row.original.id;
-      return <RunReportAction id={id} />;
-    },
+    cell: ({ row }) => <RunReportAction id={row.original.id} />,
   },
 ];

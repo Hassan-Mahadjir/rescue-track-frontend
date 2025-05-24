@@ -16,21 +16,30 @@ import { Patient } from "@/types/patients.type";
 import { formatDate } from "@/utils/extra";
 
 interface PatientPersonalInfoProps {
-  patient: Patient;
+  patient: Patient | null;
 }
 
 const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
   patient,
 }) => {
+  // 1) Guard against null
+  if (!patient) {
+    return (
+      <div className="p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 rounded-md">
+        No patient information available.
+      </div>
+    );
+  }
+
+  // 2) Safe to use `patient` now
   const patientProfile = patient;
 
-  // Helper function to calculate age accurately
+  // Helper to calculate age
   const calculateAge = (dateString: string): number => {
     const birthDate = new Date(dateString);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-
     if (
       monthDiff < 0 ||
       (monthDiff === 0 && today.getDate() < birthDate.getDate())
@@ -47,22 +56,22 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
         <h2 className="text-lg font-bold text-gray-800">PATIENT INFORMATION</h2>
         <div className="flex flex-row">
           <Image
-            src={
-              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-            }
+            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
             width={80}
             height={100}
-            alt="profile Picture"
+            alt="Profile"
             className="w-20 h-24 rounded-md object-cover"
           />
           <div className="flex flex-col ml-4">
             <h2 className="text-lg text-gray-800">
-              {patientProfile.firstName || "Unkonwn"}{" "}
-              {patient.lastName || "unknown"}
+              {patientProfile.firstName || "Unknown"}{" "}
+              {patientProfile.lastName || "Unknown"}
             </h2>
             <p className="text-gray-600 text-sm">
               <strong>Age:</strong>{" "}
-              {calculateAge(patientProfile.dateofBirth) || "Unknown"}
+              {patientProfile.dateofBirth
+                ? calculateAge(patientProfile.dateofBirth)
+                : "Unknown"}
             </p>
             <p className="text-gray-600 text-sm">
               <strong>Phone:</strong> {patientProfile.phone || "Unknown"}
@@ -77,7 +86,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
       {/* Patient Details Section */}
       <div className="grid grid-cols-4 grid-rows-3 gap-4 px-4 text-gray-700 w-full xmd:flex-1 md:border-l">
         {[
-          { label: "Identify Number", value: patientProfile.id },
+          { label: "Identify Number", value: String(patientProfile.id) },
           {
             label: "Date of Birth",
             value: patientProfile.dateofBirth
@@ -86,25 +95,23 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
           },
           {
             label: "Nationality",
-            value: patientProfile.nationality
-              ? patientProfile.nationality
-              : "Unknown",
+            value: patientProfile.nationality || "Unknown",
           },
           { label: "Address", value: "Unknown" },
           {
             label: "Sex",
-            value: patientProfile.gender ? patientProfile.gender : "Unknown",
+            value: patientProfile.gender || "Unknown",
           },
           {
             label: "Height",
             value: patientProfile.height
-              ? `${patientProfile.height} CM`
+              ? `${patientProfile.height} cm`
               : "Unknown",
           },
           {
             label: "Weight",
             value: patientProfile.weight
-              ? `${patientProfile.weight} KG`
+              ? `${patientProfile.weight} kg`
               : "Unknown",
           },
           { label: "Blood Type", value: "Unknown" },
@@ -121,7 +128,6 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
             <DialogTrigger asChild>
               <Button className="bg-main font-semibold">Update Info</Button>
             </DialogTrigger>
-
             <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Modify Patient Information</DialogTitle>
@@ -130,9 +136,7 @@ const PatientPersonalInfo: React.FC<PatientPersonalInfoProps> = ({
                   accurate and up-to-date.
                 </DialogDescription>
               </DialogHeader>
-              <PersonalInfoDialog
-                id={patientProfile.id ? Number(patientProfile.id) : 0}
-              />
+              <PersonalInfoDialog id={patientProfile.id} />
             </DialogContent>
           </Dialog>
         </div>

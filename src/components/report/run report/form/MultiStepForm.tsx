@@ -26,6 +26,7 @@ const MultiStepForm = ({
   defaultValues?: RunReportFormData;
   isEdit?: boolean;
 }) => {
+  // always show all three steps
   const allSteps = [
     { id: "1", label: "Patient Information" },
     { id: "2", label: "Emergency Details" },
@@ -37,8 +38,8 @@ const MultiStepForm = ({
     RunReportStep3Schema,
   ];
 
-  const steps = isEdit ? allSteps.slice(1) : allSteps;
-  const stepSchemas = isEdit ? allSchemas.slice(1) : allSchemas;
+  const steps = allSteps;
+  const stepSchemas = allSchemas;
 
   const [step, setStep] = useState(0);
   const [touchedSteps, setTouchedSteps] = useState<number[]>([]);
@@ -77,8 +78,8 @@ const MultiStepForm = ({
     const currentFields = Object.keys(currentStepSchema.shape) as Array<
       keyof RunReportFormData
     >;
-    const isValid = await trigger(currentFields);
-    if (isValid) {
+    const valid = await trigger(currentFields);
+    if (valid) {
       setTouchedSteps((prev) => [...new Set([...prev, step])]);
       setStep((prev) => prev + 1);
     }
@@ -91,13 +92,9 @@ const MultiStepForm = ({
   const onSubmit = async (data: RunReportFormData) => {
     setSubmitting(true);
     if (isEdit) {
-      mutateUpdate(data, {
-        onSettled: () => setSubmitting(false),
-      });
+      mutateUpdate(data, { onSettled: () => setSubmitting(false) });
     } else {
-      mutatePost(data, {
-        onSettled: () => setSubmitting(false),
-      });
+      mutatePost(data, { onSettled: () => setSubmitting(false) });
     }
   };
 
@@ -130,10 +127,10 @@ const MultiStepForm = ({
                       >
                         <div className="flex items-center justify-center sm:justify-start gap-1 sm:gap-2">
                           {hasError && (
-                            <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+                            <AlertCircle className="h-4 w-4 text-red-500" />
                           )}
-                          {isCompleted && !hasError && (
-                            <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          {isCompleted && (
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
                           )}
                           <span className="text-xs sm:text-sm">
                             {stepItem.label}
@@ -152,13 +149,9 @@ const MultiStepForm = ({
                   className="p-6"
                 >
                   <div className="min-h-[300px]">
-                    {!isEdit && index === 0 && <RunReportStep1 />}
-                    {(!isEdit && index === 1) || (isEdit && index === 0) ? (
-                      <RunReportStep2 />
-                    ) : null}
-                    {(!isEdit && index === 2) || (isEdit && index === 1) ? (
-                      <RunReportStep3 />
-                    ) : null}
+                    {index === 0 && <RunReportStep1 />}
+                    {index === 1 && <RunReportStep2 />}
+                    {index === 2 && <RunReportStep3 />}
                   </div>
 
                   <div className="flex justify-between items-center mt-8">
@@ -172,7 +165,7 @@ const MultiStepForm = ({
                         Previous
                       </Button>
                     ) : (
-                      <div></div>
+                      <div />
                     )}
                     {index < steps.length - 1 ? (
                       <Button
@@ -191,9 +184,7 @@ const MultiStepForm = ({
                         disabled={submitting || !isValid}
                       >
                         {submitting ? (
-                          <>
-                            <LoadingIndicator />
-                          </>
+                          <LoadingIndicator />
                         ) : isEdit ? (
                           "Update Report"
                         ) : (

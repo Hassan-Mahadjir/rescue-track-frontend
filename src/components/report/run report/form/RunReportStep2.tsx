@@ -131,6 +131,84 @@ const RunReportStep2 = () => {
           placeholder="Enter any observations, injuries, or important notes..."
         />
       </div>
+      <h3 className="text-2xl font-bold mb-4">Transport & Crew Details</h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormInput
+          form={form}
+          name="mileage"
+          label="Mileage"
+          type="number"
+          placeholder="Enter mileage"
+        />
+        <FormInput
+          form={form}
+          name="callReceivedTime"
+          label="Call Received Time"
+          type="datetime-local"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormInput
+          form={form}
+          name="notificationTime"
+          label="Notification Time"
+          type="datetime-local"
+        />
+        <FormInput
+          form={form}
+          name="arrivalTimeAtDestination"
+          label="Arrival at Destination"
+          type="datetime-local"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormInput
+          form={form}
+          name="departureTimeFromDestination"
+          label="Departure from Destination"
+          type="datetime-local"
+        />
+        <FormInput
+          form={form}
+          name="fromLocation"
+          label="From Location"
+          placeholder="Enter origin location"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormInput
+          form={form}
+          name="toLocation"
+          label="To Location"
+          placeholder="Enter destination location"
+        />
+        <FormInput
+          form={form}
+          name="ambulanceNumber"
+          label="Ambulance Number"
+          placeholder="Enter ambulance number"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormInput
+          form={form}
+          name="ambulanceDriver"
+          label="Ambulance Driver"
+          placeholder="Enter driver name"
+        />
+      </div>
+
+      <FormTextarea
+        form={form}
+        name="locationNote"
+        label="Location Note"
+        placeholder="Additional location details or notes"
+      />
     </div>
   );
 };
