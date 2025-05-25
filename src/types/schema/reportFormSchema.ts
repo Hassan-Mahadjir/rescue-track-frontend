@@ -137,6 +137,7 @@ export type TherapyData = z.infer<typeof TherapySchema>;
 export type PupilsData = z.infer<typeof PupilSchema>;
 export type SkinData = z.infer<typeof SkinSchema>;
 export type RespData = z.infer<typeof RespSchema>;
+export type GcsData = z.infer<typeof GcsSchema>;
 
 // --------------------
 // Run Report Schemas

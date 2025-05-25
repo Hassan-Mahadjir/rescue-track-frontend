@@ -1,20 +1,20 @@
-"use client"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import AddMedicalDataDialog from "./AddMedicalDataDialog"
-import DeleteMedicalDataButton from "./DeleteMedicalDataButton"
+"use client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AddMedicalDataDialog, { TypeKeys } from "./AddMedicalDataDialog";
+import DeleteMedicalDataButton from "./DeleteMedicalDataButton";
 
 interface MedicalDataItem {
-  id: number
-  [key: string]: any
+  id: number;
+  [key: string]: any;
 }
 
 interface MedicalDataSectionProps {
-  title: string
-  data: MedicalDataItem[]
-  pcrId: number
-  type: string
-  displayField: string
-  extraField?: string
+  title: string;
+  data: MedicalDataItem[];
+  pcrId: number;
+  type: TypeKeys;
+  displayField: string;
+  extraField?: string;
 }
 
 export default function MedicalDataSection({
@@ -29,7 +29,7 @@ export default function MedicalDataSection({
     <Card className="bg-gray-100 shadow-md">
       <CardHeader className="py-3 px-6 flex flex-row justify-between items-center">
         <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-        <AddMedicalDataDialog pcrId={pcrId} type={type} />
+        <AddMedicalDataDialog id={pcrId} type={type} />
       </CardHeader>
       <CardContent className="px-6 pb-6">
         {data && data.length > 0 ? (
@@ -55,9 +55,11 @@ export default function MedicalDataSection({
             ))}
           </div>
         ) : (
-          <p className="text-gray-600 text-center py-4">No {title.toLowerCase()} recorded.</p>
+          <p className="text-gray-600 text-center py-4">
+            No {title.toLowerCase()} recorded.
+          </p>
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,346 +1,394 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
+import { useState } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { VitalSign as VitalSignType } from "@/types/report.type"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import LoadingIndicator from "@/components/Loading-Indicator";
+import type { VitalSign as VitalSignType } from "@/types/report.type";
+import {
+  VitalSignData,
+  VitalSignSchema,
+} from "@/types/schema/reportFormSchema";
+import { useUpdatePCRVitalSign } from "@/services/api/reports";
 
 interface EditVitalSignDialogProps {
-  vitalSign: VitalSignType
-  pcrId: number
+  vitalSign: VitalSignType;
 }
 
-interface TreatmentForm {
-  name: string
-  dosage: number
-  giveAt: string
-  route: string
-  result: string
-  unit: string
-  category: string
-}
+export default function EditVitalSignDialog({
+  vitalSign,
+}: EditVitalSignDialogProps) {
+  const [open, setOpen] = useState(false);
+  const { mutateUpdate, isPending } = useUpdatePCRVitalSign(vitalSign.id);
 
-export default function EditVitalSignDialog({ vitalSign, pcrId }: EditVitalSignDialogProps) {
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-  // Vital Signs Form State
-  const [vitalSignForm, setVitalSignForm] = useState({
-    time: new Date(vitalSign.time).toISOString().slice(0, 16),
-    T: vitalSign.T,
-    BP: vitalSign.BP,
-    pulse: vitalSign.pulse,
-    resp: vitalSign.resp,
-    spO2: vitalSign.spO2,
-  })
-
-  // Treatments Form State
-  const [treatments, setTreatments] = useState<TreatmentForm[]>(
-    vitalSign.treatments?.map((t) => ({
-      name: t.name,
-      dosage: t.dosage,
-      giveAt: t.givenAt ? new Date(t.givenAt).toISOString().slice(0, 16) : "",
-      route: t.route,
-      result: t.result,
-      unit: t.unit.abbreviation,
-      category: t.category,
-    })) || [],
-  )
-
-  const addTreatment = () => {
-    setTreatments([
-      ...treatments,
-      {
-        name: "",
-        dosage: 0,
-        giveAt: "",
-        route: "",
-        result: "",
-        unit: "mg",
-        category: "antibiotic",
-      },
-    ])
-  }
-
-  const removeTreatment = (index: number) => {
-    setTreatments(treatments.filter((_, i) => i !== index))
-  }
-
-  const updateTreatment = (index: number, field: keyof TreatmentForm, value: string | number) => {
-    const updated = [...treatments]
-    updated[index] = { ...updated[index], [field]: value }
-    setTreatments(updated)
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-
-    try {
-      const payload = {
-        time: vitalSignForm.time.replace("T", " ") + ":00",
-        T: vitalSignForm.T,
-        BP: vitalSignForm.BP,
-        pulse: vitalSignForm.pulse,
-        resp: vitalSignForm.resp,
-        spO2: vitalSignForm.spO2,
-        treatments: treatments.map((t) => ({
+  //
+  // 2) Initialize react-hook-form with default values
+  //
+  const form = useForm<VitalSignData>({
+    resolver: zodResolver(VitalSignSchema),
+    defaultValues: {
+      time: new Date(vitalSign.time).toISOString().slice(0, 16),
+      T: vitalSign.T,
+      BP: vitalSign.BP,
+      pulse: vitalSign.pulse,
+      resp: vitalSign.resp,
+      spO2: vitalSign.spO2,
+      treatments:
+        vitalSign.treatments?.map((t) => ({
           name: t.name,
-          dosage: t.dosage,
-          giveAt: t.giveAt ? t.giveAt.replace("T", " ") + ":00" : null,
-          route: t.route,
-          result: t.result,
-          unit: t.unit,
           category: t.category,
-        })),
-      }
+          dosage: t.dosage,
+          unit: t.unit.abbreviation,
+          route: t.route,
+          giveAt: t.givenAt
+            ? new Date(t.givenAt).toISOString().slice(0, 16)
+            : undefined,
+          result: t.result,
+        })) ?? [],
+    },
+  });
 
-      // Replace with your actual API call
-      console.log("Updating vital sign:", payload)
+  //
+  // 3) Field array for treatments
+  //
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "treatments",
+  });
 
-      setOpen(false)
-    } catch (error) {
-      console.error("Error updating vital sign:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const addTreatment = () =>
+    append({
+      name: "",
+      category: "antibiotic",
+      dosage: 0,
+      unit: "mg",
+      route: "",
+      giveAt: undefined,
+      result: "",
+    });
+
+  //
+  // 4) Submit handler
+  //
+  const onSubmit = (data: VitalSignData) => {
+    mutateUpdate(data, {
+      onSuccess: () => {
+        form.reset();
+        setOpen(false);
+      },
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-main font-semibold">Update Info</Button>
+        <Button className="bg-main font-semibold">Edit Vital Signs</Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Vital Signs</DialogTitle>
-          <DialogDescription>Update the vital signs and treatments for this record.</DialogDescription>
+          <DialogTitle>Edit Vital Signs & Treatments</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Vital Signs Section */}
-          <Card className="bg-gray-100">
-            <CardHeader className="py-3">
-              <CardTitle className="text-lg font-semibold">Vital Signs</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="time">Time</Label>
-                  <Input
-                    id="time"
-                    type="datetime-local"
-                    value={vitalSignForm.time}
-                    onChange={(e) => setVitalSignForm({ ...vitalSignForm, time: e.target.value })}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="temperature">Temperature (°C)</Label>
-                  <Input
-                    id="temperature"
-                    value={vitalSignForm.T}
-                    onChange={(e) => setVitalSignForm({ ...vitalSignForm, T: e.target.value })}
-                    placeholder="36.5"
-                    required
-                  />
-                </div>
-              </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Vital Signs */}
+            <Card className="bg-gray-100">
+              <CardHeader>
+                <CardTitle>Vital Signs</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="T"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Temperature (°C)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="36.5" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="bp">Blood Pressure</Label>
-                  <Input
-                    id="bp"
-                    value={vitalSignForm.BP}
-                    onChange={(e) => setVitalSignForm({ ...vitalSignForm, BP: e.target.value })}
-                    placeholder="120/80"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="pulse">Pulse</Label>
-                  <Input
-                    id="pulse"
-                    value={vitalSignForm.pulse}
-                    onChange={(e) => setVitalSignForm({ ...vitalSignForm, pulse: e.target.value })}
-                    placeholder="72"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="resp">Respiration</Label>
-                  <Input
-                    id="resp"
-                    value={vitalSignForm.resp}
-                    onChange={(e) => setVitalSignForm({ ...vitalSignForm, resp: e.target.value })}
-                    placeholder="16"
-                    required
-                  />
-                </div>
-              </div>
+                <FormField
+                  control={form.control}
+                  name="BP"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Blood Pressure</FormLabel>
+                      <FormControl>
+                        <Input placeholder="120/80" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="spo2">SpO₂</Label>
-                  <Input
-                    id="spo2"
-                    value={vitalSignForm.spO2}
-                    onChange={(e) => setVitalSignForm({ ...vitalSignForm, spO2: e.target.value })}
-                    placeholder="98%"
-                    required
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                <FormField
+                  control={form.control}
+                  name="pulse"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Pulse</FormLabel>
+                      <FormControl>
+                        <Input placeholder="72" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          {/* Treatments Section */}
-          <Card className="bg-gray-100">
-            <CardHeader className="py-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-semibold">Treatments</CardTitle>
-                <Button type="button" onClick={addTreatment} variant="outline" size="sm">
+                <FormField
+                  control={form.control}
+                  name="resp"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Respiration</FormLabel>
+                      <FormControl>
+                        <Input placeholder="16" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="spO2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>SpO₂</FormLabel>
+                      <FormControl>
+                        <Input placeholder="98%" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Treatments */}
+            <Card className="bg-gray-100">
+              <CardHeader className="flex justify-between items-center">
+                <CardTitle>Treatments</CardTitle>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={addTreatment}
+                >
                   Add Treatment
                 </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {treatments.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>No treatments added. Click "Add Treatment" to get started.</p>
-                </div>
-              ) : (
-                treatments.map((treatment, index) => (
-                  <Card key={index} className="bg-white">
-                    <CardHeader className="py-3">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-base">Treatment {index + 1}</CardTitle>
-                        <Button type="button" variant="outline" size="sm" onClick={() => removeTreatment(index)}>
-                          Remove
-                        </Button>
-                      </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {fields.length === 0 && (
+                  <p className="text-gray-500 text-center">
+                    No treatments added.
+                  </p>
+                )}
+
+                {fields.map((field, index) => (
+                  <Card key={field.id} className="bg-white">
+                    <CardHeader className="flex justify-between items-center">
+                      <CardTitle>Treatment {index + 1}</CardTitle>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => remove(index)}
+                      >
+                        Remove
+                      </Button>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label>Treatment Name</Label>
-                          <Input
-                            value={treatment.name}
-                            onChange={(e) => updateTreatment(index, "name", e.target.value)}
-                            placeholder="e.g., Aspirin"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <Label>Category</Label>
-                          <Select
-                            value={treatment.category}
-                            onValueChange={(value) => updateTreatment(index, "category", value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="antibiotic">Antibiotic</SelectItem>
-                              <SelectItem value="analgesic">Analgesic</SelectItem>
-                              <SelectItem value="antihistamine">Antihistamine</SelectItem>
-                              <SelectItem value="bronchodilator">Bronchodilator</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
+                    <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      <FormField
+                        control={form.control}
+                        name={`treatments.${index}.name` as any}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Aspirin" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <Label>Dosage</Label>
-                          <Input
-                            type="number"
-                            value={treatment.dosage}
-                            onChange={(e) => updateTreatment(index, "dosage", Number(e.target.value))}
-                            placeholder="100"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <Label>Unit</Label>
-                          <Select
-                            value={treatment.unit}
-                            onValueChange={(value) => updateTreatment(index, "unit", value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="mg">mg</SelectItem>
-                              <SelectItem value="ml">ml</SelectItem>
-                              <SelectItem value="g">g</SelectItem>
-                              <SelectItem value="mcg">mcg</SelectItem>
-                              <SelectItem value="units">units</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label>Route</Label>
-                          <Input
-                            value={treatment.route}
-                            onChange={(e) => updateTreatment(index, "route", e.target.value)}
-                            placeholder="e.g., IV, PO, IM"
-                            required
-                          />
-                        </div>
-                      </div>
+                      <FormField
+                        control={form.control}
+                        name={`treatments.${index}.category` as any}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Category</FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="antibiotic">
+                                    Antibiotic
+                                  </SelectItem>
+                                  <SelectItem value="analgesic">
+                                    Analgesic
+                                  </SelectItem>
+                                  <SelectItem value="antihistamine">
+                                    Antihistamine
+                                  </SelectItem>
+                                  <SelectItem value="bronchodilator">
+                                    Bronchodilator
+                                  </SelectItem>
+                                  <SelectItem value="other">Other</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label>Given At</Label>
-                          <Input
-                            type="datetime-local"
-                            value={treatment.giveAt}
-                            onChange={(e) => updateTreatment(index, "giveAt", e.target.value)}
-                          />
-                        </div>
-                        <div>
-                          <Label>Result</Label>
-                          <Input
-                            value={treatment.result}
-                            onChange={(e) => updateTreatment(index, "result", e.target.value)}
-                            placeholder="e.g., effective, no change"
-                            required
-                          />
-                        </div>
-                      </div>
+                      <FormField
+                        control={form.control}
+                        name={`treatments.${index}.dosage` as any}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Dosage</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`treatments.${index}.unit` as any}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Unit</FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Unit" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="mg">mg</SelectItem>
+                                  <SelectItem value="ml">ml</SelectItem>
+                                  <SelectItem value="g">g</SelectItem>
+                                  <SelectItem value="mcg">mcg</SelectItem>
+                                  <SelectItem value="units">units</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`treatments.${index}.route` as any}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Route</FormLabel>
+                            <FormControl>
+                              <Input placeholder="IV, PO, IM" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`treatments.${index}.giveAt` as any}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Given At</FormLabel>
+                            <FormControl>
+                              <Input type="datetime-local" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`treatments.${index}.result` as any}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Result</FormLabel>
+                            <FormControl>
+                              <Input placeholder="effective" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </CardContent>
                   </Card>
-                ))
-              )}
-            </CardContent>
-          </Card>
+                ))}
+              </CardContent>
+            </Card>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Updating..." : "Update Vital Signs"}
-            </Button>
-          </DialogFooter>
-        </form>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? <LoadingIndicator /> : "Update Vital Signs"}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

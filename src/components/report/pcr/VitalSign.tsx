@@ -7,15 +7,14 @@ import type { VitalSign as VitalSignType } from "@/types/report.type";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash } from "lucide-react";
 import EditVitalSignDialog from "./edit report/EditVitalSignDialog";
+import DeleteTreatment from "./edit report/DeleteTreatment";
 
 interface VitalSignDisplayProps {
   vitalSigns: VitalSignType[];
-  pcrId: number;
 }
 
 export default function VitalSignDisplay({
   vitalSigns,
-  pcrId,
 }: VitalSignDisplayProps) {
   const { isAdmin } = useAuth();
 
@@ -39,9 +38,7 @@ export default function VitalSignDisplay({
               <CardTitle className="text-lg font-semibold">
                 Vital Signs #{index + 1}
               </CardTitle>
-              {isAdmin() && (
-                <EditVitalSignDialog vitalSign={vs} pcrId={pcrId} />
-              )}
+              {isAdmin() && <EditVitalSignDialog vitalSign={vs} />}
             </div>
             <p className="text-sm text-gray-600">
               Recorded: {formatDate(vs.time)}
@@ -118,7 +115,7 @@ export default function VitalSignDisplay({
                       </div>
                       {isAdmin() && (
                         <div className="ml-4">
-                          {/* <DeleteTreatment treatmentId={treatment.id} /> */}
+                          <DeleteTreatment treatmentId={treatment.id} />
                         </div>
                       )}
                     </div>

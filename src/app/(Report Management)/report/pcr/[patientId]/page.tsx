@@ -5,12 +5,9 @@ import { usePCR } from "@/services/api/reports";
 import PCRLoading from "@/components/loading/PCRLoading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/utils/extra";
-import TagList from "@/components/report/pcr/TagList";
-import CreatePatientTagDialog from "@/components/report/pcr/CreatePatientTagDialog";
 import VitalSignDisplay from "@/components/report/pcr/VitalSign";
 import EditPCRDialog from "@/components/report/pcr/edit report/EditPCRDialog";
 import MedicalDataSection from "@/components/report/pcr/edit report/MedicalDataSection";
-import EditGCSDialog from "@/components/report/pcr/edit report/EditGCSDialog";
 
 const PatientDetails = () => {
   const params = useParams();
@@ -89,6 +86,37 @@ const PatientDetails = () => {
               {pcr.notes ?? "No Notes"}
             </p>
           </div>
+          {/* Glasgow Coma Scale */}
+          {pcr.gcs ? (
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-700">
+              <div>
+                <p className="text-xs text-gray-500">Eye Response (E)</p>
+                <p className="font-semibold text-sm sm:text-base">
+                  {pcr.gcs.E}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Verbal Response (V)</p>
+                <p className="font-semibold text-sm sm:text-base">
+                  {pcr.gcs.V}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Motor Response (M)</p>
+                <p className="font-semibold text-sm sm:text-base">
+                  {pcr.gcs.M}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Total Score</p>
+                <p className="font-semibold text-sm sm:text-base">
+                  {pcr.gcs.total}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-600 text-center py-4">No GCS recorded.</p>
+          )}
         </CardContent>
       </Card>
 
@@ -98,7 +126,7 @@ const PatientDetails = () => {
           title="Allergies"
           data={pcr.allergies}
           pcrId={pcr.id}
-          type="Allergies"
+          type="allergies"
           displayField="name"
         />
         <MedicalDataSection
@@ -111,7 +139,7 @@ const PatientDetails = () => {
       </div>
 
       {/* Vital Signs & Treatments */}
-      <VitalSignDisplay vitalSigns={pcr.vitalSign} pcrId={pcr.id} />
+      <VitalSignDisplay vitalSigns={pcr.vitalSign} />
 
       {/* Medical Observations */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -172,48 +200,6 @@ const PatientDetails = () => {
           displayField="circumstance"
         />
       </div>
-
-      {/* Glasgow Coma Scale */}
-      <Card className="bg-gray-100 shadow-md">
-        <CardHeader className="py-3 px-6 flex flex-row justify-between items-center">
-          <CardTitle className="text-lg font-semibold">
-            Glasgow Coma Scale (GCS)
-          </CardTitle>
-          <EditGCSDialog gcs={pcr.gcs} pcrId={pcr.id} />
-        </CardHeader>
-        <CardContent className="px-6 pb-6">
-          {pcr.gcs ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-700">
-              <div>
-                <p className="text-xs text-gray-500">Eye Response (E)</p>
-                <p className="font-semibold text-sm sm:text-base">
-                  {pcr.gcs.E}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Verbal Response (V)</p>
-                <p className="font-semibold text-sm sm:text-base">
-                  {pcr.gcs.V}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Motor Response (M)</p>
-                <p className="font-semibold text-sm sm:text-base">
-                  {pcr.gcs.M}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Total Score</p>
-                <p className="font-semibold text-sm sm:text-base">
-                  {pcr.gcs.total}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <p className="text-gray-600 text-center py-4">No GCS recorded.</p>
-          )}
-        </CardContent>
-      </Card>
     </div>
   );
 };

@@ -13,10 +13,17 @@ import IncidentTab from "../IncidentTab";
 import CrewTab from "../CrewTab";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormControl,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useUpdatePCR } from "@/services/api/reports";
 import { PCR } from "@/types/report.type";
-import { formatDateOnly } from "@/utils/extra";
 import LoadingIndicator from "@/components/Loading-Indicator";
 import { PcrFormData, PcrSchema } from "@/types/schema/reportFormSchema";
 
@@ -37,16 +44,18 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
       primaryAssessment: pcr.primaryAssessment ?? "",
       secondaryAssessment: pcr.secondaryAssessment ?? "",
       notes: pcr.notes ?? "",
+      gcs: {
+        E: pcr.gcs?.E,
+        V: pcr.gcs?.V,
+        M: pcr.gcs?.M,
+      },
     },
   });
 
   const onSubmit = async (data: PcrFormData) => {
     console.log("data", data);
-
     mutateUpdate(data, {
-      onSuccess: () => {
-        setIsOpen(false);
-      },
+      onSuccess: () => setIsOpen(false),
     });
   };
 
@@ -115,13 +124,7 @@ const EditPCRDialog = ({ pcr }: EditPCRDialogProp) => {
                     disabled={isPending}
                     className="bg-main"
                   >
-                    {isPending ? (
-                      <>
-                        <LoadingIndicator />
-                      </>
-                    ) : (
-                      "Save Changes"
-                    )}
+                    {isPending ? <LoadingIndicator /> : "Save Changes"}
                   </Button>
                 </div>
               </Tabs>

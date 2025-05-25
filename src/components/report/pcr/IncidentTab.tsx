@@ -8,21 +8,12 @@ import { useFormContext } from "react-hook-form";
 
 const IncidentTab = () => {
   const form = useFormContext();
-
   const { patientCondition } = RunReportConfig;
 
   return (
-    <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+    <div className="h-full max-h-[60vh] overflow-y-auto px-4 py-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* Read-only Incident ID */}
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-600">
-            Incident Id
-          </label>
-          <div className="px-3 py-2 border rounded-md bg-gray-100 text-gray-800 text-sm">
-            {form.getValues("runReportId")}
-          </div>
-        </div>
 
         <FormInput
           form={form}
@@ -43,7 +34,8 @@ const IncidentTab = () => {
           className="w-full"
         />
       </div>
-      <div>
+
+      <div className="mt-4 space-y-4">
         <FormTextarea
           form={form}
           name="primaryAssessment"
@@ -59,6 +51,7 @@ const IncidentTab = () => {
           placeholder="Describe secondary observations..."
           className="w-full"
         />
+
         <FormTextarea
           form={form}
           name="notes"
@@ -66,6 +59,13 @@ const IncidentTab = () => {
           placeholder="Optional notes about the patient or scene"
           className="w-full"
         />
+
+        {/* GCS Inputs */}
+        <div className="grid grid-cols-3 gap-4">
+          <FormInput form={form} name="gcs.E" label="E" className="w-full" />
+          <FormInput form={form} name="gcs.V" label="V" className="w-full" />
+          <FormInput form={form} name="gcs.M" label="M" className="w-full" />
+        </div>
       </div>
     </div>
   );
