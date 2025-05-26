@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { getXAxisFormatter } from "@/functions/getXAxisDateFormatter";
+import type { StatRecord } from "@/types/report.type";
 import { useStats } from "@/services/api/reports";
 
 const chartConfig = {
@@ -37,7 +38,7 @@ const chartConfig = {
 
 const reportTypes = [
   { id: 1, title: "PCR" },
-  { id: 2, title: "run report" },
+  { id: 2, title: "Run report" },
 ];
 
 const durations = [
@@ -46,7 +47,7 @@ const durations = [
   { id: 3, duration: "This Month" },
 ];
 
-const Barchart = () => {
+const Barchart: React.FC = () => {
   const { StatsData } = useStats();
 
   const [activeTitle, setActiveTitle] = useState<string>(reportTypes[0].title);
@@ -55,23 +56,24 @@ const Barchart = () => {
   );
 
   const filteredData = useMemo(() => {
-    if (!StatsData) return [];
+    if (!StatsData.length) return [];
     const now = new Date();
-    return StatsData.filter((item) => item.type === activeTitle).filter(
-      (item) => {
-        const itemDate = new Date(item.date);
-        if (activeDuration === "Today") {
-          return itemDate.toDateString() === now.toDateString();
-        } else if (activeDuration === "This Week") {
-          const weekStart = new Date(now);
-          weekStart.setDate(now.getDate() - now.getDay());
-          return itemDate >= weekStart;
-        } else if (activeDuration === "This Month") {
-          return itemDate.getMonth() === now.getMonth();
-        }
-        return true;
+
+    return StatsData.filter(
+      (item: StatRecord) => item.type === activeTitle
+    ).filter((item: StatRecord) => {
+      const itemDate = new Date(item.date);
+      if (activeDuration === "Today") {
+        return itemDate.toDateString() === now.toDateString();
+      } else if (activeDuration === "This Week") {
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() - now.getDay());
+        return itemDate >= weekStart;
+      } else if (activeDuration === "This Month") {
+        return itemDate.getMonth() === now.getMonth();
       }
-    );
+      return true;
+    });
   }, [StatsData, activeTitle, activeDuration]);
 
   const xAxisFormatter = useMemo(
@@ -79,7 +81,7 @@ const Barchart = () => {
     [activeDuration]
   );
 
-  if (!StatsData) return null;
+  if (!StatsData.length) return null;
 
   return (
     <Card className="w-full h-full flex flex-col">
@@ -121,12 +123,12 @@ const Barchart = () => {
             </SelectContent>
           </Select>
         </div>
-        <CardDescription></CardDescription>
+        <CardDescription />
       </CardHeader>
 
       <CardContent>
-        <ChartContainer config={chartConfig} className="">
-          <BarChart accessibilityLayer data={filteredData}>
+        <ChartContainer config={chartConfig}>
+          <BarChart data={filteredData}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="date"
@@ -145,11 +147,12 @@ const Barchart = () => {
             <Bar dataKey="critical" fill="var(--darkGray)" radius={4} />
             <Bar dataKey="serious" fill="var(--readMain)" radius={4} />
             <Bar dataKey="good" fill="var(--linearGreen)" radius={4} />
+            <Bar dataKey="stable" fill="var(--stable)" radius={4} />
           </BarChart>
         </ChartContainer>
       </CardContent>
 
-      <CardFooter className="flex-col items-start gap-2 text-sm"></CardFooter>
+      <CardFooter className="flex-col items-start gap-2 text-sm" />
     </Card>
   );
 };

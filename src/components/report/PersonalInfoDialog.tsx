@@ -24,7 +24,6 @@ import ReactFlagsSelect from "react-flags-select";
 import { useGetPatient, useUpdatePatient } from "@/services/api/patient";
 import { cn } from "@/lib/utils";
 import { CustomCalendar } from "@/components/Custom-calendar";
-
 import { EligibilitySelect } from "./EligibilitySelect";
 import { BloodTypeSelect } from "./BloodTypeSelect";
 import { PhoneInput } from "../ui/phone-input";
@@ -116,20 +115,20 @@ const PersonalInfoDialog = ({ id }: { id: number }) => {
     const formattedDateOfBirth = values.dateofBirth
       ? values.dateofBirth.toISOString().split("T")[0]
       : "";
-    if (!patientData?.responsible) {
-      console.error("Missing responsible user. Cannot update.");
+    if (!patientData?.id) {
+      // Optionally handle the error or return early
       return;
     }
-
     mutateUpdatePatient({
+      ...patientData,
+      id: patientData.id, // Ensure id is always a number
       ...values,
-      phone: values.phone ?? "", // ✅ ensure string
-      nationalID: values.nationalID ?? "", // ✅ ensure string
+      phone: values.phone ?? "",
+      nationalID: values.nationalID ?? "",
       weight: Number(values.weight),
       height: Number(values.height),
       dateofBirth: formattedDateOfBirth,
       status: "active",
-      responsible: patientData.responsible, // guaranteed
     });
   };
 

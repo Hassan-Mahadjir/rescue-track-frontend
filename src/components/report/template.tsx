@@ -85,7 +85,6 @@ export const ReportDocument = ({ data }: { data: PCR }) => {
             {data.treatments.map((treatment) => (
               <View style={styles.tableRow} key={treatment.id}>
                 <Text style={styles.tableCol}>{treatment.name}</Text>
-                <Text style={styles.tableCol}>{treatment.quantity}</Text>
                 <Text style={styles.tableCol}>{String(treatment.unit)}</Text>
                 <Text style={styles.tableCol}>{treatment.category}</Text>
               </View>

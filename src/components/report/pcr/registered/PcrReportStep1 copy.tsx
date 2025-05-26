@@ -11,8 +11,8 @@ import { useFormContext } from "react-hook-form";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { RunReportItem } from "@/types/report.type";
 import { useUniqueRecentRunReports } from "@/services/api/reports";
+import { RunReportItem } from "@/types/runReport.type";
 
 export default function PcrReportStep1() {
   const { uniqueRecentRunReportsData: data, isPending } =
@@ -28,24 +28,24 @@ export default function PcrReportStep1() {
     setResults(data);
   }, [data]);
 
-  useEffect(() => {
-    if (!data) return;
+  // useEffect(() => {
+  //   if (!data) return;
 
-    const filtered = data.filter((report) => {
-      const searchLower = search.toLowerCase();
-      const patientName =
-        `${report.patient.firstName} ${report.patient.lastName}`.toLowerCase();
-      const nationalId = report.patient.nationalID?.toLowerCase() || "";
-      const reportId = report.id.toString();
+  //   const filtered = data.filter((report) => {
+  //     const searchLower = search.toLowerCase();
+  //     const patientName =
+  //       `${report.patient.firstName} ${report.patient.lastName}`.toLowerCase();
+  //     const nationalId = report.patient.nationalID?.toLowerCase() || "";
+  //     const reportId = report.id.toString();
 
-      return (
-        patientName.includes(searchLower) ||
-        nationalId.includes(searchLower) ||
-        reportId.includes(searchLower)
-      );
-    });
-    setResults(filtered);
-  }, [search, data]);
+  //     return (
+  //       patientName.includes(searchLower) ||
+  //       nationalId.includes(searchLower) ||
+  //       reportId.includes(searchLower)
+  //     );
+  //   });
+  //   setResults(filtered);
+  // }, [search, data]);
 
   if (isPending) {
     return <div>Loading run reports...</div>;
@@ -97,8 +97,8 @@ export default function PcrReportStep1() {
                         >
                           <div className="p-3">
                             <h3 className="font-semibold text-base">
-                              #{report.id} – {report.patient.firstName}{" "}
-                              {report.patient.lastName}
+                              {/* #{report.id} – {report.patient.firstName}{" "}
+                              {report.patient.lastName} */}
                             </h3>
                             <p className="text-sm text-muted-foreground">
                               {report.category} | {report.priority}

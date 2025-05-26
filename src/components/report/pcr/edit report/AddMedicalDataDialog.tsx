@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,10 +19,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Plus } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { z, type ZodTypeAny } from "zod";
+import { useForm, type Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import LoadingIndicator from "@/components/Loading-Indicator";
 import {
   usePostPCRAllergy,
@@ -36,14 +36,26 @@ import {
 } from "@/services/api/reports";
 import {
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui/select";
 
-// 1) Define all your Zod schemas in a map:
-const schemaMap = {
+// 1) Enumerate your keys to break circularity:
+export type TypeKeys =
+  | "trauma"
+  | "allergies"
+  | "condition"
+  | "therapy"
+  | "respiratory"
+  | "pupil"
+  | "circumstance"
+  | "injury-mechanism"
+  | "skin";
+
+// 2) Map each key to its Zod schema:
+const schemaMap: Record<TypeKeys, ZodTypeAny> = {
   trauma: z.object({ name: z.string().min(1) }),
   allergies: z.object({ name: z.string().min(1) }),
   condition: z.object({ name: z.string().min(1) }),
@@ -65,16 +77,24 @@ const schemaMap = {
       "Jaundiced",
     ]),
   }),
-} as const;
+};
 
-export type TypeKeys = keyof typeof schemaMap;
+// 3) Generic field configuration type, tying `name` to the schema’s keys:
+type FieldConfigItem<K extends TypeKeys> =
+  | {
+      name: Path<z.infer<(typeof schemaMap)[K]>>;
+      label: string;
+      type: "text" | "number";
+    }
+  | {
+      name: Path<z.infer<(typeof schemaMap)[K]>>;
+      label: string;
+      type: "select";
+      options: string[];
+    };
 
-// 2) Field configuration for each type:
-type FieldConfigItem =
-  | { name: string; label: string; type: "text" | "number" }
-  | { name: string; label: string; type: "select"; options: string[] };
-
-const fieldConfig: Record<TypeKeys, FieldConfigItem[]> = {
+// 4) The actual config object, per key:
+const fieldConfig: { [K in TypeKeys]: FieldConfigItem<K>[] } = {
   trauma: [{ name: "name", label: "Trauma Name", type: "text" }],
   allergies: [{ name: "name", label: "Allergy Name", type: "text" }],
   condition: [{ name: "name", label: "Condition Name", type: "text" }],
@@ -96,18 +116,18 @@ const fieldConfig: Record<TypeKeys, FieldConfigItem[]> = {
   ],
 };
 
-interface AddMedicalDataDialogProps {
+interface AddMedicalDataDialogProps<T extends TypeKeys> {
   id: number;
-  type: TypeKeys;
+  type: T;
 }
 
-export default function AddMedicalDataDialog({
+export default function AddMedicalDataDialog<T extends TypeKeys>({
   id,
   type,
-}: AddMedicalDataDialogProps) {
+}: AddMedicalDataDialogProps<T>) {
   const [open, setOpen] = useState(false);
 
-  // 3) Load all your mutation hooks:
+  // 5) Load all your mutation hooks:
   const { allergyMutatePost, isPending: isAllergyPending } =
     usePostPCRAllergy(id);
   const { conditionMutatePost, isPending: isConditionPending } =
@@ -129,13 +149,15 @@ export default function AddMedicalDataDialog({
   const { mutatePost: skinMutatePost, isPending: isSkinPending } =
     usePostPCRSkin(id);
 
-  // 4) Build a simple Record<string, any> form to avoid the union-schema TS issues:
-  const form = useForm<Record<string, any>>({
-    resolver: zodResolver(schemaMap[type] as any),
-    defaultValues: {},
+  // 6) Infer the exact form data type from the schema:
+  type FormData = z.infer<(typeof schemaMap)[T]>;
+  const schema = schemaMap[type];
+  const form = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {} as FormData,
   });
 
-  // 5) Pick the right mutation based on type:
+  // 7) Pick the right mutate function:
   const getMutate = () => {
     switch (type) {
       case "allergies":
@@ -170,12 +192,10 @@ export default function AddMedicalDataDialog({
     isCircumstancePending ||
     isSkinPending;
 
-  const onSubmit = (data: Record<string, any>) => {
+  const onSubmit = (data: FormData) => {
     const mutate = getMutate();
     if (!mutate) return;
-    // cast to `any` (or to your inferred schema type) because TSC
-    // already knows Zod validated this for you:
-    mutate(data as any, {
+    mutate(data, {
       onSuccess: () => {
         form.reset();
         setOpen(false);
@@ -183,8 +203,11 @@ export default function AddMedicalDataDialog({
     });
   };
 
-  const fields = fieldConfig[type];
-  const title = type.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase());
+  // 8) Now `fields` is strongly typed to the right keys:
+  const fields = fieldConfig[type] as FieldConfigItem<T>[];
+  const title = type
+    .replace("-", " ")
+    .replace(/\b\w/g, (l: string) => l.toUpperCase());
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

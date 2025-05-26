@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
@@ -36,6 +35,7 @@ import {
   VitalSignSchema,
 } from "@/types/schema/reportFormSchema";
 import { useUpdatePCRVitalSign } from "@/services/api/reports";
+import FormInput from "@/components/FormInput";
 
 interface EditVitalSignDialogProps {
   vitalSign: VitalSignType;
@@ -231,7 +231,7 @@ export default function EditVitalSignDialog({
                     <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
-                        name={`treatments.${index}.name` as any}
+                        name={`treatments.${index}.name`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Name</FormLabel>
@@ -245,7 +245,7 @@ export default function EditVitalSignDialog({
 
                       <FormField
                         control={form.control}
-                        name={`treatments.${index}.category` as any}
+                        name={`treatments.${index}.category`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Category</FormLabel>
@@ -281,7 +281,7 @@ export default function EditVitalSignDialog({
 
                       <FormField
                         control={form.control}
-                        name={`treatments.${index}.dosage` as any}
+                        name={`treatments.${index}.dosage`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Dosage</FormLabel>
@@ -301,7 +301,7 @@ export default function EditVitalSignDialog({
 
                       <FormField
                         control={form.control}
-                        name={`treatments.${index}.unit` as any}
+                        name={`treatments.${index}.unit`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Unit</FormLabel>
@@ -329,7 +329,7 @@ export default function EditVitalSignDialog({
 
                       <FormField
                         control={form.control}
-                        name={`treatments.${index}.route` as any}
+                        name={`treatments.${index}.route`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Route</FormLabel>
@@ -341,23 +341,16 @@ export default function EditVitalSignDialog({
                         )}
                       />
 
-                      <FormField
-                        control={form.control}
-                        name={`treatments.${index}.giveAt` as any}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Given At</FormLabel>
-                            <FormControl>
-                              <Input type="datetime-local" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                      <FormInput
+                        form={form}
+                        name={`treatments.${index}.giveAt`}
+                        label={"Given At"}
+                        type="date-time"
                       />
 
                       <FormField
                         control={form.control}
-                        name={`treatments.${index}.result` as any}
+                        name={`treatments.${index}.result`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Result</FormLabel>

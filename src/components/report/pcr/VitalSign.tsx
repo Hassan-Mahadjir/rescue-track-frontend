@@ -4,8 +4,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/utils/extra";
 import { useAuth } from "@/hooks/useAuth";
 import type { VitalSign as VitalSignType } from "@/types/report.type";
-import { Button } from "@/components/ui/button";
-import { Pencil, Trash } from "lucide-react";
 import EditVitalSignDialog from "./edit report/EditVitalSignDialog";
 import DeleteTreatment from "./edit report/DeleteTreatment";
 

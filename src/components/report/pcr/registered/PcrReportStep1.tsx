@@ -11,7 +11,6 @@ import { useFormContext } from "react-hook-form";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useUniqueRecentRunReports } from "@/services/api/reports";
 import { useGetPatients } from "@/services/api/patient";
 import { Patient } from "@/types/patients.type";
 import { PatientInfoSkeleton } from "@/components/loading/PatientInfoSkeleton";

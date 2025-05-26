@@ -3,31 +3,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddMedicalDataDialog, { TypeKeys } from "./AddMedicalDataDialog";
 import DeleteMedicalDataButton from "./DeleteMedicalDataButton";
 
+// Interface allowing null values for fields such as height
 interface MedicalDataItem {
   id: number;
-  [key: string]: any;
+  [key: string]: string | number | null | undefined;
 }
 
-interface MedicalDataSectionProps {
+interface MedicalDataSectionProps<T extends MedicalDataItem> {
   title: string;
-  data: MedicalDataItem[];
+  data: T[] | null | undefined;
   pcrId: number;
   type: TypeKeys;
-  displayField: string;
-  extraField?: string;
+  displayField: Extract<keyof T, string>;
+  extraField?: Extract<keyof T, string>;
 }
 
-export default function MedicalDataSection({
+const MedicalDataSection = <T extends MedicalDataItem>({
   title,
   data,
   pcrId,
   type,
   displayField,
   extraField,
-}: MedicalDataSectionProps) {
+}: MedicalDataSectionProps<T>) => {
   return (
     <Card className="bg-gray-100 shadow-md">
-      <CardHeader className="py-3 px-6 flex flex-row justify-between items-center">
+      <CardHeader className="py-3 px-6 flex justify-between items-center">
         <CardTitle className="text-lg font-semibold">{title}</CardTitle>
         <AddMedicalDataDialog id={pcrId} type={type} />
       </CardHeader>
@@ -41,11 +42,11 @@ export default function MedicalDataSection({
               >
                 <div className="flex-1">
                   <p className="text-sm text-gray-700">
-                    {item[displayField]}
-                    {extraField && item[extraField] && (
+                    {String(item[displayField])}
+                    {extraField && item[extraField] != null && (
                       <span className="text-gray-500">
                         {" "}
-                        — {extraField}: {item[extraField]}
+                        — {extraField}: {String(item[extraField])}
                       </span>
                     )}
                   </p>
@@ -62,4 +63,6 @@ export default function MedicalDataSection({
       </CardContent>
     </Card>
   );
-}
+};
+
+export default MedicalDataSection;

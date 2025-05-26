@@ -6,9 +6,9 @@ import {
   InjuryMechanism,
   PCR,
   Pupil,
-  ReportStat,
   Resp,
   Skin,
+  StatRecord,
   Therapy,
   Trauma,
   VitalSign,
@@ -180,11 +180,12 @@ class ReportService extends BaseService {
   }
 
   async getStats() {
-    const response = await http.get<AppResponse<ReportStat[]>>(
+    const response = await http.get<AppResponse<StatRecord[]>>(
       "/patient-care-report/manage/stats"
     );
-    return response;
+    return response; // response.data is AppResponse<…>
   }
+
   // Tharapy endpoint
   async postPCRTherapy(data: TherapyData, id: number) {
     const response = await http.post<AppResponse<Therapy>>(

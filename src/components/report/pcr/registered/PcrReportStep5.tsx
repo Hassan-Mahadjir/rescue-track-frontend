@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useFormContext, useFieldArray, type Control } from "react-hook-form";
+import { useFormContext, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { CheckboxForm } from "@/components/CheckboxForm";
@@ -47,7 +47,7 @@ export default function PcrReportStep5() {
         {vitalFields.map((_, idx) => (
           <VitalSignField
             key={vitalFields[idx].id}
-            control={control as Control<any>}
+            control={control}
             index={idx}
             onRemove={() => removeVital(idx)}
           />
@@ -91,7 +91,7 @@ export default function PcrReportStep5() {
             <FormInput
               key={key}
               form={form}
-              name={`gcs.${key}` as any}
+              name={`gcs.${key}`}
               label={key}
               type="number"
               placeholder={key}

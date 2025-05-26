@@ -15,16 +15,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash } from "lucide-react";
 import SearchableFormSelect from "@/components/FormSelectSearchable";
 import { TreatmentConfig } from "@/constants/treatments";
-import { CheckboxForm } from "@/components/CheckboxForm";
-import { PcrConfig } from "@/constants/pcrConfig";
 
-// TreatmentConfig provides name, category, unit options
 const { treatmentOptions, categoryOptions, unitOptions } = TreatmentConfig;
 
-const { pupilOptions, respOptions, skinOptions, therapyOptions } = PcrConfig;
-
 interface VitalSignFieldProps {
-  control: Control<any>;
+  control: Control;
   index: number;
   onRemove: () => void;
 }
@@ -34,6 +29,7 @@ export default function VitalSignField({
   index,
   onRemove,
 }: VitalSignFieldProps) {
+  const form = useFormContext();
   const {
     fields: treatFields,
     append: appendTreat,
@@ -82,7 +78,7 @@ export default function VitalSignField({
         ))}
       </div>
 
-      {/* Treatments */}
+      {/* Treatments section */}
       <div className="space-y-2">
         <h3 className="text-md font-medium text-gray-700">Treatments</h3>
         {treatFields.map((treat, tIndex) => (
@@ -90,8 +86,9 @@ export default function VitalSignField({
             key={treat.id}
             className="grid grid-cols-1 md:grid-cols-7 gap-4 border rounded-md p-4 bg-gray-50"
           >
+            {/* Treatment Name */}
             <SearchableFormSelect
-              form={useFormContext()}
+              form={form}
               name={`vitalSigns.${index}.treatments.${tIndex}.name`}
               label="Name"
               placeholder="Select treatment"
@@ -109,7 +106,17 @@ export default function VitalSignField({
                 <FormItem>
                   <FormLabel>Dosage</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" placeholder="Dosage" />
+                    <Input
+                      {...field}
+                      type="number"
+                      placeholder="Dosage"
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === "" ? null : Number(e.target.value)
+                        )
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -124,7 +131,10 @@ export default function VitalSignField({
                 <FormItem>
                   <FormLabel>Unit</FormLabel>
                   <FormControl>
-                    <select {...field} className="w-full border rounded p-2">
+                    <select
+                      {...field}
+                      className="w-full border rounded p-2 bg-white"
+                    >
                       <option value="">Select unit</option>
                       {unitOptions.map((u) => (
                         <option key={u.name} value={u.name}>
@@ -161,7 +171,12 @@ export default function VitalSignField({
                 <FormItem>
                   <FormLabel>Give At</FormLabel>
                   <FormControl>
-                    <Input {...field} type="time" />
+                    <Input
+                      {...field}
+                      type="time"
+                      value={field.value || ""}
+                      onChange={(e) => field.onChange(e.target.value || null)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -180,6 +195,7 @@ export default function VitalSignField({
                       {...field}
                       className="resize-none"
                       placeholder="Result"
+                      rows={2}
                     />
                   </FormControl>
                   <FormMessage />
@@ -195,7 +211,10 @@ export default function VitalSignField({
                 <FormItem>
                   <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <select {...field} className="w-full border rounded p-2">
+                    <select
+                      {...field}
+                      className="w-full border rounded p-2 bg-white"
+                    >
                       <option value="">Select category</option>
                       {categoryOptions.map((c) => (
                         <option key={c.name} value={c.name}>
@@ -209,6 +228,7 @@ export default function VitalSignField({
               )}
             />
 
+            {/* Remove Treatment Button */}
             <div className="flex items-end justify-end md:col-span-7">
               <Button
                 variant="ghost"
@@ -223,19 +243,28 @@ export default function VitalSignField({
           </div>
         ))}
 
+        {/* Add Treatment Button */}
         <div className="flex justify-end">
           <Button
             variant="default"
             onClick={() => appendTreat(defaultTreat)}
             type="button"
+            className="gap-1"
           >
-            <Plus className="mr-1 h-4 w-4" /> Add Treatment
+            <Plus className="h-4 w-4" />
+            Add Treatment
           </Button>
         </div>
       </div>
 
+      {/* Remove Vital Sign Button */}
       <div className="flex justify-end">
-        <Button variant="outline" onClick={onRemove} type="button">
+        <Button
+          variant="outline"
+          onClick={onRemove}
+          type="button"
+          className="text-red-600 hover:text-red-800"
+        >
           Remove Vital Sign
         </Button>
       </div>
