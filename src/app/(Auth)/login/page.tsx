@@ -12,10 +12,6 @@ import { Button } from "@/components/ui/button";
 import FormInput from "@/components/FormInput";
 import { useLogin } from "@/services/api/auth";
 import LoadingIndicator from "@/components/Loading-Indicator";
-import {
-  handleGoogleLogin,
-  handleMicrosoftLogin,
-} from "@/utils/otherLoginService";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -86,16 +82,16 @@ const Login = () => {
         </Form>
 
         {/* Divider */}
-        <div className="relative flex py-2 items-center w-3/5">
+        {/* <div className="relative flex py-2 items-center w-3/5">
           <div className="flex-grow border-t border-gray-400"></div>
           <span className="flex-shrink mx-4 text-gray-400">
             {t("continueWith")}
           </span>
           <div className="flex-grow border-t border-gray-400"></div>
-        </div>
+        </div> */}
 
         {/* other account Signin */}
-        <button
+        {/* <button
           onClick={handleMicrosoftLogin}
           className="flex items-center justify-center gap-x-2 border-2 border-[var(--main)] rounded-lg w-3/5 px-3 py-2 hover:text-white hover:bg-second-main transition-colors duration-150"
         >
@@ -125,7 +121,7 @@ const Login = () => {
           <span className="text-sm font-medium xs:inline">
             {t("loginWithGoogle")}
           </span>
-        </button>
+        </button> */}
         <p className="text-sm font-semibold">
           {t("noAccount")}{" "}
           <a href="/signup" className="underline underline-offset-4">

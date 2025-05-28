@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { getItem, removeItem, setItem } from "@/utils/storage";
 import { AuthDataType } from "@/types/common.type";
 
-const baseurl = "http://192.168.178.175:3000";
+const baseurl = "https://rescue-track-backend-production.up.railway.app";
 
 const http = axios.create({
   baseURL: baseurl,

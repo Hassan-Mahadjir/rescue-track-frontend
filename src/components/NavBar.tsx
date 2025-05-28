@@ -56,9 +56,11 @@ function NavBar() {
   const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
-    const stepIndex = navItems.findIndex((item) => item.route === currentPath);
+    const stepIndex = navItems.findIndex((item) =>
+      pathName.startsWith(item.link)
+    );
     setCurrentItem(stepIndex !== -1 ? stepIndex : 0);
-  }, [currentPath]);
+  }, [pathName]);
 
   return (
     <nav className="justify-items-end">
