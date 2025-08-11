@@ -8,8 +8,21 @@
 
 A comprehensive **Rescue Track Management System** web application built with Next.js and React, providing emergency services with advanced patient care reporting, inventory management, and administrative tools for healthcare professionals.
 
+## 🌐 Live Demo
+
+**Try the application live:** [https://frontend-flame-sigma-76.vercel.app/profile](https://frontend-flame-sigma-76.vercel.app/profile)
+
+### 🧪 Test Credentials
+
+For testing purposes, you can use the following hospital ID:
+
+- **Hospital ID:** `f6bb46fc-2cdc-478b-8fc8-899fff743b24`
+
+This ID can be used to access the system and explore the various features including patient care reporting, inventory management, and dashboard analytics.
+
 ## 📋 Table of Contents
 
+- [Live Demo](#-live-demo)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
 - [Screenshots](#-screenshots)
