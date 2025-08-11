@@ -221,7 +221,7 @@ Before running this application, make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/rescue-track-frontend.git
+git clone https://github.com/hassan-mahadjir/rescue-track-frontend.git
 cd rescue-track-frontend
 ```
 
